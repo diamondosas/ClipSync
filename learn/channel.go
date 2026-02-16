@@ -1,5 +1,4 @@
-package learn
-
+package main
 import(
 	"fmt"
 )
