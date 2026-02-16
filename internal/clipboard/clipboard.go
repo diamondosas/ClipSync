@@ -27,7 +27,7 @@ func WriteClipboard(data string) {
 
 //Find out how to check whether a clipboard fucntion forever below
 
-// func ChangedClipbord(ctx context.Context) bool {
+// func ChangedClipbord(ctx c	ontext.Context) bool {
 // 	var mu sync.RWMutex
 // 	defer globals.WG.Done()
 // 	changed := clipboard.Watch(context.TODO(), clipboard.FmtText)

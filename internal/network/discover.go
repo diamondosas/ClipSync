@@ -28,7 +28,7 @@ func RegisterDevice(ctx context.Context) {
 	if err != nil {
 		log.Println("Could not Register Device Please Make sure you are connected to a net")
 		log.Println(err)
-
+		
 	}
 	
 	log.Println("Deivce Registered")
