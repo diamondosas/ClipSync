@@ -1,11 +1,11 @@
 package clipboard
 
 import (
-	// "context"
+	"context"
 	"log"
+
 	// "sync"
 	"golang.design/x/clipboard"
-
 	// "clipsync/internal/globals"
 )
 
@@ -25,29 +25,9 @@ func WriteClipboard(data string) {
 	clipboard.Write(clipboard.FmtText, byte)
 }
 
-//Find out how to check whether a clipboard fucntion forever below
-
-// func ChangedClipbord(ctx c	ontext.Context) bool {
-// 	var mu sync.RWMutex
-// 	defer globals.WG.Done()
-// 	changed := clipboard.Watch(context.TODO(), clipboard.FmtText)
-// 	for info := range changed {
-// 		str := string(info)
-// 		if str == globals.Recieved {
-// 			continue
-// 		} else {
-
-// 			mu.Lock()
-// 			data := CopyClipboard()
-// 			same := (data == str)
-// 			mu.Unlock()
-// 			if same {
-// 				//Test WriteClipboard("ok")
-// 				network.SendClipboard()
-// 				return true
-// 			}
-// 		}
-// 	}
-// 	<-ctx.Done()
-// 	return false
-// }
+func ChangedClipbord(ctx context.Context){
+	changedText := clipboard.Watch(ctx, clipboard.FmtText)
+	for data := range changedText{
+		WriteClipboard(string(data))
+	}
+}

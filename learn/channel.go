@@ -1,13 +1,25 @@
 package main
-import(
+
+import (
 	"fmt"
+	"time"
 )
+var ch = make(chan int)
 
 func main(){
-		ch := make (chan int)
+	start := time.Now()
+	go count()
 
-	for i:=0; i<100; i++{
+	for v := range ch{
+		fmt.Println(v)
 	}
+	end := time.Since(start)
+	fmt.Println(end)
+}
 
-	fmt.Println(<-ch)
+func count(){
+	for i:=0; i<10000; i++{
+		ch <- i
+	}
+	close(ch)
 }

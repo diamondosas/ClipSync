@@ -5,7 +5,7 @@ import (
 	"clipsync/internal/clipboard"
 )
 
-func TestClipboard(t *testing.T) {
+func TestReadWrite(t *testing.T) {
 	want := "Testing is taking place..."
 	clipboard.WriteClipboard(want)
 	output := clipboard.CopyClipboard()
@@ -16,10 +16,9 @@ func TestClipboard(t *testing.T) {
 
 }
 
-// func TestChanged(t *testing.T){
-// 	var wg sync.WaitGroup
-// 	wg.Add(1)
-// 	go ChangedClipbord()
-// 	WriteClipboard("ok")
+func TestChanged(t *testing.T){
+	want := "Tester"
+	go clipboard.ChangedClipbord(t.Context())
+	
 
-// }
+}
