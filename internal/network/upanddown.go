@@ -7,7 +7,7 @@ import (
 	// sysClipboard "golang.design/x/clipboard"
 	// "clipsync/internal/globals"
 )
-
+var Buffer []byte
 func SendData(data []byte) {
 	_, err := Conn.Write(data)
 	if err != nil {
@@ -18,12 +18,12 @@ func SendData(data []byte) {
 
 func RecieveClipboard() ([]byte, int){
 	for {
-	buffer := make([]byte, 1024)
-	n, addr, err := Conn.ReadFromUDP(buffer)
+	Buffer = make([]byte, 1024)
+	n, addr, err := Conn.ReadFromUDP(Buffer)
 	if err != nil{
 		log.Println("Error", err)
 	}
-	log.Println("Recieved Clipboard From Addr: ", addr, "Content", string(buffer[:n]))
-	return buffer, n
+	log.Println("Recieved Clipboard From Addr: ", addr, "Content", string(Buffer[:n]))
+	return Buffer, n
 	}
 }

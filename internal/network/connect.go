@@ -21,7 +21,7 @@ var Ln net.Listener
 var Ready = make(chan struct{})
 func Connect(ip string) {
 
-	addr, err := net.ResolveUDPAddr("udp", ip + ":9000")
+	addr, err := net.ResolveUDPAddr("udp", ip + strconv.Itoa(globals.PORT))
 	if err != nil {
 		log.Println(err)
 	}

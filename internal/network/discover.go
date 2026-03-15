@@ -22,7 +22,7 @@ func RegisterDevice() {
 	globals.Username, _ = os.Hostname()
 
 
-	server, err := zeroconf.Register(globals.Username, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
+	_, err := zeroconf.Register(globals.Username, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
 	
 	if err != nil {
 		log.Println("Could not Register Device Please Make sure you are connected to a net")
@@ -31,7 +31,7 @@ func RegisterDevice() {
 	}
 	
 	log.Println("Deivce Registered")
-	defer server.Shutdown()
+	// defer server.Shutdown()
 }
 
 // Discover all services on the network (e.g. _workstation._tcp)
@@ -58,22 +58,24 @@ func BrowseForDevices() {
 }
 
 func entry(results <-chan *zeroconf.ServiceEntry) {
-	entry := <-results
-	if entry == nil{
-		return
-	}
-	if entry.Instance == globals.Username {
-		return
-	} else {
-		ip := string(entry.AddrIPv4[0].String())
-		Connect(ip)
+	for{
+		entry := <-results
+		if entry == nil{
+			return
+		}
+		if entry.Instance == globals.Username {
+			return
+		} else {
+			ip := string(entry.AddrIPv4[0].String())
+			Connect(ip)
 
 
 
-		log.Println("Found Device: ", entry.Instance, entry.AddrIPv4)
-		globals.IP = append(globals.IP, string(entry.AddrIPv4[0].String()))
-		fmt.Println("Connected Device:", entry.Instance)
+			log.Println("Found Device: ", entry.Instance, entry.AddrIPv4)
+			globals.IP = append(globals.IP, string(entry.AddrIPv4[0].String()))
+			fmt.Println("Connected Device:", entry.Instance)
 
+		}
 	}
 }
 

@@ -6,7 +6,7 @@ import (
 
 	// "sync"
 	"golang.design/x/clipboard"
-	// "clipsync/internal/globals"
+	"clipsync/internal/network"
 )
 
 func init() {

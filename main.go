@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-
+	"slices"
 	"clipsync/internal/clipboard"
 	"clipsync/internal/globals"
 	"clipsync/internal/network"
@@ -26,15 +26,23 @@ func main() {
 	go RunWithContext(ctx, network.Listen)
 	fmt.Println(3)
 	go func(){
-        changedText := clipboard.ChangedClipboard(ctx) // make this return the channel
+        defer globals.WG.Done()
+		changedText := clipboard.ChangedClipboard(ctx) // make this return the channel
         for data := range changedText {
+			if slices.Equal(data, network.Buffer){
+				return
+			}
             network.SendData(data)
 		}
+		<-ctx.Done()
     }()
 	go func(){
-		<-network.Ready
-		buffer, n := network.RecieveClipboard()
-		clipboard.WriteClipboard(string(buffer[:n]))
+		defer globals.WG.Done()
+		for{
+			<-network.Ready
+			buffer, n := network.RecieveClipboard()
+			clipboard.WriteClipboard(string(buffer[:n]))
+		}
 	}()
 	
 	globals.WG.Wait()	
