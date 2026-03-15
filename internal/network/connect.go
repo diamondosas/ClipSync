@@ -2,7 +2,6 @@ package network
 
 import (
 	// "bufio"
-	"fmt"
 	"log"
 	"net"
 	"strconv"
@@ -16,18 +15,18 @@ import (
 // 	Dialer 		bool
 // }
 
-var Conn *net.UDPConn
+var InConn *net.UDPConn
+var OutConn *net.UDPConn
 var Ln net.Listener
 var Ready = make(chan struct{})
 func Connect(ip string) {
 
-	addr, err := net.ResolveUDPAddr("udp", ip + strconv.Itoa(globals.PORT))
+	addr, err := net.ResolveUDPAddr("udp", ip + ":" + strconv.Itoa(globals.PORT))
 	if err != nil {
 		log.Println(err)
 	}
-
-	//Send and recive confirm form server
-	Conn, err = net.DialUDP("udp", nil, addr)
+	
+	OutConn, err = net.DialUDP("udp", nil, addr)
 	// defer Conn.Close()
 	if err != nil {
 		log.Println(err)
@@ -38,12 +37,11 @@ func Connect(ip string) {
 
 func Listen() {
 	addr, err := net.ResolveUDPAddr("udp", ":" + strconv.Itoa(globals.PORT))
-	Conn, _ = net.ListenUDP("udp", addr)
-	defer Conn.Close()
+	InConn, _ = net.ListenUDP("udp", addr)
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println("Listening...")
+	log.Println("Listening For Connection...")
 	close(Ready)
 }
 

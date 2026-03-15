@@ -9,7 +9,7 @@ import (
 )
 var Buffer []byte
 func SendData(data []byte) {
-	_, err := Conn.Write(data)
+	_, err := OutConn.Write(data)
 	if err != nil {
 		log.Println(err)
 	}
@@ -17,13 +17,11 @@ func SendData(data []byte) {
 }
 
 func RecieveClipboard() ([]byte, int){
-	for {
 	Buffer = make([]byte, 1024)
-	n, addr, err := Conn.ReadFromUDP(Buffer)
+	n, addr, err := InConn.ReadFromUDP(Buffer)
 	if err != nil{
 		log.Println("Error", err)
 	}
 	log.Println("Recieved Clipboard From Addr: ", addr, "Content", string(Buffer[:n]))
 	return Buffer, n
-	}
 }

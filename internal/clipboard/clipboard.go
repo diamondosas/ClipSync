@@ -6,15 +6,16 @@ import (
 
 	// "sync"
 	"golang.design/x/clipboard"
-	"clipsync/internal/network"
+	// "clipsync/internal/network"
 )
 
-func init() {
+func Init() {
 	err := clipboard.Init()
 	if err != nil {
 		log.Println(err)
 	}
 }
+
 func CopyClipboard() string {
 	data := clipboard.Read(clipboard.FmtText)
 	return string(data)

@@ -15,7 +15,7 @@ import (
 
 func main() {
 	
-	
+	clipboard.Init()
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	globals.WG.Add(5)
@@ -30,16 +30,17 @@ func main() {
 		changedText := clipboard.ChangedClipboard(ctx) // make this return the channel
         for data := range changedText {
 			if slices.Equal(data, network.Buffer){
-				return
+				continue
+			}else{
+				network.SendData(data)
 			}
-            network.SendData(data)
-		}
+        }
 		<-ctx.Done()
     }()
 	go func(){
 		defer globals.WG.Done()
+		<-network.Ready
 		for{
-			<-network.Ready
 			buffer, n := network.RecieveClipboard()
 			clipboard.WriteClipboard(string(buffer[:n]))
 		}

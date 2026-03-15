@@ -18,16 +18,12 @@ var Entries = make(chan *zeroconf.ServiceEntry)
 // Make it to work on a perfect LAN Peer to Peer Setup
 
 func RegisterDevice() {
-	log.Println("Registering Device")
 	globals.Username, _ = os.Hostname()
-
-
+	
 	_, err := zeroconf.Register(globals.Username, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
 	
 	if err != nil {
-		log.Println("Could not Register Device Please Make sure you are connected to a net")
 		log.Println(err)
-		
 	}
 	
 	log.Println("Deivce Registered")
@@ -37,7 +33,6 @@ func RegisterDevice() {
 // Discover all services on the network (e.g. _workstation._tcp)
 
 func BrowseForDevices() {
-	log.Println("Starting to Discover Services")
 	reslover, err := zeroconf.NewResolver(nil)
 	
 	if err != nil {
@@ -55,6 +50,8 @@ func BrowseForDevices() {
 		log.Println(err)
 	}
 
+	log.Println("Starting to Discover Services")
+
 }
 
 func entry(results <-chan *zeroconf.ServiceEntry) {
@@ -64,12 +61,10 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 			return
 		}
 		if entry.Instance == globals.Username {
-			return
+			continue
 		} else {
 			ip := string(entry.AddrIPv4[0].String())
 			Connect(ip)
-
-
 
 			log.Println("Found Device: ", entry.Instance, entry.AddrIPv4)
 			globals.IP = append(globals.IP, string(entry.AddrIPv4[0].String()))
