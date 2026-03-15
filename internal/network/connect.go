@@ -35,14 +35,16 @@ func Connect(ip string) {
 	// SendDetails()
 }
 
-func Listen() {
+func Listen() error {
 	addr, err := net.ResolveUDPAddr("udp", ":" + strconv.Itoa(globals.PORT))
 	InConn, _ = net.ListenUDP("udp", addr)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 	log.Println("Listening For Connection...")
 	close(Ready)
+	return nil
 }
 
 

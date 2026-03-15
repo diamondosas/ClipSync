@@ -7,32 +7,40 @@ import (
 	"os"
 
 	"clipsync/internal/globals"
+
 	"github.com/grandcat/zeroconf"
+	"golang.org/x/text/cases"
 )
 
 var Entries = make(chan *zeroconf.ServiceEntry)
 
 
-func RegisterDevice() {
+func RegisterDevice(ctx context.Context) error {
 	globals.Username, _ = os.Hostname()
 	
 	server, err := zeroconf.Register(globals.Username, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
 	
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 	
 	log.Println("Broadcasting Presence...")
 	defer server.Shutdown()
+	select{
+	case <-ctx.Done():
+		return nil
+	}
 }
 
 // Discover all services on the network (e.g. _workstation._tcp)
 
-func BrowseForDevices() {
+func BrowseForDevices() error{
 	reslover, err := zeroconf.NewResolver(nil)
 	
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 
 	go entry(Entries)
@@ -44,6 +52,7 @@ func BrowseForDevices() {
 	
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 
 	log.Println("Starting to Discover Services")

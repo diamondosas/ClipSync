@@ -8,10 +8,9 @@ import (
 	"os"
 	"os/signal"
 	"slices"
-
+	"syscall"
 	
 	"clipsync/internal/clipboard"
-	"clipsync/internal/globals"
 	"clipsync/internal/network"
 	"golang.org/x/sync/errgroup"
 	// "clipsync/internal/ping"
@@ -22,18 +21,25 @@ var Version = "dev"
 func main() {
 
 	clipboard.Init()
-	network.RegisterDevice()
+	
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	globals.WG.Add(4)
-	fmt.Println(1)
-	go RunWithContext(ctx, network.BrowseForDevices)
-	fmt.Println(2)
-	go RunWithContext(ctx, network.Listen)
-	fmt.Println(3)
+	eg, ctx := errgroup.WithContext(ctx)
+	
+	eg.Go(func() error{
+		return network.RegisterDevice(ctx)
+	})
+	
+	eg.Go(func() error{
+		return network.BrowseForDevices()
+	})
+
+	eg.Go(func() error{
+		return network.Listen()
+	})
+
 	go func() {
-		defer globals.WG.Done()
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 		changedText := clipboard.WatchClipboard(ctx) // make this return the channel
@@ -47,7 +53,7 @@ func main() {
 		<-ctx.Done()
 	}()
 	go func() {
-		defer globals.WG.Done()
+
 		<-network.Ready
 		for {
 			buffer, n := network.RecieveClipboard()
@@ -55,11 +61,11 @@ func main() {
 		}
 	}()
 
-	globals.WG.Wait()
+	
 }
 
 func RunWithContext(ctx context.Context, task func()) {
-	defer globals.WG.Done()
+	
 	for{
 		select{
 			case <-ctx.Done():
