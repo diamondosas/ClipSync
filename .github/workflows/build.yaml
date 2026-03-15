@@ -20,8 +20,9 @@ jobs:
           go-version: '1.26' # Change to your Go version
 
       - name: Install Windows Icon Tool
-        run: go install github.com/akavel/rsrc@latest
-
+        run: |
+          go install github.com/akavel/rsrc@latest
+          go mod tidy
       - name: Build for Windows (with icon)
         run: |
           # Embeds the logo.ico into a .syso file that Go picks up during build
