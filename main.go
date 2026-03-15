@@ -13,6 +13,8 @@ import (
 	// "clipsync/internal/ping"
 )
 
+var Version = "dev"
+
 func main() {
 
 	clipboard.Init()
@@ -27,6 +29,8 @@ func main() {
 	fmt.Println(3)
 	go func() {
 		defer globals.WG.Done()
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
 		changedText := clipboard.WatchClipboard(ctx) // make this return the channel
 		for data := range changedText {
 			if slices.Equal(data, network.Buffer) {

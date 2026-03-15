@@ -2,53 +2,130 @@ name: Build and Release
 
 on:
   push:
+    branches: [ "main" ]
     tags:
       - "v*"
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  build-and-release:
+  # Auto-tagging job for commit-controlled releases
+  # Triggers when VERSION file is changed on main branch
+  tag:
+    name: Auto-Tag
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create tag if VERSION changed
+        run: |
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          TAG="v$VERSION"
+          if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag "$TAG"
+            git push origin "$TAG"
+          else
+            echo "Tag $TAG already exists, skipping."
+          fi
+
+  build:
+    name: Build (${{ matrix.goos }}/${{ matrix.goarch }})
+    # Build on tags, PRs, or manual trigger
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+        exclude:
+          - goos: linux
+            goarch: arm64
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-go@v5
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version-file: go.mod
+          cache: true
 
       - name: Install Dependencies
         run: |
-          go install github.com/akavel/rsrc@latest
           go mod tidy
-          sudo apt-get install -y libx11-dev zip
+          if [ "${{ matrix.goos }}" = "linux" ]; then
+            sudo apt-get update
+            sudo apt-get install -y libx11-dev pkg-config zip
+          fi
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            go install github.com/akavel/rsrc@latest
+          fi
 
-      - name: Build Windows
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          # CGO is required for clipboard on Linux (X11)
+          CGO_ENABLED: ${{ matrix.goos == 'linux' && '1' || '0' }}
         run: |
-          rsrc -ico logo.ico -o rsrc.syso
-          GOOS=windows GOARCH=amd64 go build \
-          -ldflags="-X main.Version=${{ github.ref_name }}" \
-          -o clipsync-windows-amd64.exe .
+          # Determine version
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            VERSION="${{ github.ref_name }}"
+          else
+            VERSION="$(cat VERSION | tr -d '[:space:]')-$(git rev-parse --short HEAD)"
+          fi
+          
+          # Use a simple output name for inside the archive
+          OUTPUT="clipsync"
+          LDFLAGS="-X main.Version=${VERSION} -s -w"
+          
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            rsrc -ico logo.ico -o rsrc.syso
+            OUTPUT="${OUTPUT}.exe"
+            # Hide console window on Windows (commented out for console app)
+            # LDFLAGS="${LDFLAGS} -H=windowsgui"
+          fi
+          
+          go build -ldflags="${LDFLAGS}" -o "${OUTPUT}" .
 
-      - name: Build Linux
+      - name: Package
+        shell: bash
         run: |
-          rm rsrc.syso
-          GOOS=linux GOARCH=amd64 go build \
-          -ldflags="-X main.Version=${{ github.ref_name }}" \
-          -o clipsync-linux-amd64 .
+          ASSET_NAME="clipsync-${{ matrix.goos }}-${{ matrix.goarch }}"
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            zip "${ASSET_NAME}.zip" "clipsync.exe"
+            echo "ASSET=${ASSET_NAME}.zip" >> $GITHUB_ENV
+          else
+            tar -czf "${ASSET_NAME}.tar.gz" "clipsync"
+            echo "ASSET=${ASSET_NAME}.tar.gz" >> $GITHUB_ENV
+          fi
 
-      - name: Build macOS
-        run: |
-          GOOS=darwin GOARCH=amd64 go build \
-          -ldflags="-X main.Version=${{ github.ref_name }}" \
-          -o clipsync-macos-amd64 .
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.goos }}-${{ matrix.goarch }}
+          path: ${{ env.ASSET }}
 
-      - name: Compress
-        run: |
-          zip clipsync-windows-amd64.zip clipsync-windows-amd64.exe
-          tar -czf clipsync-linux-amd64.tar.gz clipsync-linux-amd64
-          tar -czf clipsync-macos-amd64.tar.gz clipsync-macos-amd64
+  release:
+    name: Create Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -57,6 +134,5 @@ jobs:
           tag_name: ${{ github.ref_name }}
           generate_release_notes: true
           files: |
-            clipsync-windows-amd64.zip
-            clipsync-linux-amd64.tar.gz
-            clipsync-macos-amd64.tar.gz
+            clipsync-*.zip
+            clipsync-*.tar.gz
