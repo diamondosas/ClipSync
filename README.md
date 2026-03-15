@@ -15,3 +15,19 @@ Architecture: peer-to-peer discovery via **mDNS** (service discovery) and **TCP*
 ---
 
 I am using this as a repo and the link is https://github.com/DiamondOsas/ClipSync.git
+
+
+
+
+You just need to install the X11 development package for your Linux distribution before building your Go program.
+
+Ubuntu / Debian / Pop!_OS / Linux Mint
+sudo apt update
+sudo apt install libx11-dev
+
+That installs the header files including X11/Xlib.h.
+
+Fedora / CentOS / RHEL
+sudo dnf install libX11-devel
+Arch Linux / Manjaro
+sudo pacman -S libx11

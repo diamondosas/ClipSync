@@ -19,10 +19,11 @@ jobs:
         with:
           go-version: '1.26' # Change to your Go version
 
-      - name: Install Windows Icon Tool
+      - name: Setup Dependencies
         run: |
           go install github.com/akavel/rsrc@latest
           go mod tidy
+          sudo apt install libx11-dev
       - name: Build for Windows (with icon)
         run: |
           # Embeds the logo.ico into a .syso file that Go picks up during build
