@@ -9,7 +9,6 @@ import (
 	"clipsync/internal/globals"
 
 	"github.com/grandcat/zeroconf"
-	"golang.org/x/text/cases"
 )
 
 var Entries = make(chan *zeroconf.ServiceEntry)
@@ -56,7 +55,7 @@ func BrowseForDevices() error{
 	}
 
 	log.Println("Starting to Discover Services")
-
+	return nil
 }
 
 func entry(results <-chan *zeroconf.ServiceEntry) {

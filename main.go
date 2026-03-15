@@ -3,11 +3,10 @@ package main
 import (
 
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
-	"slices"
+	// "slices"
 	"syscall"
 	
 	"clipsync/internal/clipboard"
@@ -22,8 +21,8 @@ func main() {
 
 	clipboard.Init()
 	
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer cancel()
 
 	eg, ctx := errgroup.WithContext(ctx)
 	
@@ -39,40 +38,29 @@ func main() {
 		return network.Listen()
 	})
 
-	go func() {
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-		changedText := clipboard.WatchClipboard(ctx) // make this return the channel
-		for data := range changedText {
-			if slices.Equal(data, network.Buffer) {
-				continue
-			} else {
-				network.SendData(data)
-			}
-		}
-		<-ctx.Done()
-	}()
-	go func() {
-
-		<-network.Ready
-		for {
-			buffer, n := network.RecieveClipboard()
-			clipboard.WriteClipboard(string(buffer[:n]))
-		}
-	}()
-
-	
-}
-
-func RunWithContext(ctx context.Context, task func()) {
-	
-	for{
-		select{
-			case <-ctx.Done():
-				log.Println("Shutting Down Gracefully")
-				return
-			default:
-				go task()
-		}
+	// eg.Go(func() error{
+	// 	changedText := clipboard.WatchClipboard(ctx) // make this return the channel
+	// 	select{
+	// 	case <-ctx.Done():
+	// 		return nil
+	// 	case data := <-changedText:
+	// 		if !slices.Equal(data, network.Buffer) {
+	// 			network.SendData(data)
+	// 		}
+	// 		return nil
+	// 	}
+	// })
+	// eg.Go(func() error {
+	// 	<-network.Ready
+	// 	for {
+	// 		buffer, n := network.RecieveClipboard()
+	// 		clipboard.WriteClipboard(string(buffer[:n]))
+	// 	}
+	// })
+	err := eg.Wait()
+	if err != nil{
+		log.Fatal("Shutdown Error", err)
 	}
+	
 }
+
