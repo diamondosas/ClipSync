@@ -1,14 +1,13 @@
 package network
 
 import (
-	"bufio"
+	// "bufio"
 	"fmt"
 	"log"
 	"net"
 	"strconv"
 
 	"clipsync/internal/globals"
-	"clipsync/internal/clipboard"
 )
 
 // type Info struct {
@@ -17,50 +16,41 @@ import (
 // 	Dialer 		bool
 // }
 
-var Conn net.Conn
+var Conn *net.UDPConn
 var Ln net.Listener
 
 func Connect(ip string) {
 
-	addr, err := net.ResolveUDPAddr("udp", ip)
+	addr, err := net.ResolveUDPAddr("udp", ip + ":9000")
 	if err != nil {
 		log.Println(err)
 	}
 
 	//Send and recive confirm form server
-	Conn, err := net.DialUDP("udp", nil, addr)
-	defer Conn.Close()
+	Conn, err = net.DialUDP("udp", nil, addr)
+	// defer Conn.Close()
 	if err != nil {
 		log.Println(err)
 	}
 
-	SendDetails()
+	// SendDetails()
 }
 
 func Listen() {
 	defer globals.WG.Done()
 	addr, err := net.ResolveUDPAddr("udp", ":" + strconv.Itoa(globals.PORT))
-	Conn, _ := net.ListenUDP("udp", addr)
+	Conn, _ = net.ListenUDP("udp", addr)
 	defer Conn.Close()
 	if err != nil {
 		log.Println(err)
 	}
 	fmt.Println("Listening...")
-	for {
-		buffer := make([]byte, 1024)
-		n, _, err := Conn.ReadFromUDP(buffer)
-		if err != nil{
-			fmt.Println("Error", err)
-		}
-
-		WriteClipboard(string(buffer[:n]))
-		}
-
 
 }
 
 
-func SendDetails(){
-	message := []byte("")
-	Conn.Write(message)
-}
+// func SendDetails(){
+// 	message := []byte("$IP-ADDR:")
+// 	_, err := Conn.Write(message)
+
+// }

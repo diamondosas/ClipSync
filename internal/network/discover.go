@@ -17,8 +17,7 @@ var Entries = make(chan *zeroconf.ServiceEntry)
 // Add that when it display all the interfaces
 // Make it to work on a perfect LAN Peer to Peer Setup
 
-func RegisterDevice(ctx context.Context) {
-	defer globals.WG.Done()
+func RegisterDevice() {
 	log.Println("Registering Device")
 	globals.Username, _ = os.Hostname()
 
@@ -34,13 +33,12 @@ func RegisterDevice(ctx context.Context) {
 	log.Println("Deivce Registered")
 	defer server.Shutdown()
 	
-	<-ctx.Done()
+
 }
 
 // Discover all services on the network (e.g. _workstation._tcp)
 
 func BrowseForDevices(ctx context.Context) {
-	defer globals.WG.Done()
 	log.Println("Starting to Discover Services")
 	reslover, err := zeroconf.NewResolver(nil)
 	
@@ -48,7 +46,7 @@ func BrowseForDevices(ctx context.Context) {
 		log.Println(err)
 	}
 
-	go entry(ctx, Entries)
+	go entry(Entries)
 	time, cancel := context.WithTimeout(context.Background(), time.Hour*100)
 
 	defer cancel()
@@ -62,29 +60,20 @@ func BrowseForDevices(ctx context.Context) {
 	<-ctx.Done()
 }
 
-func entry(ctx context.Context, results <-chan *zeroconf.ServiceEntry) {
-	for {
-		select {
-		case entry := <-results:
-			if entry.Instance == globals.Username {
-				continue
-			} else {
-				ip := string(entry.AddrIPv4[0].String())
-				Connect(ip)
+func entry(results <-chan *zeroconf.ServiceEntry) {
+	entry := <-results
+	if entry.Instance == globals.Username {
+		return
+	} else {
+		ip := string(entry.AddrIPv4[0].String())
+		Connect(ip)
 
 
 
-				log.Println("Found Device: ", entry.Instance, entry.AddrIPv4, entry.Text)
-				globals.IP = append(globals.IP, string(entry.AddrIPv4[0].String()))
-				fmt.Println("Connected Device:", entry.Instance)
+		log.Println("Found Device: ", entry.Instance, entry.AddrIPv4)
+		globals.IP = append(globals.IP, string(entry.AddrIPv4[0].String()))
+		fmt.Println("Connected Device:", entry.Instance)
 
-			}
-
-
-		case <-ctx.Done():
-			return
-
-		}
 	}
 }
 

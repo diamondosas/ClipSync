@@ -7,10 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	// "clipsync/Internal/clipboard"
+	"clipsync/internal/clipboard"
 	"clipsync/internal/globals"
 	"clipsync/internal/network"
-	"clipsync/internal/ping"
+	// "clipsync/internal/ping"
 )
 
 func main() {
@@ -19,27 +19,36 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	globals.WG.Add(5)
-	go network.RegisterDevice(ctx)
+	go network.RegisterDevice()
 	fmt.Println(1)
-	go network.BrowseForDevices(ctx)
+	go network.BrowseForDevices()
 	fmt.Println(2)
 	go network.Listen()
 	fmt.Println(3)
-	go func(ctx context.Context) {
-		defer globals.WG.Done()
-		for {
-			devices := ping.Ping(globals.IP)
-			if len(devices) > 0 {
-				fmt.Println(network.Devices{Ip: devices})
-			}
-			<-ctx.Done()
+	go func(){
+        changedText := clipboard.ChangedClipboard(ctx) // make this return the channel
+        for data := range changedText {
+            network.SendData(data)
 		}
-	}(ctx)
-	fmt.Println(4)
+    }()
+	go func(){
+		buffer, n := network.RecieveClipboard(ctx)
+		clipboard.WriteClipboard(string(buffer[:n]))
+	}()
+	
+
+	globals.WG.Wait()	
+}
+
+
+func RunWithContext(ctx context.Context, task func()){
+	defer globals.WG.Done()
 	for {
-		if len(globals.IP) != 0 {
-			// go clipboard.ChangedClipbord(ctx)
+		select{
+		case <- ctx.Done():
+			return
+		default:
+			task()
 		}
 	}
-	globals.WG.Wait()	
 }

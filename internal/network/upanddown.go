@@ -1,39 +1,29 @@
 package network
 
 import (
-	"bufio"
-	"fmt"
+	// "bufio"
+	// "fmt"
+	"context"
 	"log"
-
 	// sysClipboard "golang.design/x/clipboard"
-	"clipsync/internal/globals"
-	appClipboard "clipsync/internal/clipboard"
-
+	// "clipsync/internal/globals"
 )
 
-func SendClipboard() {
-	data := appClipboard.CopyClipboard()
-	data = data + "\n"
-	bytes := []byte(data)
-	_, err := Conn.Write(bytes)
+func SendData(data []byte) {
+	_, err := Conn.Write(data)
 	if err != nil {
 		log.Println(err)
 	}
+	log.Println("Sent Clipboard: ", data)
 }
 
-func RecieveClipboard() {
+func RecieveClipboard(ctx context.Context) ([]byte, int){
 	for {
-		conn, err := Ln.Accept()
-		if err != nil {
-			log.Println(err)
-		}
-		msg := bufio.NewReader(conn)
-		globals.Recieved, _ = msg.ReadString('\n')
-		if globals.Recieved == "Clipsync Here" {
-			break
-		} else {
-			appClipboard.WriteClipboard(globals.Recieved)
-			fmt.Println("Clipboard Updated")
-		}
+	buffer := make([]byte, 1024)
+	n, _, err := Conn.ReadFromUDP(buffer)
+	if err != nil{
+		log.Println("Error", err)
+	}
+	return buffer, n
 	}
 }
