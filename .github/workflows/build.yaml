@@ -1,0 +1,46 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to create the release
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26' # Change to your Go version
+
+      - name: Install Windows Icon Tool
+        run: go install github.com/akavel/rsrc@latest
+
+      - name: Build for Windows (with icon)
+        run: |
+          # Embeds the logo.ico into a .syso file that Go picks up during build
+          rsrc -ico logo.ico -o rsrc.syso
+          GOOS=windows GOARCH=amd64 go build -o clipsync-windows-amd64.exe .
+          
+      - name: Build for Linux
+        run: |
+          # Deleting the .syso so the Windows icon doesn't mess up the Linux build
+          rm rsrc.syso 
+          GOOS=linux GOARCH=amd64 go build -o clipsync-linux-amd64 .
+
+      - name: Build for macOS
+        run: GOOS=darwin GOARCH=amd64 go build -o clipsync-macos-amd64 .
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            clipsync-windows-amd64.exe
+            clipsync-linux-amd64
+            clipsync-macos-amd64
