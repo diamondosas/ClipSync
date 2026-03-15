@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"clipsync/internal/globals"
-	"github.com/grandcat/zeroconf"
+	"clipsync/internal/clipboard"
 )
 
 // type Info struct {
@@ -20,43 +20,47 @@ import (
 var Conn net.Conn
 var Ln net.Listener
 
-func Connect(results *zeroconf.ServiceEntry) {
+func Connect(ip string) {
 
-	entry := results
-	log.Println("Connecting to", entry.Instance)
-	Conn, err := net.Dial("tcp", string(entry.AddrIPv4[0].String()+":"+strconv.Itoa(globals.PORT)))
+	addr, err := net.ResolveUDPAddr("udp", ip)
 	if err != nil {
 		log.Println(err)
 	}
 
 	//Send and recive confirm form server
-	_, err = fmt.Fprintf(Conn, "Clipsync Here")
+	Conn, err := net.DialUDP("udp", nil, addr)
+	defer Conn.Close()
 	if err != nil {
 		log.Println(err)
 	}
+
+	SendDetails()
 }
 
 func Listen() {
 	defer globals.WG.Done()
-	port := ":" + strconv.Itoa(globals.PORT)
-	Ln, err := net.Listen("tcp", port)
+	addr, err := net.ResolveUDPAddr("udp", ":" + strconv.Itoa(globals.PORT))
+	Conn, _ := net.ListenUDP("udp", addr)
+	defer Conn.Close()
 	if err != nil {
 		log.Println(err)
 	}
 	fmt.Println("Listening...")
 	for {
-		conn, err := Ln.Accept()
-		if err != nil {
-			log.Println(err)
-		}
-		fmt.Println("Recived Connection")
-		msg := bufio.NewReader(conn)
-		message, _ := msg.ReadString('\n')
-		if message == "Clipsync Here" {
-			conn.Write([]byte("I Hear U"))
-			fmt.Println("Responded")
+		buffer := make([]byte, 1024)
+		n, _, err := Conn.ReadFromUDP(buffer)
+		if err != nil{
+			fmt.Println("Error", err)
 		}
 
-	}
+		WriteClipboard(string(buffer[:n]))
+		}
 
+
+}
+
+
+func SendDetails(){
+	message := []byte("")
+	Conn.Write(message)
 }

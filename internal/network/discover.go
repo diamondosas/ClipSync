@@ -69,15 +69,17 @@ func entry(ctx context.Context, results <-chan *zeroconf.ServiceEntry) {
 			if entry.Instance == globals.Username {
 				continue
 			} else {
+				ip := string(entry.AddrIPv4[0].String())
+				Connect(ip)
+
+
+
 				log.Println("Found Device: ", entry.Instance, entry.AddrIPv4, entry.Text)
 				globals.IP = append(globals.IP, string(entry.AddrIPv4[0].String()))
 				fmt.Println("Connected Device:", entry.Instance)
 
-				// Connect(entry)
-				// Discovered(entry.Instance ,entry.AddrIPv4[0].String())
 			}
 
-		//Connect function call
 
 		case <-ctx.Done():
 			return
@@ -86,9 +88,3 @@ func entry(ctx context.Context, results <-chan *zeroconf.ServiceEntry) {
 	}
 }
 
-func Discovered(name string, ip string) {
-	// var arrnames map[string]string
-	// arrnames[name] = ip
-
-	// Info{arrnames, true}
-}

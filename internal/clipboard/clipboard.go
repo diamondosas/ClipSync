@@ -1,7 +1,7 @@
 package clipboard
 
 import (
-	"context"
+	// "context"
 	"log"
 
 	// "sync"
@@ -25,9 +25,9 @@ func WriteClipboard(data string) {
 	clipboard.Write(clipboard.FmtText, byte)
 }
 
-func ChangedClipbord(ctx context.Context){
-	changedText := clipboard.Watch(ctx, clipboard.FmtText)
-	for data := range changedText{
-		WriteClipboard(string(data))
-	}
-}
+// func ChangedClipbord(ctx context.Context){
+// 	changedText := clipboard.Watch(ctx, clipboard.FmtText)
+// 	for data := range changedText{
+// 		Send to other user
+// 	}
+// }

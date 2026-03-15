@@ -16,9 +16,8 @@ func TestReadWrite(t *testing.T) {
 
 }
 
-func TestChanged(t *testing.T){
-	want := "Tester"
-	go clipboard.ChangedClipbord(t.Context())
+// func TestChanged(t *testing.T){
+// 	want := "Tester"
+// 	go clipboard.ChangedClipbord(t.Context())
 	
-
-}
+// }
