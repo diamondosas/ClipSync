@@ -1,15 +1,19 @@
 package main
 
 import (
-	"clipsync/internal/clipboard"
-	"clipsync/internal/globals"
-	"clipsync/internal/network"
+
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"slices"
-	"syscall"
+
+	
+	"clipsync/internal/clipboard"
+	"clipsync/internal/globals"
+	"clipsync/internal/network"
+	"golang.org/x/sync/errgroup"
 	// "clipsync/internal/ping"
 )
 
@@ -18,10 +22,11 @@ var Version = "dev"
 func main() {
 
 	clipboard.Init()
+	network.RegisterDevice()
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	globals.WG.Add(5)
-	go RunWithContext(ctx, network.RegisterDevice)
+
+	globals.WG.Add(4)
 	fmt.Println(1)
 	go RunWithContext(ctx, network.BrowseForDevices)
 	fmt.Println(2)
@@ -55,6 +60,13 @@ func main() {
 
 func RunWithContext(ctx context.Context, task func()) {
 	defer globals.WG.Done()
-	go task()
-	<-ctx.Done()
+	for{
+		select{
+			case <-ctx.Done():
+				log.Println("Shutting Down Gracefully")
+				return
+			default:
+				go task()
+		}
+	}
 }

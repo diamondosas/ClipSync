@@ -1,11 +1,10 @@
 package globals
 
 import (
-	"sync"
+	// "sync"
 )
 
 var (
-	WG       sync.WaitGroup
 	Recieved string
 	IP       []string
 	PORT     = 9999

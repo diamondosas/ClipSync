@@ -5,29 +5,25 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"clipsync/internal/globals"
 	"github.com/grandcat/zeroconf"
 )
 
-var Instance string
 var Entries = make(chan *zeroconf.ServiceEntry)
 
-// Add that when it display all the interfaces
-// Make it to work on a perfect LAN Peer to Peer Setup
 
 func RegisterDevice() {
 	globals.Username, _ = os.Hostname()
 	
-	_, err := zeroconf.Register(globals.Username, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
+	server, err := zeroconf.Register(globals.Username, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
 	
 	if err != nil {
 		log.Println(err)
 	}
 	
-	log.Println("Deivce Registered")
-	// defer server.Shutdown()
+	log.Println("Broadcasting Presence...")
+	defer server.Shutdown()
 }
 
 // Discover all services on the network (e.g. _workstation._tcp)
@@ -40,11 +36,11 @@ func BrowseForDevices() {
 	}
 
 	go entry(Entries)
-	time, cancel := context.WithTimeout(context.Background(), time.Hour*100)
+	ctx, cancel := context.WithCancel(context.Background())
 
 	defer cancel()
 
-	err = reslover.Browse(time, "_clipsync._tcp", "local.", Entries)
+	err = reslover.Browse(ctx, "_clipsync._tcp", "local.", Entries)
 	
 	if err != nil {
 		log.Println(err)
@@ -55,21 +51,13 @@ func BrowseForDevices() {
 }
 
 func entry(results <-chan *zeroconf.ServiceEntry) {
-	for{
-		entry := <-results
-		if entry == nil{
-			return
-		}
-		if entry.Instance == globals.Username {
-			continue
-		} else {
-			ip := string(entry.AddrIPv4[0].String())
-			Connect(ip)
-
-			log.Println("Found Device: ", entry.Instance, entry.AddrIPv4)
+	for entry:= range results{
+		if entry.Instance != globals.Username {
+			// ip := string(entry.AddrIPv4[0].String())
+			// Connect(ip)
+			log.Println("Found Device: Name: ", entry.Instance," IP: ", entry.AddrIPv4)
 			globals.IP = append(globals.IP, string(entry.AddrIPv4[0].String()))
 			fmt.Println("Connected Device:", entry.Instance)
-
 		}
 	}
 }
