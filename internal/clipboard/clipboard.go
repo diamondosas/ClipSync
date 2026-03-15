@@ -26,7 +26,7 @@ func WriteClipboard(data string) {
 	clipboard.Write(clipboard.FmtText, byte)
 }
 
-func ChangedClipboard(ctx context.Context) <-chan []byte{
+func WatchClipboard(ctx context.Context) <-chan []byte {
 	changedText := clipboard.Watch(ctx, clipboard.FmtText)
 	return changedText
 }

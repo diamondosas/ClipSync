@@ -1,20 +1,20 @@
 package main
 
 import (
+	"clipsync/internal/clipboard"
+	"clipsync/internal/globals"
+	"clipsync/internal/network"
 	"context"
 	"fmt"
 	"os"
 	"os/signal"
-	"syscall"
 	"slices"
-	"clipsync/internal/clipboard"
-	"clipsync/internal/globals"
-	"clipsync/internal/network"
+	"syscall"
 	// "clipsync/internal/ping"
 )
 
 func main() {
-	
+
 	clipboard.Init()
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -25,32 +25,31 @@ func main() {
 	fmt.Println(2)
 	go RunWithContext(ctx, network.Listen)
 	fmt.Println(3)
-	go func(){
-        defer globals.WG.Done()
-		changedText := clipboard.ChangedClipboard(ctx) // make this return the channel
-        for data := range changedText {
-			if slices.Equal(data, network.Buffer){
+	go func() {
+		defer globals.WG.Done()
+		changedText := clipboard.WatchClipboard(ctx) // make this return the channel
+		for data := range changedText {
+			if slices.Equal(data, network.Buffer) {
 				continue
-			}else{
+			} else {
 				network.SendData(data)
 			}
-        }
+		}
 		<-ctx.Done()
-    }()
-	go func(){
+	}()
+	go func() {
 		defer globals.WG.Done()
 		<-network.Ready
-		for{
+		for {
 			buffer, n := network.RecieveClipboard()
 			clipboard.WriteClipboard(string(buffer[:n]))
 		}
 	}()
-	
-	globals.WG.Wait()	
+
+	globals.WG.Wait()
 }
 
-
-func RunWithContext(ctx context.Context, task func()){
+func RunWithContext(ctx context.Context, task func()) {
 	defer globals.WG.Done()
 	go task()
 	<-ctx.Done()

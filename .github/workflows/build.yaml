@@ -1,50 +1,62 @@
 name: Build and Release
 
 on:
-  workflow_dispatch:
+  push:
     tags:
-      - "v0.0.1"
-
+      - "v*"
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed to create the release
+      contents: write
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
-          go-version: '1.26' # Change to your Go version
+          go-version: '1.22'
 
-      - name: Setup Dependencies
+      - name: Install Dependencies
         run: |
           go install github.com/akavel/rsrc@latest
           go mod tidy
-          sudo apt install libx11-dev
-      - name: Build for Windows (with icon)
+          sudo apt-get install -y libx11-dev zip
+
+      - name: Build Windows
         run: |
-          # Embeds the logo.ico into a .syso file that Go picks up during build
           rsrc -ico logo.ico -o rsrc.syso
-          GOOS=windows GOARCH=amd64 go build -o clipsync-windows-amd64.exe .
-          
-      - name: Build for Linux
+          GOOS=windows GOARCH=amd64 go build \
+          -ldflags="-X main.Version=${{ github.ref_name }}" \
+          -o clipsync-windows-amd64.exe .
+
+      - name: Build Linux
         run: |
-          # Deleting the .syso so the Windows icon doesn't mess up the Linux build
-          rm rsrc.syso 
-          GOOS=linux GOARCH=amd64 go build -o clipsync-linux-amd64 .
+          rm rsrc.syso
+          GOOS=linux GOARCH=amd64 go build \
+          -ldflags="-X main.Version=${{ github.ref_name }}" \
+          -o clipsync-linux-amd64 .
 
-      - name: Build for macOS
-        run: GOOS=darwin GOARCH=amd64 go build -o clipsync-macos-amd64 .
+      - name: Build macOS
+        run: |
+          GOOS=darwin GOARCH=amd64 go build \
+          -ldflags="-X main.Version=${{ github.ref_name }}" \
+          -o clipsync-macos-amd64 .
 
-      - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Compress
+        run: |
+          zip clipsync-windows-amd64.zip clipsync-windows-amd64.exe
+          tar -czf clipsync-linux-amd64.tar.gz clipsync-linux-amd64
+          tar -czf clipsync-macos-amd64.tar.gz clipsync-macos-amd64
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
+          name: ClipSync ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
           files: |
-            clipsync-windows-amd64.exe
-            clipsync-linux-amd64
-            clipsync-macos-amd64
+            clipsync-windows-amd64.zip
+            clipsync-linux-amd64.tar.gz
+            clipsync-macos-amd64.tar.gz
