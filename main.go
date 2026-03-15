@@ -19,11 +19,11 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	globals.WG.Add(5)
-	go network.RegisterDevice()
+	go RunWithContext(ctx, network.RegisterDevice)
 	fmt.Println(1)
-	go network.BrowseForDevices()
+	go RunWithContext(ctx, network.BrowseForDevices)
 	fmt.Println(2)
-	go network.Listen()
+	go RunWithContext(ctx, network.Listen)
 	fmt.Println(3)
 	go func(){
         changedText := clipboard.ChangedClipboard(ctx) // make this return the channel
@@ -32,23 +32,17 @@ func main() {
 		}
     }()
 	go func(){
-		buffer, n := network.RecieveClipboard(ctx)
+		<-network.Ready
+		buffer, n := network.RecieveClipboard()
 		clipboard.WriteClipboard(string(buffer[:n]))
 	}()
 	
-
 	globals.WG.Wait()	
 }
 
 
 func RunWithContext(ctx context.Context, task func()){
 	defer globals.WG.Done()
-	for {
-		select{
-		case <- ctx.Done():
-			return
-		default:
-			task()
-		}
-	}
+	go task()
+	<-ctx.Done()
 }

@@ -18,7 +18,7 @@ import (
 
 var Conn *net.UDPConn
 var Ln net.Listener
-
+var Ready = make(chan struct{})
 func Connect(ip string) {
 
 	addr, err := net.ResolveUDPAddr("udp", ip + ":9000")
@@ -37,7 +37,6 @@ func Connect(ip string) {
 }
 
 func Listen() {
-	defer globals.WG.Done()
 	addr, err := net.ResolveUDPAddr("udp", ":" + strconv.Itoa(globals.PORT))
 	Conn, _ = net.ListenUDP("udp", addr)
 	defer Conn.Close()
@@ -45,7 +44,7 @@ func Listen() {
 		log.Println(err)
 	}
 	fmt.Println("Listening...")
-
+	close(Ready)
 }
 
 

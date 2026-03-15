@@ -32,13 +32,11 @@ func RegisterDevice() {
 	
 	log.Println("Deivce Registered")
 	defer server.Shutdown()
-	
-
 }
 
 // Discover all services on the network (e.g. _workstation._tcp)
 
-func BrowseForDevices(ctx context.Context) {
+func BrowseForDevices() {
 	log.Println("Starting to Discover Services")
 	reslover, err := zeroconf.NewResolver(nil)
 	
@@ -56,12 +54,14 @@ func BrowseForDevices(ctx context.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	
-	<-ctx.Done()
+
 }
 
 func entry(results <-chan *zeroconf.ServiceEntry) {
 	entry := <-results
+	if entry == nil{
+		return
+	}
 	if entry.Instance == globals.Username {
 		return
 	} else {

@@ -3,7 +3,6 @@ package network
 import (
 	// "bufio"
 	// "fmt"
-	"context"
 	"log"
 	// sysClipboard "golang.design/x/clipboard"
 	// "clipsync/internal/globals"
@@ -17,13 +16,14 @@ func SendData(data []byte) {
 	log.Println("Sent Clipboard: ", data)
 }
 
-func RecieveClipboard(ctx context.Context) ([]byte, int){
+func RecieveClipboard() ([]byte, int){
 	for {
 	buffer := make([]byte, 1024)
-	n, _, err := Conn.ReadFromUDP(buffer)
+	n, addr, err := Conn.ReadFromUDP(buffer)
 	if err != nil{
 		log.Println("Error", err)
 	}
+	log.Println("Recieved Clipboard From Addr: ", addr, "Content", string(buffer[:n]))
 	return buffer, n
 	}
 }
