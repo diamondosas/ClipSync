@@ -6,7 +6,8 @@ import (
 	"context"
 )
 
-func TestRegister(t *testing.T){
+func TestRegisterandBrowse(t *testing.T){
 	ctx := context.WithoutCancel(context.Background())
 	go network.RegisterDevice(ctx)
+
 }

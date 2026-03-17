@@ -3,42 +3,15 @@ name: Build and Release
 on:
   push:
     branches: [ "main" ]
-    tags:
-      - "v*"
+    tags: [ "v*" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  # Auto-tagging job for commit-controlled releases
-  # Triggers when VERSION file is changed on main branch
-  tag:
-    name: Auto-Tag
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Create tag if VERSION changed
-        run: |
-          VERSION=$(cat VERSION | tr -d '[:space:]')
-          TAG="v$VERSION"
-          if ! git rev-parse "$TAG" >/dev/null 2>&1; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag "$TAG"
-            git push origin "$TAG"
-          else
-            echo "Tag $TAG already exists, skipping."
-          fi
-
+  # Job 1: Build the application for Windows, Linux, and macOS
   build:
     name: Build (${{ matrix.goos }}/${{ matrix.goarch }})
-    # Build on tags, PRs, or manual trigger
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -47,10 +20,11 @@ jobs:
         goarch: [amd64, arm64]
         exclude:
           - goos: linux
-            goarch: arm64
+            goarch: arm64 # Excluded because CGO cross-compilation requires extra toolchains
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -60,78 +34,108 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          go mod tidy
           if [ "${{ matrix.goos }}" = "linux" ]; then
-            sudo apt-get update
-            sudo apt-get install -y libx11-dev pkg-config zip
+            sudo apt-get update && sudo apt-get install -y libx11-dev pkg-config zip
           fi
           if [ "${{ matrix.goos }}" = "windows" ]; then
             go install github.com/akavel/rsrc@latest
+            # Add Go's bin folder to PATH so we can run 'rsrc'
+            echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
           fi
 
-      - name: Build
+      - name: Build Binary
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
-          # CGO is required for clipboard on Linux (X11)
+          # CGO is required for clipboard support on Linux (X11)
           CGO_ENABLED: ${{ matrix.goos == 'linux' && '1' || '0' }}
         run: |
-          # Determine version
-          if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            VERSION="${{ github.ref_name }}"
-          else
-            VERSION="$(cat VERSION | tr -d '[:space:]')-$(git rev-parse --short HEAD)"
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          
+          # For non-tag builds (like main branch or PRs), append the short commit SHA
+          if [[ "${{ github.ref_type }}" != "tag" ]]; then
+            VERSION="${VERSION}-$(git rev-parse --short HEAD)"
           fi
           
-          # Use a simple output name for inside the archive
-          OUTPUT="clipsync"
           LDFLAGS="-X main.Version=${VERSION} -s -w"
+          OUTPUT="clipsync"
           
+          # Handle Windows specific resource embedding and file extension
           if [ "${{ matrix.goos }}" = "windows" ]; then
             rsrc -ico logo.ico -o rsrc.syso
-            OUTPUT="${OUTPUT}.exe"
-            # Hide console window on Windows (commented out for console app)
-            # LDFLAGS="${LDFLAGS} -H=windowsgui"
+            OUTPUT="clipsync.exe"
           fi
           
           go build -ldflags="${LDFLAGS}" -o "${OUTPUT}" .
 
-      - name: Package
+      - name: Package Artifact
         shell: bash
         run: |
           ASSET_NAME="clipsync-${{ matrix.goos }}-${{ matrix.goarch }}"
           if [ "${{ matrix.goos }}" = "windows" ]; then
             zip "${ASSET_NAME}.zip" "clipsync.exe"
-            echo "ASSET=${ASSET_NAME}.zip" >> $GITHUB_ENV
+            echo "ASSET_PATH=${ASSET_NAME}.zip" >> $GITHUB_ENV
           else
             tar -czf "${ASSET_NAME}.tar.gz" "clipsync"
-            echo "ASSET=${ASSET_NAME}.tar.gz" >> $GITHUB_ENV
+            echo "ASSET_PATH=${ASSET_NAME}.tar.gz" >> $GITHUB_ENV
           fi
 
-      - name: Upload Artifact
+      - name: Upload to Actions
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.goos }}-${{ matrix.goarch }}
-          path: ${{ env.ASSET }}
+          name: bin-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: ${{ env.ASSET_PATH }}
 
+  # Job 2: Create a GitHub Release and upload the packaged binaries
   release:
     name: Create Release
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Only run on pushes to main or explicit version tags
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Download Artifacts
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Essential to check for existing tags
+
+      - name: Determine Release Status
+        id: check
+        run: |
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          TAG="v$VERSION"
+          
+          if [[ "${{ github.ref }}" == "refs/tags/v"* ]]; then
+            # Case 1: This is an explicit tag push
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "tag_name=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            # Case 2: Push to main, check if VERSION file represents a new tag
+            if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+              echo "New version detected on main: $TAG"
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "tag_name=$TAG" >> $GITHUB_OUTPUT
+            else
+              echo "Version $TAG already exists, skipping release."
+              echo "should_release=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Download All Binaries
+        if: steps.check.outputs.should_release == 'true'
         uses: actions/download-artifact@v4
         with:
+          pattern: bin-*
           merge-multiple: true
 
-      - name: Create Release
+      - name: Publish GitHub Release
+        if: steps.check.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          name: ClipSync ${{ github.ref_name }}
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ steps.check.outputs.tag_name }}
+          name: Release ${{ steps.check.outputs.tag_name }}
           generate_release_notes: true
           files: |
             clipsync-*.zip
