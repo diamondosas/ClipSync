@@ -1,7 +1,7 @@
 # ClipSync
 
 <p align="center">
-  <img src="asset/logo.jpg" alt="ClipSync Logo" width="128">
+  <img src="asset/logo.jpg" alt="ClipSync Logo" width="100">
 </p>
 
 Stop emailing yourself links. Stop Slacking yourself snippets. Stop the friction.

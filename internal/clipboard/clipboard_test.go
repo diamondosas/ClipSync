@@ -6,6 +6,8 @@ import (
 	"bytes"
 	"context"
 	"os/signal"
+	"os"
+	"syscall"
 )
 
 func TestReadWrite(t *testing.T) {
@@ -22,16 +24,15 @@ func TestReadWrite(t *testing.T) {
 func TestWatch(t *testing.T) {
 	want := "Tester"
 	
-	ctx, cancel := signal.NotifyContext(context.Background())
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
-	
-	datach := clipboard.WatchClipboard(ctx)
-
+	var text = make(chan []byte)
+	go clipboard.WatchClipboard(ctx, text)
 	clipboard.WriteClipboard(want)
+	output := <-text
 
-	text := <-datach
-
-	if !bytes.Equal(text, []byte(want)) {
-		t.Errorf("Input: %v Output: %v", want, string(text))
+	if !bytes.Equal(output, []byte(want)) {
+		t.Errorf("Input: %v Output: %v", want, output)
 	}
+	t.Logf("Input: %v Output: %v", want, output)
 }

@@ -39,7 +39,8 @@ func main() {
 	})
 
 	eg.Go(func() error{
-		changedText := clipboard.WatchClipboard(ctx) // make this return the channel
+		var changedText = make(chan []byte)
+		clipboard.WatchClipboard(ctx, changedText) // make this return the channel
 		select{
 		case <-ctx.Done():
 			return nil
