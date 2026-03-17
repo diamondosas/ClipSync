@@ -54,7 +54,7 @@ func BrowseForDevices() error{
 		return err
 	}
 
-	log.Println("Starting to Discover Services")
+	log.Println("Starting to Discover Services...")
 	return nil
 }
 
