@@ -14,10 +14,13 @@ import (
 var Entries = make(chan *zeroconf.ServiceEntry)
 
 
-func RegisterDevice(ctx context.Context) error {
-	globals.Username, _ = os.Hostname()
+func RegisterDevice(ctx context.Context, name string) error {
+	if name == "" {
+		globals.Username, _ = os.Hostname()
+		name = globals.Username
+	}
 	
-	server, err := zeroconf.Register(globals.Username, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
+	server, err := zeroconf.Register(name, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
 	
 	if err != nil {
 		log.Println(err)

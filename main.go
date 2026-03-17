@@ -27,7 +27,7 @@ func main() {
 	eg, ctx := errgroup.WithContext(ctx)
 	
 	eg.Go(func() error{
-		return network.RegisterDevice(ctx)
+		return network.RegisterDevice(ctx, "")
 	})
 	
 	eg.Go(func() error{
