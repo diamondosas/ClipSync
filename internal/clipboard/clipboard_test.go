@@ -5,6 +5,7 @@ import (
 	"testing"
 	"bytes"
 	"context"
+	"os/signal"
 )
 
 func TestReadWrite(t *testing.T) {
@@ -20,10 +21,10 @@ func TestReadWrite(t *testing.T) {
 
 func TestWatch(t *testing.T) {
 	want := "Tester"
-
-	ctx, cancel := context.WithCancel(context.Background())
+	
+	ctx, cancel := signal.NotifyContext(context.Background())
 	defer cancel()
-
+	
 	datach := clipboard.WatchClipboard(ctx)
 
 	clipboard.WriteClipboard(want)

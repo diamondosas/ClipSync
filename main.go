@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	// "slices"
+	"slices"
 	"syscall"
 	
 	"clipsync/internal/clipboard"
@@ -38,18 +38,18 @@ func main() {
 		return network.Listen()
 	})
 
-	// eg.Go(func() error{
-	// 	changedText := clipboard.WatchClipboard(ctx) // make this return the channel
-	// 	select{
-	// 	case <-ctx.Done():
-	// 		return nil
-	// 	case data := <-changedText:
-	// 		if !slices.Equal(data, network.Buffer) {
-	// 			network.SendData(data)
-	// 		}
-	// 		return nil
-	// 	}
-	// })
+	eg.Go(func() error{
+		changedText := clipboard.WatchClipboard(ctx) // make this return the channel
+		select{
+		case <-ctx.Done():
+			return nil
+		case data := <-changedText:
+			if !slices.Equal(data, network.Buffer) {
+				network.SendData(data)
+			}
+			return nil
+		}
+	})
 	// eg.Go(func() error {
 	// 	<-network.Ready
 	// 	for {

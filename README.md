@@ -1,33 +1,55 @@
-# Project Overview
-**ClipSync** is a LAN-based clipboard-sharing application that synchronizes clipboards across devices on the same network.  
-Architecture: peer-to-peer discovery via **mDNS** (service discovery) and **TCP** (data transfer).
+# ClipSync
 
----
+<p align="center">
+  <img src="asset/logo.jpg" alt="ClipSync Logo" width="128">
+</p>
 
-# Technical Architecture Assessment
+Stop emailing yourself links. Stop Slacking yourself snippets. Stop the friction.
 
-| Component        | Assessment |
-|------------------|------------|
-| **Discovery**    | **mDNS** (via [zeroconf](https://github.com/grandcat/zeroconf)) is ideal for LAN—zero manual IP entry, seamless UX. |
-| **Communication**| **TCP** using net ensures reliable delivery, critical for clipboard integrity. Must handle text, images, files, etc. |
-| **Cross-platform GUI** | "Gio UI" gives native-looking UIs on Windows, Linux, macOS from a single Go codebase. |
+ClipSync is the invisible peer-to-peer layer that synchronizes your clipboard across every device on your local network. It is built for those who value flow state over file transfers. No accounts. No cloud. No latency.
 
----
+### The Manifesto
 
-I am using this as a repo and the link is https://github.com/DiamondOsas/ClipSync.git
+We believe that data should move as fast as you do. In a world of over-engineered cloud solutions, ClipSync returns to the basics: raw performance and local reliability. If your devices are on the same network, they should share the same clipboard. Period.
 
+### Why ClipSync
 
+*   **Zero Configuration**: mDNS service discovery means your devices find each other instantly. No manual IP entry. No handshake. Just sync.
+*   **True Privacy**: Your clipboard data never leaves your local network. It moves directly from device A to device B.
+*   **Industrial Reliability**: Built on Go with raw TCP transport to ensure every byte arrives exactly as it was copied.
+*   **Native Performance**: Light on resources, heavy on utility. It sits in the background and does its job.
 
+### Installation
 
-You just need to install the X11 development package for your Linux distribution before building your Go program.
+Clone the repository and run the engine.
 
-Ubuntu / Debian / Pop!_OS / Linux Mint
-sudo apt update
-sudo apt install libx11-dev
+```bash
+git clone https://github.com/DiamondOsas/ClipSync.git
+cd ClipSync
+go run main.go
+```
 
-That installs the header files including X11/Xlib.h.
+### System Requirements
 
-Fedora / CentOS / RHEL
+For those running Linux, the following development packages are required to interface with the X11 clipboard system.
+
+**Debian / Ubuntu / Pop!_OS**
+```bash
+sudo apt update && sudo apt install libx11-dev
+```
+
+**Fedora / CentOS / RHEL**
+```bash
 sudo dnf install libX11-devel
-Arch Linux / Manjaro
+```
+
+**Arch Linux / Manjaro**
+```bash
 sudo pacman -S libx11
+```
+
+### Development
+
+ClipSync is currently in its early stages of development. We are building the future of local-first productivity. 
+
+[GitHub Repository](https://github.com/DiamondOsas/ClipSync.git)
