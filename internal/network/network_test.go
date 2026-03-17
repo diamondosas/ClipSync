@@ -29,7 +29,7 @@ func TestRegisterAndBrowse(t *testing.T) {
 
 	// 2. Clear existing IPs and start browsing
 	globals.IP = nil
-	if err := network.BrowseForDevices(); err != nil {
+	if err := network.BrowseForDevices(ctx); err != nil {
 		t.Fatalf("BrowseForDevices failed: %v", err)
 	}
 

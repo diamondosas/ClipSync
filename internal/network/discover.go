@@ -37,7 +37,7 @@ func RegisterDevice(ctx context.Context, name string) error {
 
 // Discover all services on the network (e.g. _workstation._tcp)
 
-func BrowseForDevices() error{
+func BrowseForDevices(ctx context.Context) error{
 	reslover, err := zeroconf.NewResolver(nil)
 	
 	if err != nil {
@@ -46,9 +46,6 @@ func BrowseForDevices() error{
 	}
 
 	go entry(Entries)
-	ctx, cancel := context.WithCancel(context.Background())
-
-	defer cancel()
 
 	err = reslover.Browse(ctx, "_clipsync._tcp", "local.", Entries)
 	
@@ -58,7 +55,10 @@ func BrowseForDevices() error{
 	}
 
 	log.Println("Starting to Discover Services...")
-	return nil
+	select{
+	case <-ctx.Done():
+		return nil
+	}
 }
 
 func entry(results <-chan *zeroconf.ServiceEntry) {

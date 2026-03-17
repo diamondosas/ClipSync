@@ -31,7 +31,7 @@ func main() {
 	})
 	
 	eg.Go(func() error{
-		return network.BrowseForDevices()
+		return network.BrowseForDevices(ctx)
 	})
 
 	eg.Go(func() error{
