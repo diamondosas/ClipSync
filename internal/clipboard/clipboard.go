@@ -27,16 +27,16 @@ func WriteClipboard(data string) {
 	clipboard.Write(clipboard.FmtText, byte)
 }
 
-func WatchClipboard(ctx context.Context, changedText chan<- []byte){
+func WatchClipboard(ctx context.Context) []byte{
 	text := clipboard.Watch(ctx, clipboard.FmtText)
 	for{
 		select{
 		case data := <-text:
 			if !slices.Equal(data, network.Buffer){
-				changedText <- data
+				return data
 			}
 		case <-ctx.Done():
-			return
+			return nil
 		}
 	}
 }

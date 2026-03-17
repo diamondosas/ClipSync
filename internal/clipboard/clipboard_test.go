@@ -26,12 +26,16 @@ func TestWatch(t *testing.T) {
 	
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
-	var text = make(chan []byte)
-	go clipboard.WatchClipboard(ctx, text)
-	clipboard.WriteClipboard(want)
-	output := <-text
 
-	if !bytes.Equal(output, []byte(want)) {
+
+	go func(){
+		data := clipboard.WatchClipboard(ctx)	
+		
+	}()
+	
+	clipboard.WriteClipboard(want)
+	
+	if !bytes.Equal(Output, []byte(want)) {
 		t.Errorf("Input: %v Output: %v", want, output)
 	}
 	t.Logf("Input: %v Output: %v", want, output)

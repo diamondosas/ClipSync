@@ -39,16 +39,11 @@ func main() {
 	})
 
 	eg.Go(func() error{
-		var changedText = make(chan []byte)
-		clipboard.WatchClipboard(ctx, changedText) // make this return the channel
-		select{
-		case <-ctx.Done():
-			return nil
-		case data := <-changedText:
+		for {
+			data := clipboard.WatchClipboard(ctx)
 			if !slices.Equal(data, network.Buffer) {
 				network.SendData(data)
 			}
-			return nil
 		}
 	})
 	// eg.Go(func() error {
