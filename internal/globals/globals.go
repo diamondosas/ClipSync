@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	Recieved string
 	IP       []string
+	Recieved string
 	PORT     = 9999
 	Username  string
 )
