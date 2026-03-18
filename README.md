@@ -45,6 +45,6 @@ sudo pacman -S libx11
 
 ### Development
 
-ClipSync is currently in its early stages of development. We are building the future of local-first productivity. 
+ClipSync is currently in its early stages of development. If you experience any bug during use open an ISSUE. 
 
 
