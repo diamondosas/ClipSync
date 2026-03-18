@@ -18,8 +18,9 @@ import (
 
 var Conn *net.UDPConn
 var Ready = make(chan struct{})
-func Connect(ip string, addr  ...*net.UDPConn) {
-	addr, err := net.ResolveUDPAddr("udp", ip + ":" + strconv.Itoa(globals.PORT))
+
+func Connect(ip string, addr ...*net.UDPConn) {
+	addr, err := net.ResolveUDPAddr("udp", ip+":"+strconv.Itoa(globals.PORT))
 	if err != nil {
 		log.Println(err)
 	}
@@ -27,21 +28,20 @@ func Connect(ip string, addr  ...*net.UDPConn) {
 }
 
 func Listen(ctx context.Context) error {
-	addr, err := net.ResolveUDPAddr("udp", ":" + strconv.Itoa(globals.PORT))
+	addr, err := net.ResolveUDPAddr("udp", ":"+strconv.Itoa(globals.PORT))
 	Conn, _ = net.ListenUDP("udp", addr)
 	if err != nil {
 		log.Println(err)
 	}
-	
+
 	log.Println("Listening For Connection...")
 	close(Ready)
-	
-	select{
+
+	select {
 	case <-ctx.Done():
 		return nil
 	}
 }
-
 
 // func SendDetails(){
 // 	message := []byte("$IP-ADDR:")

@@ -5,13 +5,15 @@ import (
 	// "fmt"
 	"log"
 	"net"
+	"strconv"
+
 	// sysClipboard "golang.design/x/clipboard"
 	"clipsync/internal/globals"
 )
 var Buffer []byte
 func SendClipboard(data []byte) {
 	for _, ip := range globals.IPS{
-		addr, err := net.ResolveUDPAddr("udp", ip + globals.PORT)
+		addr, err := net.ResolveUDPAddr("udp", ip + ":" + strconv.Itoa(globals.POR)T)
 		if err != nil {
 			panic(err)
 		}
