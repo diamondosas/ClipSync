@@ -9,9 +9,13 @@ import (
 	"clipsync/internal/globals"
 )
 var Buffer []byte
-func SendClipboard(data []byte, addr  *net.UDPConn) {
-	for ip := range globals.IPS{
-		Conn.WriteToUDP([]byte(data), ip)
+func SendClipboard(data []byte) {
+	for _, ip := range globals.IPS{
+		addr, err := net.ResolveUDPAddr("udp", ip + globals.PORT)
+		if err != nil {
+			panic(err)
+		}
+			Conn.WriteToUDP([]byte(data), addr)
 	}
 }
 

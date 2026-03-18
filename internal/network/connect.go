@@ -18,7 +18,7 @@ import (
 
 var Conn *net.UDPConn
 var Ready = make(chan struct{})
-func Connect(ip string) {
+func Connect(ip string, addr  ...*net.UDPConn) {
 	addr, err := net.ResolveUDPAddr("udp", ip + ":" + strconv.Itoa(globals.PORT))
 	if err != nil {
 		log.Println(err)
