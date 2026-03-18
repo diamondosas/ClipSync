@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"slices"
 
 	// sysClipboard "golang.design/x/clipboard"
 	"clipsync/internal/globals"
@@ -37,8 +38,14 @@ func RecieveClipboard() ([]byte, int){
 	Buffer = make([]byte, 1024)
 	n, addr, err := Conn.ReadFromUDP(Buffer)
 	if err != nil{
-		log.Println("Error", err)
+	log.Println("Error", err)
 	}
-	log.Println("Recieved Clipboard From Addr: ", addr, "Content", string(Buffer[:n]))
-	return Buffer, n
+	if slices.Equal(Buffer, []byte("---ClipSync---")){
+		globals.IPS = append(globals.IPS, string(addr.IP))
+	}else{
+		log.Println("Recieved Clipboard From Addr: ", addr, "Content", string(Buffer[:n]))
+		return Buffer, n
+	}
+
+	return nil, 0
 }

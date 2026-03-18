@@ -29,7 +29,7 @@ func Connect(ip string) {
 		log.Println(err)
 		return
 	}
-	_, err = Conn.WriteToUDP([]byte("ClipSync"), addr)
+	_, err = Conn.WriteToUDP([]byte("---Clipsync---"), addr)
 	if err != nil {
 		log.Println("Connect Write error:", err)
 	}
