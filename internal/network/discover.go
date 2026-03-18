@@ -65,7 +65,7 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 		if entry.Instance != globals.Username {
 			newIP := string(entry.AddrIPv4[0].String())
 			globals.IPS = append(globals.IPS, newIP)
-			Connect(newIP)
+			// Connect(newIP)
 			log.Println("Found Device: Name: ", entry.Instance, " IP: ", entry.AddrIPv4)
 
 			fmt.Println("Connected Device:", entry.Instance)
