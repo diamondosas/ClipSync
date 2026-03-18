@@ -19,12 +19,12 @@ import (
 var Conn *net.UDPConn
 var Ready = make(chan struct{})
 
-func Connect(ip string, addr ...*net.UDPConn) {
+func Connect(ip string) {
 	addr, err := net.ResolveUDPAddr("udp", ip+":"+strconv.Itoa(globals.PORT))
 	if err != nil {
 		log.Println(err)
 	}
-	SendClipboard([]byte("V"))
+	Conn.WriteToUDP([]byte("ClipSync"), addr)
 }
 
 func Listen(ctx context.Context) error {

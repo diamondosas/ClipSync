@@ -13,7 +13,7 @@ import (
 var Buffer []byte
 func SendClipboard(data []byte) {
 	for _, ip := range globals.IPS{
-		addr, err := net.ResolveUDPAddr("udp", ip + ":" + strconv.Itoa(globals.POR)T)
+		addr, err := net.ResolveUDPAddr("udp", ip + ":" + strconv.Itoa(globals.PORT))
 		if err != nil {
 			panic(err)
 		}
