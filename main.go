@@ -11,6 +11,7 @@ import (
 	
 	"clipsync/internal/clipboard"
 	"clipsync/internal/network"
+	"clipsync/gui"
 	"golang.org/x/sync/errgroup"
 	// "clipsync/internal/ping"
 )
@@ -18,7 +19,8 @@ import (
 var Version = "dev"
 
 func main() {
-
+	
+	gui.StartGUI()
 	clipboard.Init()
 	
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -53,10 +55,13 @@ func main() {
 			clipboard.WriteClipboard(string(buffer[:n]))
 		}
 	})
-	err := eg.Wait()
-	if err != nil{
-		log.Fatal("Shutdown Error", err)
-	}
+
+	go func() {
+		err := eg.Wait()
+		if err != nil {
+			log.Fatal("Shutdown Error", err)
+		}
+	}()
+
 	
 }
-

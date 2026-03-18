@@ -12,16 +12,28 @@ import (
 )
 var Buffer []byte
 func SendClipboard(data []byte) {
+	if Conn == nil {
+		log.Println("SendClipboard: Conn is nil, skipping.")
+		return
+	}
 	for _, ip := range globals.IPS{
 		addr, err := net.ResolveUDPAddr("udp", ip + ":" + strconv.Itoa(globals.PORT))
 		if err != nil {
-			panic(err)
+			log.Println("SendClipboard Resolve Error:", err)
+			continue
 		}
-			Conn.WriteToUDP([]byte(data), addr)
+		_, err = Conn.WriteToUDP(data, addr)
+		if err != nil {
+			log.Println("SendClipboard Write Error:", err)
+		}
 	}
 }
 
 func RecieveClipboard() ([]byte, int){
+	if Conn == nil {
+		log.Println("RecieveClipboard: Conn is nil. Waiting for Ready...")
+		<-Ready
+	}
 	Buffer = make([]byte, 1024)
 	n, addr, err := Conn.ReadFromUDP(Buffer)
 	if err != nil{
