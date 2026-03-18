@@ -20,7 +20,7 @@ var Version = "dev"
 
 func main() {
 	
-	gui.StartGUI()
+	
 	clipboard.Init()
 	
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -62,6 +62,7 @@ func main() {
 			log.Fatal("Shutdown Error", err)
 		}
 	}()
-
+	
+	gui.StartGUI()
 	
 }
