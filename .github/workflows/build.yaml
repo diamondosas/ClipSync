@@ -52,7 +52,7 @@ jobs:
           LDFLAGS="-X main.Version=${VERSION} -s -w"
           OUTPUT="clipsync"
           if [ "${{ matrix.goos }}" = "windows" ]; then
-            rsrc -ico logo.ico -o rsrc.syso
+            rsrc -ico "assets/logo.ico" -o rsrc.syso
             OUTPUT="clipsync.exe"
           fi
           go build -ldflags="${LDFLAGS}" -o "${OUTPUT}" .
