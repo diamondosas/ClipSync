@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	IP       []string
+	IPS      []string
 	Recieved string
 	PORT     = 9999
 	Username  string

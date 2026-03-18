@@ -28,7 +28,7 @@ func TestRegisterAndBrowse(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	// 2. Clear existing IPs and start browsing
-	globals.IP = nil
+	globals.IPS = nil
 	if err := network.BrowseForDevices(ctx); err != nil {
 		t.Fatalf("BrowseForDevices failed: %v", err)
 	}
@@ -44,9 +44,9 @@ func TestRegisterAndBrowse(t *testing.T) {
 		case <-timeout:
 			t.Fatal("Timed out waiting for device discovery")
 		case <-ticker.C:
-			if len(globals.IP) > 0 {
+			if len(globals.IPS) > 0 {
 				found = true
-				t.Logf("Found devices: %v", globals.IP)
+				t.Logf("Found devices: %v", globals.IPS)
 			}
 		}
 	}

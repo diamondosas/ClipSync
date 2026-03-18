@@ -4,21 +4,20 @@ import (
 	// "bufio"
 	// "fmt"
 	"log"
+	"net"
 	// sysClipboard "golang.design/x/clipboard"
-	// "clipsync/internal/globals"
+	"clipsync/internal/globals"
 )
 var Buffer []byte
-func SendData(data []byte) {
-	_, err := OutConn.Write(data)
-	if err != nil {
-		log.Println(err)
+func SendClipboard(data []byte, addr  *net.UDPConn) {
+	for ip := range globals.IPS{
+		Conn.WriteToUDP([]byte(data), ip)
 	}
-	log.Println("Sent Clipboard: ", data)
 }
 
 func RecieveClipboard() ([]byte, int){
 	Buffer = make([]byte, 1024)
-	n, addr, err := InConn.ReadFromUDP(Buffer)
+	n, addr, err := Conn.ReadFromUDP(Buffer)
 	if err != nil{
 		log.Println("Error", err)
 	}

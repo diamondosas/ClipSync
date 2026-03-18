@@ -13,23 +13,22 @@ import (
 
 var Entries = make(chan *zeroconf.ServiceEntry)
 
-
 func RegisterDevice(ctx context.Context, name string) error {
 	if name == "" {
 		globals.Username, _ = os.Hostname()
 		name = globals.Username
 	}
-	
+
 	server, err := zeroconf.Register(name, "_clipsync._tcp", "local.", globals.PORT, []string{""}, nil)
-	
+
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	
+
 	log.Println("Broadcasting Presence...")
 	defer server.Shutdown()
-	select{
+	select {
 	case <-ctx.Done():
 		return nil
 	}
@@ -37,9 +36,9 @@ func RegisterDevice(ctx context.Context, name string) error {
 
 // Discover all services on the network (e.g. _workstation._tcp)
 
-func BrowseForDevices(ctx context.Context) error{
+func BrowseForDevices(ctx context.Context) error {
 	reslover, err := zeroconf.NewResolver(nil)
-	
+
 	if err != nil {
 		log.Println(err)
 		return err
@@ -48,28 +47,28 @@ func BrowseForDevices(ctx context.Context) error{
 	go entry(Entries)
 
 	err = reslover.Browse(ctx, "_clipsync._tcp", "local.", Entries)
-	
+
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
 	log.Println("Starting to Discover Services...")
-	select{
+	select {
 	case <-ctx.Done():
 		return nil
 	}
 }
 
 func entry(results <-chan *zeroconf.ServiceEntry) {
-	for entry:= range results{
+	for entry := range results {
 		if entry.Instance != globals.Username {
-			// ip := string(entry.AddrIPv4[0].String())
-			Connect(ip)
-			log.Println("Found Device: Name: ", entry.Instance," IP: ", entry.AddrIPv4)
-			globals.IP = append(globals.IP, string(entry.AddrIPv4[0].String()))
+			newIP := string(entry.AddrIPv4[0].String())
+			globals.IPS = append(globals.IPS, newIP)
+			Connect(newIP)
+			log.Println("Found Device: Name: ", entry.Instance, " IP: ", entry.AddrIPv4)
+
 			fmt.Println("Connected Device:", entry.Instance)
 		}
 	}
 }
-
