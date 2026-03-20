@@ -50,10 +50,8 @@ func Listen(ctx context.Context) error {
 	log.Println("Listening For Connection...")
 	close(Ready)
 
-	select {
-	case <-ctx.Done():
-		return nil
-	}
+	<-ctx.Done()
+	return nil
 }
 
 // func SendDetails(){
