@@ -12,7 +12,7 @@ import (
 )
 
 var Entries = make(chan *zeroconf.ServiceEntry)
-
+ 	
 func RegisterDevice(ctx context.Context, name string) error {
 	if name == "" {
 		globals.Username, _ = os.Hostname()
