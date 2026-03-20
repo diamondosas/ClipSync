@@ -28,10 +28,8 @@ func RegisterDevice(ctx context.Context, name string) error {
 
 	log.Println("Broadcasting Presence...")
 	defer server.Shutdown()
-	select {
-	case <-ctx.Done():
-		return nil
-	}
+	<-ctx.Done()
+	return nil
 }
 
 // Discover all services on the network (e.g. _workstation._tcp)
@@ -54,10 +52,9 @@ func BrowseForDevices(ctx context.Context) error {
 	}
 
 	log.Println("Starting to Discover Services...")
-	select {
-	case <-ctx.Done():
-		return nil
-	}
+
+	<-ctx.Done()
+	return nil
 }
 
 func entry(results <-chan *zeroconf.ServiceEntry) {
