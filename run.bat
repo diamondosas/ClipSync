@@ -1,5 +1,5 @@
 @echo off
 echo Building Application...
-go build main.go
+go build 
 echo Running Applcation
 .\clipsync.exe
