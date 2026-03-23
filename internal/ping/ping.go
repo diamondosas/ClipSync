@@ -1,32 +1,28 @@
 package ping
 
 import (
-	"os/exec"
-	// "clipsync/internal"
-	"sync"
+	"log"
+	"time"
+
+	"github.com/go-ping/ping"
 )
 
-func Ping(ips []string) []string {
-	// defer internal.WG.Done()
-	var MU sync.RWMutex
-	var wg sync.WaitGroup
-	var activeips []string
-	if len(ips) == 0 {
-		return nil
-	}
-	for _, val := range ips {
-		wg.Add(1)
-		go func(ip string) {
-			defer wg.Done()
-			cmd := exec.Command("ping", "-n", "1", "-l", "1", ip)
-			err := cmd.Run()
-			if err == nil {
-				MU.Lock()
-				activeips = append(activeips, val)
-				MU.Unlock()
+func PingIPS(IPS []string){
+	for{
+		if IPS == nil{
+			time.Sleep(2 * time.Second)
+		}else{
+			for _, ip := range IPS{
+					Pinger, err := ping.NewPinger(ip)
+					if err != nil{
+						log.Println(err)
+					}
+					Pinger.Count = 2
+					Pinger.Run()
+					if err != nil{
+						log.Println(err)
+					}
 			}
-		}(val)
+		}
 	}
-	wg.Wait()
-	return activeips
 }

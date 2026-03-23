@@ -12,7 +12,9 @@ require (
 require (
 	gioui.org/shader v1.0.8 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
+	github.com/go-ping/ping v1.2.0 // direct
 	github.com/go-text/typesetting v0.3.3 // indirect
+	github.com/google/uuid v1.2.0 // indirect
 	github.com/miekg/dns v1.1.27 // indirect
 	golang.org/x/crypto v0.33.0 // indirect
 	golang.org/x/exp/shiny v0.0.0-20250606033433-dcc06ee1d476 // indirect
