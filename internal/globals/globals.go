@@ -1,13 +1,14 @@
 package globals
 
 import (
-	// "sync"
+	"sync"
 )
 
 var (
+	IPSMu    sync.Mutex
 	IPS      []string
 	Recieved string
 	PORT     = 9999
-	Username  string
+	Username string
 )
 // ust waiting for some... 

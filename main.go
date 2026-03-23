@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"slices"
 	"syscall"
-
+	
 	"clipsync/gui"
 	"clipsync/internal/clipboard"
 	"clipsync/internal/globals"
@@ -58,16 +58,29 @@ func main() {
 		}
 	})
 	
-	eg.Go(func() error{
+	eg.Go(func() error {
 		for {
-			ping.PingIPS(globals.IPS)
+			globals.IPSMu.Lock()
+			ipsToPing := make([]string, len(globals.IPS))
+			copy(ipsToPing, globals.IPS)
+			globals.IPSMu.Unlock()
+			
+			currentIPS := ping.PingIPS(ipsToPing)
+
+			globals.IPSMu.Lock()
+			globals.IPS = currentIPS
+			globals.IPSMu.Unlock()
 		}
+
 	})
 
-	err := eg.Wait()
-	if err != nil {
-		log.Fatal("Shutdown Error", err)
-	}
+	eg.Go(func() error{
+		err := eg.Wait()
+		if err != nil {
+			log.Println(err)
+		}
+		return err
+	})
 	
 	gui.StartGUI()
 	
