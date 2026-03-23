@@ -27,8 +27,8 @@ func StartGUI() {
 		w := new(app.Window)
 		w.Option(
 			app.Title("ClipSync"),
-			app.MaxSize(unit.Dp(400), unit.Dp(600)),
-			app.MinSize(unit.Dp(300), unit.Dp(400)),
+			app.MaxSize(unit.Dp(250), unit.Dp(400)),
+			app.MinSize(unit.Dp(250), unit.Dp(400)),
 		)
 		if err := run(w); err != nil {
 			log.Fatal(err)

@@ -12,7 +12,7 @@ import (
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
-
+var helpMsg string =  "Start the Application on another device & Make sure devices are on the same network."
 // HelpDialog overlays a help message over the current layout if show is true.
 func HelpDialog(gtx layout.Context, th *material.Theme, closeBtn *widget.Clickable, show bool, underlying layout.Widget) layout.Dimensions {
 	// Always lay out the underlying content first
@@ -51,7 +51,7 @@ func HelpDialog(gtx layout.Context, th *material.Theme, closeBtn *widget.Clickab
 							layout.Rigid(layout.Spacer{Height: unit.Dp(12)}.Layout),
 							// Dialog Body text
 							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								body := material.Body1(th, "ClipSync helps you sync clipboards across multiple devices seamlessly. Make sure devices are on the same network.")
+								body := material.Body1(th, helpMsg)
 								body.Color = themes.ColorText
 								body.Alignment = text.Middle
 								return body.Layout(gtx)
