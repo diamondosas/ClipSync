@@ -12,3 +12,12 @@ var (
 	Username string
 )
 // ust waiting for some... 
+
+type Device struct{
+ 	Name string
+  	Ip  string
+}
+
+var ConnDevices []Device
+
+var ClipHistory []string

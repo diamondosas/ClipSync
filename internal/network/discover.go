@@ -61,9 +61,10 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 	for entry := range results {
 		if entry.Instance != globals.Username {
 			newIP := string(entry.AddrIPv4[0].String())
-			
+			newDevice := globals.Device{Name: entry.HostName, Ip: newIP}
 			globals.IPSMu.Lock()
 			globals.IPS = append(globals.IPS, newIP)
+			globals.ConnDevices = append(globals.ConnDevices, newDevice)
 			globals.IPSMu.Unlock()
 
 			go Connect(newIP)

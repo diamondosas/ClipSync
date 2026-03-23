@@ -3,15 +3,13 @@ package network_test
 import (
 	"clipsync/internal/globals"
 	"clipsync/internal/network"
-	"context"
 	"testing"
 	"time"
 )
 
 func TestFullNetworkWorkflow(t *testing.T) {
 	// 1. Setup context and global variables
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	ctx := t.Context()
 
 	// Set our browser's name so we don't filter out the test registration
 	// We want to make sure it's different from the test device name
