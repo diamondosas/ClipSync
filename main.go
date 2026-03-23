@@ -10,7 +10,9 @@ import (
 
 	"clipsync/gui"
 	"clipsync/internal/clipboard"
+	"clipsync/internal/globals"
 	"clipsync/internal/network"
+	"clipsync/internal/ping"
 
 	"golang.org/x/sync/errgroup"
 	// "clipsync/internal/ping"
@@ -55,13 +57,17 @@ func main() {
 			clipboard.WriteClipboard(string(buffer[:n]))
 		}
 	})
-
-	go func() {
-		err := eg.Wait()
-		if err != nil {
-			log.Fatal("Shutdown Error", err)
+	
+	eg.Go(func() error{
+		for {
+			ping.PingIPS(globals.IPS)
 		}
-	}()
+	})
+
+	err := eg.Wait()
+	if err != nil {
+		log.Fatal("Shutdown Error", err)
+	}
 	
 	gui.StartGUI()
 	

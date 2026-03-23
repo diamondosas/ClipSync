@@ -8,21 +8,26 @@ import (
 )
 
 func PingIPS(IPS []string){
-	for{
-		if IPS == nil{
-			time.Sleep(2 * time.Second)
-		}else{
-			for _, ip := range IPS{
-					Pinger, err := ping.NewPinger(ip)
-					if err != nil{
-						log.Println(err)
-					}
-					Pinger.Count = 2
-					Pinger.Run()
-					if err != nil{
-						log.Println(err)
-					}
-			}
+	if IPS != nil{
+		for _, ip := range IPS{
+				pinger, err := ping.NewPinger(ip)
+				if err != nil{
+					log.Println(err)
+				}
+				pinger.Count = 2
+				err = pinger.Run()
+				if err != nil{
+					log.Println(err)
+				}
+				stats := pinger.Statistics()
+				if stats.PacketsRecv == 0{
+					log.Print(ip)
+					IPS = append(IPS[:s], IPS[s+1:])
+					//Remove the particaular element of the thing
+				}
 		}
+	}else{
+		time.Sleep(2 * time.Second)
+		return
 	}
 }
