@@ -54,8 +54,4 @@ func Listen(ctx context.Context) error {
 	return nil
 }
 
-// func SendDetails(){
-// 	message := []byte("$IP-ADDR:")
-// 	_, err := Conn.Write(message)
 
-// }

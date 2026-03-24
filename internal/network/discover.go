@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"clipsync/internal/globals"
+	"clipsync/internal/view"
 
 	"github.com/grandcat/zeroconf"
 )
@@ -62,15 +63,17 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 		if entry.Instance != globals.Username {
 			newIP := string(entry.AddrIPv4[0].String())
 			newDevice := globals.Device{Name: entry.HostName, Ip: newIP}
+			go view.UpdateDevices(newDevice)
 			globals.IPSMu.Lock()
 			globals.IPS = append(globals.IPS, newIP)
-			globals.ConnDevices = append(globals.ConnDevices, newDevice)
 			globals.IPSMu.Unlock()
 
 			go Connect(newIP)
 			log.Println("Found Device: Name: ", entry.Instance, " IP: ", entry.AddrIPv4)
 
 			fmt.Println("Connected Device:", entry.Instance)
+			
+		 
 		}
 	}
 }
