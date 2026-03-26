@@ -56,7 +56,7 @@ jobs:
           CGO_ENABLED: ${{ matrix.cgo }}
         run: |
           VERSION=$(cat VERSION | tr -d '[:space:]')
-          LDFLAGS="-X main.Version=${VERSION} -s -w"
+          LDFLAGS="-X main.Version=${VERSION} -s -w -H windowsgui"
           OUTPUT="clipsync"
           if [ "${{ matrix.goos }}" = "windows" ]; then
             rsrc -ico "assets/logo.ico" -o rsrc.syso
