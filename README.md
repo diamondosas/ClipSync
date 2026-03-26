@@ -32,17 +32,17 @@ For those running Linux, the following development packages are required to inte
 
 **Debian / Ubuntu / Pop!_OS**
 ```bash
-sudo apt install libx11-dev libwayland-dev libxkbcommon-dev
+sudo apt install libx11-dev libwayland-dev libxkbcommon-dev libvulkan-dev
 ```
 
 **Fedora / CentOS / RHEL**
-```bash
-sudo dnf install libX11-devel libwayland-dev libxkbcommon-dev
+```bash 
+sudo dnf install libX11-devel libwayland-dev libxkbcommon-dev vulkan-headers 
 ```
 
 **Arch Linux / Manjaro**
 ```bash
-sudo pacman -S libx11 libwayland-dev libxkbcommon-dev
+sudo pacman -S libx11 libwayland-dev libxkbcommon-dev libvulkan-dev
 ```
 
 ### Development

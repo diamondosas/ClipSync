@@ -1,52 +1,54 @@
 name: Build and Release
-
 on:
   push:
     branches: [ "main" ]
     paths:
       - "VERSION"
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     name: Build (${{ matrix.goos }})
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}          # <-- per-platform runner
     strategy:
       fail-fast: false
       matrix:
         include:
           - goos: linux
             goarch: amd64
+            runner: ubuntu-latest
+            cgo: "1"
           - goos: windows
             goarch: amd64
+            runner: ubuntu-latest
+            cgo: "0"
           - goos: darwin
             goarch: amd64
-
+            runner: macos-latest           # <-- must run on real macOS
+            cgo: "1"                       # <-- CGO required by GioUI
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
           cache: true
-
       - name: Install Dependencies
         run: |
           if [ "${{ matrix.goos }}" = "linux" ]; then
-            sudo apt-get update && sudo apt-get install -y libx11-dev pkg-config libwayland-dev libxkbcommon-dev
+            sudo apt-get update && sudo apt-get install -y \
+              libx11-dev pkg-config \
+              libwayland-dev libxkbcommon-dev \
+              libvulkan-dev                # <-- fixes the vulkan/vulkan.h error
           fi
           if [ "${{ matrix.goos }}" = "windows" ]; then
             go install github.com/akavel/rsrc@latest
             echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
           fi
-
       - name: Build
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: ${{ matrix.goos == 'linux' && '1' || '0' }}
+          CGO_ENABLED: ${{ matrix.cgo }}
         run: |
           VERSION=$(cat VERSION | tr -d '[:space:]')
           LDFLAGS="-X main.Version=${VERSION} -s -w"
@@ -56,7 +58,6 @@ jobs:
             OUTPUT="clipsync.exe"
           fi
           go build -ldflags="${LDFLAGS}" -o "${OUTPUT}" .
-
       - name: Package
         run: |
           ASSET_NAME="clipsync-${{ matrix.goos }}-${{ matrix.goarch }}"
@@ -67,12 +68,10 @@ jobs:
             tar -czf "${ASSET_NAME}.tar.gz" "clipsync"
             echo "ASSET_PATH=${ASSET_NAME}.tar.gz" >> $GITHUB_ENV
           fi
-
       - uses: actions/upload-artifact@v4
         with:
           name: bin-${{ matrix.goos }}-${{ matrix.goarch }}
           path: ${{ env.ASSET_PATH }}
-
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -82,13 +81,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Get Version
         id: version
         run: |
           VERSION=$(cat VERSION | tr -d '[:space:]')
           echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
-
       - name: Delete Old Tags & Releases
         env:
           GH_TOKEN: ${{ github.token }}
@@ -100,12 +97,10 @@ jobs:
             gh release delete "$old_tag" --yes 2>/dev/null || true
             git push origin --delete "$old_tag" 2>/dev/null || true
           done
-
       - uses: actions/download-artifact@v4
         with:
           pattern: bin-*
           merge-multiple: true
-
       - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
