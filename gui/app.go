@@ -9,7 +9,7 @@ import (
 	"clipsync/gui/components"
 	"clipsync/gui/pages"
 	"clipsync/gui/themes"
-	"clipsync/gui/widgets"
+	"clipsync/gui/widgets" 
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"

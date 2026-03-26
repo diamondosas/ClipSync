@@ -13,6 +13,7 @@ import (
 	"clipsync/internal/globals"
 	"clipsync/internal/network"
 	"clipsync/internal/ping"
+	"clipsync/internal/view"
 
 	"golang.org/x/sync/errgroup"
 	// "clipsync/internal/ping"
@@ -47,6 +48,7 @@ func main() {
 			data := clipboard.WatchClipboard(ctx)
 			if !slices.Equal(data, network.Buffer) {
 				network.SendClipboard(data)
+				view.UpdateClipborad(string(data))
 			}
 		}
 	})
@@ -54,7 +56,9 @@ func main() {
 		<-network.Ready
 		for {
 			buffer, n := network.RecieveClipboard()
-			clipboard.WriteClipboard(string(buffer[:n]))
+			data := string(buffer[:n])
+			clipboard.WriteClipboard(data)
+			view.UpdateClipborad(data)
 		}
 	})
 	

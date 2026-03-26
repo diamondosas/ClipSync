@@ -25,6 +25,7 @@ func CopyClipboard() string {
 func WriteClipboard(data string) {
 	byte := []byte(data)
 	clipboard.Write(clipboard.FmtText, byte)
+	
 }
 
 func WatchClipboard(ctx context.Context) []byte{

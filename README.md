@@ -4,7 +4,7 @@
   <img src="asset/logo.jpg" alt="ClipSync Logo" width="100">
 </p>
 
-Stop emailing yourself links in 2026. Stop Slacking yourself snippets. Stop the friction.
+ ## Stop emailing yourself links in 2026. Stop Slacking yourself snippets. Stop the friction.
 
 ClipSync synchronizes your clipboard across every device on your local network. It is built for those who value flow state over file transfers. No accounts. No cloud. No latency.
 
@@ -15,13 +15,15 @@ ClipSync synchronizes your clipboard across every device on your local network. 
 *   **Native Performance**: (5MB Ram, 0.1% CPU). It sits in the background and does its job.
 
 ### Installation
+Download it 
 
+### Contribution
 Clone the repository and run the engine.
 
 ```bash
 git clone https://github.com/DiamondOsas/ClipSync.git
 cd ClipSync
-go run main.go
+go run 
 ```
 
 ### System Requirements
