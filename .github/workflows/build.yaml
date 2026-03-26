@@ -9,7 +9,7 @@ env:
 jobs:
   build:
     name: Build (${{ matrix.goos }})
-    runs-on: ${{ matrix.runner }}          # <-- per-platform runner
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
@@ -24,8 +24,8 @@ jobs:
             cgo: "0"
           - goos: darwin
             goarch: amd64
-            runner: macos-latest           # <-- must run on real macOS
-            cgo: "1"                       # <-- CGO required by GioUI
+            runner: macos-latest
+            cgo: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -35,12 +35,15 @@ jobs:
       - name: Install Dependencies
         run: |
           if [ "${{ matrix.goos }}" = "linux" ]; then
-            sudo apt-get install -y \
-              libx11-dev pkg-config \
-              libwayland-dev libxkbcommon-dev \
-              libvulkan-dev libegl-dev \
-              libgles2-mesa-dev \
-              libxcursor-dev libxi-dev libxrandr-dev libxinerama-dev
+            sudo apt-get update && sudo apt-get install -y \
+              pkg-config \
+              libx11-dev libx11-xcb-dev \
+              libwayland-dev wayland-protocols \
+              libxkbcommon-dev libxkbcommon-x11-dev \
+              libvulkan-dev libegl-dev libgles2-mesa-dev \
+              libxcursor-dev libxi-dev libxrandr-dev \
+              libxinerama-dev libxxf86vm-dev \
+              libxfixes-dev
           fi
           if [ "${{ matrix.goos }}" = "windows" ]; then
             go install github.com/akavel/rsrc@latest
