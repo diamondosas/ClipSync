@@ -32,17 +32,17 @@ For those running Linux, the following development packages are required to inte
 
 **Debian / Ubuntu / Pop!_OS**
 ```bash
-sudo apt update && sudo apt install libx11-dev
+sudo apt install libx11-dev libwayland-dev libxkbcommon-dev
 ```
 
 **Fedora / CentOS / RHEL**
 ```bash
-sudo dnf install libX11-devel
+sudo dnf install libX11-devel libwayland-dev libxkbcommon-dev
 ```
 
 **Arch Linux / Manjaro**
 ```bash
-sudo pacman -S libx11
+sudo pacman -S libx11 libwayland-dev libxkbcommon-dev
 ```
 
 ### Development

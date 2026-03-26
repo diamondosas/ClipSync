@@ -48,7 +48,7 @@ func main() {
 			data := clipboard.WatchClipboard(ctx)
 			if !slices.Equal(data, network.Buffer) {
 				network.SendClipboard(data)
-				view.UpdateClipborad(string(data))
+				view.UpdateClipboard(string(data))
 			}
 		}
 	})
@@ -58,7 +58,7 @@ func main() {
 			buffer, n := network.RecieveClipboard()
 			data := string(buffer[:n])
 			clipboard.WriteClipboard(data)
-			view.UpdateClipborad(data)
+			view.UpdateClipboard(data)
 		}
 	})
 	

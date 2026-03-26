@@ -35,7 +35,7 @@ jobs:
       - name: Install Dependencies
         run: |
           if [ "${{ matrix.goos }}" = "linux" ]; then
-            sudo apt-get update && sudo apt-get install -y libx11-dev pkg-config
+            sudo apt-get update && sudo apt-get install -y libx11-dev pkg-config libwayland-dev libxkbcommon-dev
           fi
           if [ "${{ matrix.goos }}" = "windows" ]; then
             go install github.com/akavel/rsrc@latest

@@ -19,7 +19,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget/material"
 )
-
+var Window *app.Window
 // StartGUI initializes and runs the Gio-based user interface.
 // This function will block until the application is closed.
 func StartGUI() {
@@ -43,7 +43,7 @@ func run(w *app.Window) error {
 	// Initialize a material theme with default fonts
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
-
+	Window = w
 	// Create application state
 	state := NewAppState(th)
 

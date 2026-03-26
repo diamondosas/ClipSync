@@ -7,7 +7,7 @@ import (
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
-
+var State *AppState
 // AppState keeps track of the global application state.
 // This struct ensures our GUI is interactive and holds the mock data.
 type AppState struct {
@@ -36,24 +36,24 @@ func NewAppState(th *material.Theme) *AppState {
 	s := &AppState{
 		Theme: th,
 		Devices: []pages.Device{
-			{Name: "Desktop-PC", IP: "192.168.1.10"},
-			{Name: "MacBook-Pro", IP: "192.168.1.12"},
-			{Name: "Android-Phone", IP: "192.168.1.15"},
+			// {Name: "Desktop-PC", IP: "192.168.1.10"},
+			// {Name: "MacBook-Pro", IP: "192.168.1.12"},
+			// {Name: "Android-Phone", IP: "192.168.1.15"},
 		},
 		History: []string{
-			"Hello World!",
-			"https://github.com/leojimenezg/scapmi",
-			"func main() { fmt.Println(GUI Rocks) }",
-			"Mock Clipboard Data 4",
-			"Mock Clipboard Data 5",
-			"Mock Clipboard Data 6",
-			"Mock Clipboard Data 7",
+			// "Hello World!",
+			// "https://github.com/leojimenezg/scapmi",
+			// "func main() { fmt.Println(GUI Rocks) }",
+			// "Mock Clipboard Data 4",
+			// "Mock Clipboard Data 5",
+			// "Mock Clipboard Data 6",
+			// "Mock Clipboard Data 7",
 		},
 	}
 	// Setup Lists to be Vertical
 	s.DeviceList.Axis = layout.Vertical
 	s.ClipList.Axis = layout.Vertical
-
+	State = s
 	return s
 }
 
