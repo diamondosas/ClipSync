@@ -10,6 +10,7 @@ jobs:
   build:
     name: Build (${{ matrix.goos }}-${{ matrix.goarch }})
     runs-on: ${{ matrix.runner }}
+    continue-on-error: true   # one failing target won't block the others
     strategy:
       fail-fast: false
       matrix:
@@ -22,16 +23,16 @@ jobs:
             goarch: amd64
             runner: ubuntu-latest
             cgo: "0"
-          # amd64 — must use macos-13 (Intel); macos-latest is now ARM64
-          - goos: darwin
-            goarch: amd64
-            runner: macos-13
-            cgo: "1"
-          # arm64 — native build on macos-latest (Apple Silicon)
           - goos: darwin
             goarch: arm64
             runner: macos-latest
             cgo: "1"
+          # amd64 cross-compiled from the ARM64 runner; CGO disabled because
+          # there is no amd64 toolchain available on Apple Silicon hosted runners
+          - goos: darwin
+            goarch: amd64
+            runner: macos-latest
+            cgo: "0"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -53,7 +54,6 @@ jobs:
               libxfixes-dev
           fi
           if [ "${{ matrix.goos }}" = "windows" ]; then
-            # Use goversioninfo instead of rsrc — compatible with Go 1.25 PE linker
             go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest
             echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
           fi
@@ -61,10 +61,7 @@ jobs:
       - name: Embed Windows Resources
         if: matrix.goos == 'windows'
         run: |
-          # goversioninfo reads versioninfo.json and writes resource.syso
-          # Create a minimal versioninfo.json if one doesn't exist
           if [ ! -f versioninfo.json ]; then
-            VERSION=$(cat VERSION | tr -d '[:space:]')
             cat > versioninfo.json <<EOF
           {
             "FixedFileInfo": {
@@ -84,7 +81,6 @@ jobs:
           CGO_ENABLED: ${{ matrix.cgo }}
         run: |
           VERSION=$(cat VERSION | tr -d '[:space:]')
-          # -H windowsgui only makes sense for Windows; strip it on other platforms
           if [ "${{ matrix.goos }}" = "windows" ]; then
             LDFLAGS="-X main.Version=${VERSION} -s -w -H windowsgui"
             OUTPUT="clipsync.exe"
@@ -113,17 +109,21 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    # run even if some (or all) build jobs failed
+    if: always()
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Get Version
         id: version
         run: |
           VERSION=$(cat VERSION | tr -d '[:space:]')
           echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
+
       - name: Delete Old Tags & Releases
         env:
           GH_TOKEN: ${{ github.token }}
@@ -135,10 +135,15 @@ jobs:
             gh release delete "$old_tag" --yes 2>/dev/null || true
             git push origin --delete "$old_tag" 2>/dev/null || true
           done
-      - uses: actions/download-artifact@v4
+
+      - name: Download Artifacts
+        # continue if some targets produced no artifact (they failed above)
+        continue-on-error: true
+        uses: actions/download-artifact@v4
         with:
           pattern: bin-*
           merge-multiple: true
+
       - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
