@@ -1,4 +1,4 @@
-	package view
+package view
 
 import (
 	"clipsync/gui"
