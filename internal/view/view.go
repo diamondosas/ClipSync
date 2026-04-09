@@ -4,7 +4,6 @@ import (
 	"clipsync/gui"
 	"clipsync/gui/pages"
 	"clipsync/internal/globals"
-
 )
 
 
