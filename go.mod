@@ -4,9 +4,19 @@ go 1.25.0
 
 require (
 	gioui.org v0.9.0
+	gioui.org/x v0.9.0
 	github.com/grandcat/zeroconf v1.0.0
 	golang.design/x/clipboard v0.7.1
 	golang.org/x/sync v0.20.0
+)
+
+require (
+	git.sr.ht/~jackmordaunt/go-toast v1.0.0 // indirect
+	git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 // indirect
+	github.com/esiqveland/notify v0.11.0 // indirect
+	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/godbus/dbus/v5 v5.0.6 // indirect
+	golang.org/x/exp v0.0.0-20250408133849-7e4ce0ab07d0 // indirect
 )
 
 require (

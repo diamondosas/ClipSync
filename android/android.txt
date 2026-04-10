@@ -1,0 +1,17 @@
+This would contian some andorid specific cdoe to be able to make it run
+
+First onf all i need to know how to cmpile ony this part of the project for android only
+
+To avoid debugging hell i should just make sure that all the background processes start and then it shows on the first set of debug UI.
+
+The debug part of the code will be kept for future 
+
+Then the main Ui part of the applcaitoions will then be built for android and then comapiled for it
+
+
+gogio -target android -appid com.example.giodemo \
+      -icon path/to/icon.png \
+      -o app.apk ./
+      
+      
+gogio -target android -buildmode archive -x  ./

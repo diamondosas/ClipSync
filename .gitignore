@@ -34,3 +34,5 @@ gui/plan.txt
 cmd.txt
 clipsync.apk
 clipsync.apk.idsig
+constraints.txt
+android/app/libs
