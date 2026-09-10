@@ -8,7 +8,6 @@ import (
 	"syscall"
 	
 	"clipsync/gui"
-	"clipsync/internal/cli"
 	"clipsync/internal/clipboard"
 	"clipsync/internal/core"
 	"clipsync/internal/utils"
@@ -24,9 +23,6 @@ func main() {
 	clipboard.Init()
 
 	// Intercept CLI execution. If it returns true, we shouldn't start GUI.
-	if cli.Run() {
-		return
-	}
 
 	// Setup context for graceful shutdown
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
