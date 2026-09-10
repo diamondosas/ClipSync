@@ -6,19 +6,20 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	
+
 	"clipsync/gui"
 	"clipsync/internal/clipboard"
-	"clipsync/internal/core"
-	"clipsync/internal/utils"
+	// firewall"clipsync/internal/firewall"
+	start "clipsync/internal/init"
+	// "clipsync/internal/utils"
 )
 
 var Version = "dev"
 
 func main() {
-	if err := utils.EnsureAppInPath(); err != nil {
-		log.Printf("Failed to ensure app is in PATH: %v", err)
-	}
+	// if err := utils.EnsureAppInPath(); err != nil {
+	// 	log.Printf("Failed to ensure app is in PATH: %v", err)
+	// }
 
 	clipboard.Init()
 
@@ -30,7 +31,7 @@ func main() {
 
 	// Run background sync tasks in a goroutine
 	go func() {
-		err := core.StartSync(ctx)
+		err := start.InitServices(ctx)
 		if err != nil && err != context.Canceled {
 			log.Printf("Background sync stopped: %v", err)
 		}

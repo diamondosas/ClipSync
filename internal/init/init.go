@@ -1,4 +1,4 @@
-package core
+package init
 
 import (
 	"context"
@@ -15,7 +15,7 @@ import (
 )
 
 // StartSync initializes and runs all background synchronization tasks.
-func StartSync(ctx context.Context) error {
+func InitServices(ctx context.Context) error {
 	eg, ctx := errgroup.WithContext(ctx)
 
 	// 1. Register our device on the network
