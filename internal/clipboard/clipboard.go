@@ -4,7 +4,6 @@ import (
 	"clipsync/internal/network"
 	"context"
 	"log"
-	"slices"
 	// "sync"
 	"golang.design/x/clipboard"
 	// "clipsync/internal/network"
@@ -28,12 +27,12 @@ func WriteClipboard(data string) {
 	
 }
 
-func WatchClipboard(ctx context.Context) []byte{
+func WatchClipboard(ctx context.Context) []byte {
 	text := clipboard.Watch(ctx, clipboard.FmtText)
-	for{
-		select{
+	for {
+		select {
 		case data := <-text:
-			if !slices.Equal(data, network.Buffer){
+			if !network.IsLastReceived(data) {
 				return data
 			}
 		case <-ctx.Done():

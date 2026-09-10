@@ -89,20 +89,28 @@ func BrowseForDevices(ctx context.Context) error {
 
 func entry(results <-chan *zeroconf.ServiceEntry) {
 	for entry := range results {
-		if entry.Instance != globals.Username {
-			newIP := string(entry.AddrIPv4[0].String())
+		if entry.Instance != globals.Username && len(entry.AddrIPv4) > 0 {
+			newIP := entry.AddrIPv4[0].String()
 			newDevice := globals.Device{Name: entry.HostName, Ip: newIP}
-			go view.UpdateDevices(newDevice)
+
 			globals.IPSMu.Lock()
-			globals.IPS = append(globals.IPS, newIP)
+			exists := false
+			for _, ip := range globals.IPS {
+				if ip == newIP {
+					exists = true
+					break
+				}
+			}
+			if !exists {
+				globals.IPS = append(globals.IPS, newIP)
+			}
 			globals.IPSMu.Unlock()
 
+			go view.UpdateDevices(newDevice)
 			go Connect(newIP)
 			log.Println("Found Device: Name: ", entry.Instance, " IP: ", entry.AddrIPv4)
 
 			fmt.Println("Connected Device:", entry.Instance)
-			
-		 
 		}
 	}
 }

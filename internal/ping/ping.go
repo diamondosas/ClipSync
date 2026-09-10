@@ -1,41 +1,52 @@
 package ping
 
 import (
-	"log"
 	"time"
 
-	"github.com/go-ping/ping"
+	"clipsync/internal/network"
 )
 
-// PingIPS takes a list of IPs and returns only those that are reachable (at least 1 packet received).
+// PingIPS sends a UDP ping to each IP and returns only those that respond with a Pong within the timeout.
 func PingIPS(ips []string) []string {
-	if ips == nil {
-		time.Sleep(2 * time.Second)
+	if len(ips) == 0 {
 		return nil
 	}
 
+	// Drain any leftover responses in PongChan
+	for {
+		select {
+		case <-network.PongChan:
+		default:
+			goto Send
+		}
+	}
+
+Send:
+	for _, ip := range ips {
+		network.SendPing(ip)
+	}
+
+	responded := make(map[string]bool)
+	timeout := time.After(1 * time.Second)
+
+	for {
+		select {
+		case ip := <-network.PongChan:
+			responded[ip] = true
+			if len(responded) == len(ips) {
+				goto Filter
+			}
+		case <-timeout:
+			goto Filter
+		}
+	}
+
+Filter:
 	var reachable []string
 	for _, ip := range ips {
-		pinger, err := ping.NewPinger(ip)
-		if err != nil {
-			log.Println(err)
-		}
-
-		pinger.Count = 2 //Just incase the first one drops 
-		pinger.Timeout = 2 * time.Second
-		
-		// SetPrivileged allows pinger to work on most systems without root
-		pinger.SetPrivileged(true) 
-
-		err = pinger.Run()
-		if err != nil {
-			log.Print(err)
-		}
-
-		stats := pinger.Statistics()
-		if stats.PacketsRecv > 0 {
+		if responded[ip] {
 			reachable = append(reachable, ip)
-		} 
+		}
 	}
 	return reachable
 }

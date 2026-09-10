@@ -1,18 +1,28 @@
 package network
 
 import (
-	// "bufio"
-	// "fmt"
 	"encoding/binary"
 	"log"
 	"net"
-	"strconv"
 	"slices"
+	"strconv"
+	"sync"
 
-	// sysClipboard "golang.design/x/clipboard"
 	"clipsync/internal/globals"
 )
-var Buffer []byte
+
+var (
+	BufferMu sync.RWMutex
+	Buffer   []byte
+)
+
+// IsLastReceived checks whether data matches the last received clipboard buffer in a thread-safe way.
+func IsLastReceived(data []byte) bool {
+	BufferMu.RLock()
+	defer BufferMu.RUnlock()
+	return slices.Equal(data, Buffer)
+}
+
 func SendClipboard(data []byte) {
 	if Conn == nil {
 		log.Println("SendClipboard: Conn is nil, skipping.")
@@ -41,15 +51,15 @@ func SendClipboard(data []byte) {
 	}
 }
 
-func RecieveClipboard() ([]byte, int){
+func RecieveClipboard() ([]byte, int) {
 	if Conn == nil {
-		log.Println("RecieveClipboard: Conn is nil. Waiting for Ready...")	
+		log.Println("RecieveClipboard: Conn is nil. Waiting for Ready...")
 		<-Ready
 	}
 	tmpBuf := make([]byte, 65535)
 	n, addr, err := Conn.ReadFromUDP(tmpBuf)
-	if err != nil{
-		log.Println("Error", err)
+	if err != nil {
+		log.Println("ReadFromUDP Error:", err)
 		return nil, 0
 	}
 	
@@ -65,7 +75,7 @@ func RecieveClipboard() ([]byte, int){
 	
 	actualData := tmpBuf[4 : 4+length]
 	
-	if slices.Equal(actualData, []byte("---ClipSync---")){
+	if slices.Equal(actualData, []byte("---ClipSync---")) {
 		globals.IPSMu.Lock()
 		found := false
 		for _, existingIP := range globals.IPS {
@@ -78,12 +88,21 @@ func RecieveClipboard() ([]byte, int){
 			globals.IPS = append(globals.IPS, addr.IP.String())
 		}
 		globals.IPSMu.Unlock()
-	}else{
+	} else if slices.Equal(actualData, []byte("---Ping---")) {
+		SendPong(addr)
+	} else if slices.Equal(actualData, []byte("---Pong---")) {
+		select {
+		case PongChan <- addr.IP.String():
+		default:
+		}
+	} else {
 		// Set Buffer to actualData so other goroutines checking network.Buffer match correctly
+		BufferMu.Lock()
 		Buffer = make([]byte, len(actualData))
 		copy(Buffer, actualData)
-		log.Println("Recieved Clipboard From Addr: ", addr, "Content Length", len(Buffer))
-		return Buffer, len(Buffer)
+		BufferMu.Unlock()
+		log.Println("Recieved Clipboard From Addr:", addr, "Content Length:", len(Buffer))
+		return actualData, len(actualData)
 	}
 
 	return nil, 0

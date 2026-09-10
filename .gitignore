@@ -5,6 +5,7 @@
 *.so
 *.dylib
 clipsync-*
+clipsync
 
 # Windows Resource files
 rsrc.syso

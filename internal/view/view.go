@@ -6,47 +6,76 @@ import (
 	"clipsync/internal/globals"
 )
 
-
-
-// UpdateDevices handles adding a new device to both global and GUI state.
-func UpdateDevices(Device globals.Device) {
+// UpdateDevices sends a new device to the global store and the GUI channel
+func UpdateDevices(device globals.Device) {
 	// 1. Update Global State
 	globals.ConnDevicesMu.Lock()
-	globals.ConnDevices = append(globals.ConnDevices, Device)
+	globals.ConnDevices = append(globals.ConnDevices, device)
 	globals.ConnDevicesMu.Unlock()
 
-	// 2. Update GUI state if active
-	if gui.State != nil {
-		newDevice := pages.Device{
-			Name: Device.Name,
-			IP:   Device.Ip,
+	// 2. Send to GUI channel if GUI is running
+	if gui.State != nil && gui.State.DeviceUpdates != nil {
+		select {
+		case gui.State.DeviceUpdates <- pages.Device{Name: device.Name, IP: device.Ip}:
+			RedrawUI()
+		default:
+			// Channel buffer full; drop or log to prevent blocking
 		}
-		gui.State.Devices = append(gui.State.Devices, newDevice)
-		RedrawUI()
 	}
 }
 
-// UpdateClipboard handles adding new clipboard data to both global and GUI state.
+// UpdateClipboard sends new clipboard text to the global history and the GUI channel
 func UpdateClipboard(data string) {
 	if data == "" {
 		return
 	}
 
-	// 1. Update Global State (Stack behavior: newest first)
+	// 1. Update Global State
 	globals.ClipHistoryMu.Lock()
 	globals.ClipHistory = append([]string{data}, globals.ClipHistory...)
 	globals.ClipHistoryMu.Unlock()
 
-	// 2. Update GUI state if active
-	if gui.State != nil {
-		gui.State.History = append([]string{data}, gui.State.History...)
-		RedrawUI()
+	// 2. Send to GUI channel if GUI is running
+	if gui.State != nil && gui.State.ClipUpdates != nil {
+		select {
+		case gui.State.ClipUpdates <- data:
+			RedrawUI()
+		default:
+			// Channel buffer full; drop or log to prevent blocking
+		}
+	}
+}
+
+// PruneDevices updates the global and GUI device list based on reachable IPs
+func PruneDevices(activeIPs []string) {
+	activeMap := make(map[string]bool, len(activeIPs))
+	for _, ip := range activeIPs {
+		activeMap[ip] = true
+	}
+
+	// 1. Update Global State
+	globals.ConnDevicesMu.Lock()
+	var updatedGlobal []globals.Device
+	for _, d := range globals.ConnDevices {
+		if activeMap[d.Ip] {
+			updatedGlobal = append(updatedGlobal, d)
+		}
+	}
+	globals.ConnDevices = updatedGlobal
+	globals.ConnDevicesMu.Unlock()
+
+	// 2. Send pruned device list to GUI channel
+	if gui.State != nil && gui.State.DevicePruneUpdates != nil {
+		select {
+		case gui.State.DevicePruneUpdates <- activeIPs:
+			RedrawUI()
+		default:
+		}
 	}
 }
 
 func RedrawUI() {
-	// Redraw the UI to show changes in both Update Devices and Clipboard
-	if gui.Window != nil{
+	if gui.Window != nil {
 		gui.Window.Invalidate()
 	}
 }

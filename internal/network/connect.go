@@ -19,6 +19,7 @@ import (
 
 var Conn *net.UDPConn
 var Ready = make(chan struct{})
+var PongChan = make(chan string, 100)
 
 func Connect(ip string) {
 	if Conn == nil {
@@ -37,6 +38,39 @@ func Connect(ip string) {
 	_, err = Conn.WriteToUDP(payload, addr)
 	if err != nil {
 		log.Println("Connect Write error:", err)
+	}
+}
+
+func SendPing(ip string) {
+	if Conn == nil {
+		return
+	}
+	addr, err := net.ResolveUDPAddr("udp", ip+":"+strconv.Itoa(globals.PORT))
+	if err != nil {
+		log.Println("SendPing Resolve Error:", err)
+		return
+	}
+	msg := []byte("---Ping---")
+	payload := make([]byte, 4+len(msg))
+	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
+	copy(payload[4:], msg)
+	_, err = Conn.WriteToUDP(payload, addr)
+	if err != nil {
+		log.Println("SendPing Write Error:", err)
+	}
+}
+
+func SendPong(addr *net.UDPAddr) {
+	if Conn == nil {
+		return
+	}
+	msg := []byte("---Pong---")
+	payload := make([]byte, 4+len(msg))
+	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
+	copy(payload[4:], msg)
+	_, err := Conn.WriteToUDP(payload, addr)
+	if err != nil {
+		log.Println("SendPong Write Error:", err)
 	}
 }
 

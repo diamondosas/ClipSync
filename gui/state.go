@@ -29,26 +29,22 @@ type AppState struct {
 	HelpBtn      widget.Clickable
 	CloseHelpBtn widget.Clickable
 	ShowHelp     bool
+
+	// Channel For Thread-Safe UI Updates
+	DeviceUpdates      chan pages.Device
+	DevicePruneUpdates chan []string
+	ClipUpdates        chan string
 }
 
 // NewAppState initializes the default state of the App.
 func NewAppState(th *material.Theme) *AppState {
 	s := &AppState{
-		Theme: th,
-		Devices: []pages.Device{
-			// {Name: "Desktop-PC", IP: "192.168.1.10"},
-			// {Name: "MacBook-Pro", IP: "192.168.1.12"},
-			// {Name: "Android-Phone", IP: "192.168.1.15"},
-		},
-		History: []string{
-			// "Hello World!",
-			// "https://github.com/leojimenezg/scapmi",
-			// "func main() { fmt.Println(GUI Rocks) }",
-			// "Mock Clipboard Data 4",
-			// "Mock Clipboard Data 5",
-			// "Mock Clipboard Data 6",
-			// "Mock Clipboard Data 7",
-		},
+		Theme:              th,
+		Devices:            []pages.Device{},
+		History:            []string{},
+		DeviceUpdates:      make(chan pages.Device, 50),
+		DevicePruneUpdates: make(chan []string, 10),
+		ClipUpdates:        make(chan string, 50),
 	}
 	// Setup Lists to be Vertical
 	s.DeviceList.Axis = layout.Vertical
@@ -57,8 +53,64 @@ func NewAppState(th *material.Theme) *AppState {
 	return s
 }
 
+func (s *AppState) UpdateUIValues() {
+	// 1. Drain new device updates
+	for {
+		select {
+		case dev := <-s.DeviceUpdates:
+			exists := false
+			for _, d := range s.Devices {
+				if d.IP == dev.IP {
+					exists = true
+					break
+				}
+			}
+			if !exists {
+				s.Devices = append(s.Devices, dev)
+			}
+		default:
+			goto CheckPrune
+		}
+	}
+
+CheckPrune:
+	// 2. Drain device pruning updates
+	for {
+		select {
+		case activeIPs := <-s.DevicePruneUpdates:
+			activeMap := make(map[string]bool, len(activeIPs))
+			for _, ip := range activeIPs {
+				activeMap[ip] = true
+			}
+			var remaining []pages.Device
+			for _, d := range s.Devices {
+				if activeMap[d.IP] {
+					remaining = append(remaining, d)
+				}
+			}
+			s.Devices = remaining
+		default:
+			goto CheckClip
+		}
+	}
+
+CheckClip:
+	// 3. Drain clipboard history updates
+	for {
+		select {
+		case clip := <-s.ClipUpdates:
+			s.History = append([]string{clip}, s.History...)
+		default:
+			return
+		}
+	}
+}
+
 // Update processes any events/clicks before layout rendering.
 func (s *AppState) Update(gtx layout.Context) {
+	
+	s.UpdateUIValues()
+
 	// Handle Tab Clicks
 	for i := range s.TabBtns {
 		if s.TabBtns[i].Clicked(gtx) {

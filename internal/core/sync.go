@@ -3,7 +3,6 @@ package core
 import (
 	"context"
 	"log"
-	"slices"
 	"time"
 
 	"clipsync/internal/clipboard"
@@ -49,7 +48,7 @@ func StartSync(ctx context.Context) error {
 					continue
 				}
 				// Avoid loops: don't send if it's the same as what we just received
-				if !slices.Equal(data, network.Buffer) {
+				if !network.IsLastReceived(data) {
 					log.Printf("[Sync] Local change detected, sending to %d devices", len(globals.IPS))
 					network.SendClipboard(data)
 					view.UpdateClipboard(string(data))
@@ -87,7 +86,7 @@ func StartSync(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
-			case <-time.After(15 * time.Second):
+			case <-time.After(10 * time.Second):
 				globals.IPSMu.Lock()
 				ipsToPing := make([]string, len(globals.IPS))
 				copy(ipsToPing, globals.IPS)
@@ -99,6 +98,7 @@ func StartSync(ctx context.Context) error {
 					globals.IPSMu.Lock()
 					globals.IPS = currentIPS
 					globals.IPSMu.Unlock()
+					view.PruneDevices(currentIPS)
 					log.Printf("[Sync] Ping check: %d devices active", len(globals.IPS))
 				}
 			}
