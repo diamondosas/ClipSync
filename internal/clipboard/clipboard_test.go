@@ -37,7 +37,7 @@ func TestWatchClipboard_IgnoreNetworkClip(t *testing.T) {
 
 	// Simulate incoming network clip so WatchClipboard ignores it
 	ignoredPayload := []byte("sync-from-laptop")
-	network.LastRecievedClip = ignoredPayload
+	network.LastReceivedClip = ignoredPayload
 
 	// Write the ignored text
 	WriteClipboard(ctx, string(ignoredPayload))

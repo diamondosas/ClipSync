@@ -1,6 +1,7 @@
 package network
 
 import (
+	"clipsync/internal"
 	"encoding/binary"
 	"log"
 	"net"
@@ -10,14 +11,14 @@ import (
 
 var (
 	BufferMu         sync.RWMutex
-	LastRecievedClip []byte
+	LastReceivedClip []byte
 )
 
 // IsLastReceived checks whether data matches the last received clipboard buffer in a thread-safe way.
 func IsLastReceived(data []byte) bool {
 	BufferMu.RLock()
 	defer BufferMu.RUnlock()
-	return slices.Equal(data, LastRecievedClip)
+	return slices.Equal(data, LastReceivedClip)
 }
 
 func SendClipboard(data []byte) {
@@ -30,13 +31,13 @@ func SendClipboard(data []byte) {
 	binary.BigEndian.PutUint32(payload[:4], uint32(len(data)))
 	copy(payload[4:], data)
 
-	IPSMu.Lock()
-	ips := make([]string, len(IPS))
-	copy(ips, IPS)
-	IPSMu.Unlock()
+	internal.IPSMu.Lock()
+	ips := make([]string, len(internal.IPS))
+	copy(ips, internal.IPS)
+	internal.IPSMu.Unlock()
 
 	for _, ip := range ips {
-		addr, err := net.ResolveUDPAddr("udp", ip+":"+PORT)
+		addr, err := net.ResolveUDPAddr("udp", ip+":"+internal.PORT)
 		if err != nil {
 			log.Println("SendClipboard Resolve Error:", err)
 			continue

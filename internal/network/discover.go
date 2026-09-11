@@ -1,6 +1,7 @@
 package network
 
 import (
+	"clipsync/internal"
 	"context"
 	"fmt"
 	"log"
@@ -8,20 +9,19 @@ import (
 	"os"
 	"strconv"
 
-	"clipsync/internal/view"
-
 	"github.com/grandcat/zeroconf"
+	"clipsync/internal/view"
 )
 
 var Entries = make(chan *zeroconf.ServiceEntry)
 
 func RegisterDevice(ctx context.Context) error {
-	Username, _ = os.Hostname()
-	name := Username
+	internal.Username, _ = os.Hostname()
+	name := internal.Username
 
 	ifaces := getAllInterfaces()
 
-	intPORT, _ := strconv.ParseInt(PORT, 10, 8)
+	intPORT, _ := strconv.ParseInt(internal.PORT, 10, 8)
 
 	server, err := zeroconf.Register(name, "_clipsync._tcp", "local.", int(intPORT), []string{""}, ifaces)
 
@@ -64,23 +64,22 @@ func BrowseForDevices(ctx context.Context) error {
 
 func entry(results <-chan *zeroconf.ServiceEntry) {
 	for entry := range results {
-		if entry.Instance != Username && len(entry.AddrIPv4) > 0 {
+		if entry.Instance != internal.Username && len(entry.AddrIPv4) > 0 {
 			newIP := entry.AddrIPv4[0].String()
-			newDevice := Device{Name: entry.HostName, Ip: newIP, Alive: true}
+			newDevice := internal.Device{Name: entry.HostName, Ip: newIP, Alive: true}
 
-			IPSMu.Lock()
+			internal.IPSMu.Lock()
 			exists := false
-			for _, ip := range IPS {
+			for _, ip := range internal.IPS {
 				if ip == newIP {
 					exists = true
 					break
 				}
 			}
 			if !exists {
-				IPS = append(IPS, newIP)
+				internal.IPS = append(internal.IPS, newIP)
 			}
-			IPSMu.Unlock()
-
+			internal.IPSMu.Unlock()
 			go view.AddNewDevice(newDevice)
 			go Connect(newIP)
 			log.Println("Found Device: Name: ", entry.Instance, " IP: ", entry.AddrIPv4)

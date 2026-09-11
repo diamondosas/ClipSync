@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"clipsync/internal"
 	"clipsync/internal/clipboard"
 	"clipsync/internal/network"
 	"clipsync/internal/view"
@@ -52,7 +53,7 @@ func StartClipSync(ctx context.Context) error {
 					continue
 				}
 				// Avoid loops: don't send if it's the same as what we just received
-				log.Printf("[Sync] Local change detected, sending to %d devices", len(IPS))
+				log.Printf("[Sync] Local change detected, sending to %d devices", len(internal.IPS))
 				network.SendClipboard([]byte(data))
 				view.UpdateClipboard(string(data))
 			}
@@ -90,12 +91,12 @@ func StartClipSync(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
-			case <-time.After(1 * time.Second):
+			case <-time.After(5 * time.Second):
 
-				network.IPSMu.Lock()
+				internal.IPSMu.Lock()
 				var ipsToPing []string
-				copy(ipsToPing, network.IPS)
-				network.IPSMu.Unlock()
+				copy(ipsToPing, internal.IPS)
+				internal.IPSMu.Unlock()
 
 				if len(ipsToPing) > 0 {
 					network.PingIPS(ipsToPing)

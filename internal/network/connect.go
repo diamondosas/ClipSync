@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"log"
 	"net"
+	"clipsync/internal"
 )
 
 // type Info struct {
@@ -22,13 +23,13 @@ func Connect(ip string) {
 		log.Println("Cannot connect, Conn is not initialized. Waiting for Ready channel...")
 		<-Ready
 	}
-	addr, err := net.ResolveUDPAddr("udp", ip+":"+PORT)
+	addr, err := net.ResolveUDPAddr("udp", ip + ":" + internal.PORT)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	msg := []byte("---ClipSync---")
-	payload := make([]byte, 4+len(msg))
+	payload := make([]byte, 4 + len(msg))
 	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
 	copy(payload[4:], msg)
 	_, err = Conn.WriteToUDP(payload, addr)
@@ -38,7 +39,7 @@ func Connect(ip string) {
 }
 
 func Listen(ctx context.Context) error {
-	addr, err := net.ResolveUDPAddr("udp", ":"+PORT)
+	addr, err := net.ResolveUDPAddr("udp", ":" + internal.PORT)
 	if err != nil {
 		log.Println(err)
 		return err

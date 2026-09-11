@@ -1,10 +1,12 @@
 package network
 
 import (
+	"clipsync/internal"
 	"encoding/binary"
 	"log"
 	"net"
 	"slices"
+	"time"
 )
 
 var Addr *net.UDPAddr
@@ -34,11 +36,11 @@ func RecieveData() ([]byte, int) {
 	} else {
 		// Set LastRecievedClip to recievedData so other goroutines checking network.LastRecievedClip match correctly
 		BufferMu.Lock()
-		LastRecievedClip = make([]byte, len(recievedData))
-		copy(LastRecievedClip, recievedData)
+		LastReceivedClip = make([]byte, len(recievedData))
+		copy(LastReceivedClip, recievedData)
 		BufferMu.Unlock()
 
-		log.Println("Recieved Clipboard From Addr:", addr, "Content Length:", len(LastRecievedClip))
+		log.Println("Recieved Clipboard From Addr:", addr, "Content Length:", len(LastReceivedClip	))
 		return recievedData, len(recievedData)
 	}
 
@@ -46,24 +48,28 @@ func RecieveData() ([]byte, int) {
 }
 
 func UpdateIP() {
-	IPSMu.Lock()
+	internal.IPSMu.Lock()
 	found := false
-	for _, existingIP := range IPS {
+	for _, existingIP := range internal.IPS {
 		if existingIP == Addr.IP.String() {
 			found = true
 			break
 		}
 	}
 	if !found {
-		IPS = append(IPS, Addr.IP.String())
+		internal.IPS = append(internal.IPS, Addr.IP.String())
 	}
-	IPSMu.Unlock()
+	internal.IPSMu.Unlock()
 }
 
 func UpdateDeviceState() {
-	ConnDevicesMu.Lock()
-	for i := range ConnDevices {
-		ConnDevices[i].Alive = true
+	internal.ConnDevicesMu.Lock()
+	for i := range internal.ConnDevices {
+		if string(Addr.IP.String()) == string(internal.ConnDevices[i].Ip){
+			internal.ConnDevices[i].Alive = true
+			internal.ConnDevices[i].LastSeen = time.Now()
+		}
 	}
-	ConnDevicesMu.Unlock()
+	internal.ConnDevicesMu.Unlock()
+	
 }
