@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	"slices"
-	"strconv"
 	"sync"
 
 	"clipsync/internal/globals"
@@ -39,7 +38,7 @@ func SendClipboard(data []byte) {
 	globals.IPSMu.Unlock()
 
 	for _, ip := range ips {
-		addr, err := net.ResolveUDPAddr("udp", ip + ":" + strconv.Itoa(globals.PORT))
+		addr, err := net.ResolveUDPAddr("udp", ip + ":" + globals.PORT)
 		if err != nil {
 			log.Println("SendClipboard Resolve Error:", err)
 			continue

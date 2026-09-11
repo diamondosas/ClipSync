@@ -6,8 +6,8 @@ import (
 	"encoding/binary"
 	"log"
 	"net"
-	"strconv"
 
+	
 	"clipsync/internal/globals"
 )
 
@@ -19,14 +19,13 @@ import (
 
 var Conn *net.UDPConn
 var Ready = make(chan struct{})
-var PongChan = make(chan string, 100)
 
 func Connect(ip string) {
 	if Conn == nil {
 		log.Println("Cannot connect, Conn is not initialized. Waiting for Ready channel...")
 		<-Ready
 	}
-	addr, err := net.ResolveUDPAddr("udp", ip+":"+strconv.Itoa(globals.PORT))
+	addr, err := net.ResolveUDPAddr("udp", ip+":"+ globals.PORT)
 	if err != nil {
 		log.Println(err)
 		return
@@ -42,7 +41,7 @@ func Connect(ip string) {
 }
 
 func Listen(ctx context.Context) error {
-	addr, err := net.ResolveUDPAddr("udp", ":"+strconv.Itoa(globals.PORT))
+	addr, err := net.ResolveUDPAddr("udp", ":" + globals.PORT)
 	if err != nil {
 		log.Println(err)
 		return err

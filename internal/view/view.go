@@ -6,8 +6,8 @@ import (
 	"clipsync/internal/globals"
 )
 
-// UpdateDevices sends a new device to the global store and the GUI channel
-func UpdateDevices(device globals.Device) {
+// AddNewDevice sends a new device to the global store and the GUI channel
+func AddNewDevice(device globals.Device) {
 	// 1. Update Global State
 	globals.ConnDevicesMu.Lock()
 	globals.ConnDevices = append(globals.ConnDevices, device)
@@ -18,8 +18,6 @@ func UpdateDevices(device globals.Device) {
 		select {
 		case gui.State.DeviceUpdates <- pages.Device{Name: device.Name, IP: device.Ip}:
 			RedrawUI()
-		default:
-			// Channel buffer full; drop or log to prevent blocking
 		}
 	}
 }
@@ -46,8 +44,8 @@ func UpdateClipboard(data string) {
 	}
 }
 
-// PruneDevices updates the global and GUI device list based on reachable IPs
-func PruneDevices(activeIPs []string) {
+// UpdateDevices updates the global and GUI device list based on reachable IPs
+func UpdateDevices(activeIPs []string) {
 	activeMap := make(map[string]bool, len(activeIPs))
 	for _, ip := range activeIPs {
 		activeMap[ip] = true

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
 
 	"clipsync/internal/globals"
 	"clipsync/internal/view"
@@ -17,13 +18,15 @@ var Entries = make(chan *zeroconf.ServiceEntry)
 
 
 
-func RegisterDevice(ctx context.Context, name string) error {
+func RegisterDevice(ctx context.Context) error {
 	globals.Username, _ = os.Hostname()
-	name = globals.Username
+	name := globals.Username
 
 	ifaces := getAllInterfaces()
 
-	server, err := zeroconf.Register(name, "_clipsync._tcp", "local.", globals.PORT, []string{""}, ifaces)
+	intPORT, _ := strconv.ParseInt(globals.PORT, 10, 8)
+
+	server, err := zeroconf.Register(name, "_clipsync._tcp", "local.", int(intPORT) , []string{""}, ifaces)
 
 	if err != nil {
 		log.Println(err)
@@ -66,7 +69,7 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 	for entry := range results {
 		if entry.Instance != globals.Username && len(entry.AddrIPv4) > 0 {
 			newIP := entry.AddrIPv4[0].String()
-			newDevice := globals.Device{Name: entry.HostName, Ip: newIP}
+			newDevice := globals.Device{Name: entry.HostName, Ip: newIP, Alive: true}
 
 			globals.IPSMu.Lock()
 			exists := false
@@ -81,7 +84,7 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 			}
 			globals.IPSMu.Unlock()
 
-			go view.UpdateDevices(newDevice)
+			go view.AddNewDevice(newDevice)
 			go Connect(newIP)
 			log.Println("Found Device: Name: ", entry.Instance, " IP: ", entry.AddrIPv4)
 

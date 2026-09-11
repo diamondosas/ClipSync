@@ -5,46 +5,44 @@ import (
 	"encoding/binary"
 	"log"
 	"net"
-	"strconv"
+
 )
 
-func PingIPS(ips []string) []string {
+func PingIPS(ips []string){
 	if len(ips) == 0 {
-		return nil
+		return 
 	}
 
-
+	for _, ip := range ips{
+		SendPing(ip)
+	}
 }
 
-func SendPing(ip string) {
+func SendPing(ip string){
 	if Conn == nil {
 		return
 	}
-	addr, err := net.ResolveUDPAddr("udp", ip+":"+strconv.Itoa(globals.PORT))
+
+	addr, err := net.ResolveUDPAddr("udp", ip + ":" + globals.PORT)
+	
 	if err != nil {
 		log.Println("SendPing Resolve Error:", err)
 		return
 	}
-	msg := []byte("---Ping---")
+
+	msg := []byte("~")
 	payload := make([]byte, 4+len(msg))
 	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
 	copy(payload[4:], msg)
+
 	_, err = Conn.WriteToUDP(payload, addr)
+
 	if err != nil {
 		log.Println("SendPing Write Error:", err)
 	}
 }
 
-func SendPong(addr *net.UDPAddr) {
-	if Conn == nil {
-		return
-	}
-	msg := []byte("---Pong---")
-	payload := make([]byte, 4+len(msg))
-	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
-	copy(payload[4:], msg)
-	_, err := Conn.WriteToUDP(payload, addr)
-	if err != nil {
-		log.Println("SendPong Write Error:", err)
-	}
+
+func CheckForPing(){
+
 }
