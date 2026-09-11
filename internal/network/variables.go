@@ -1,4 +1,4 @@
-package globals
+package network
 
 import (
 	"sync"
@@ -19,9 +19,6 @@ var (
 
 	ConnDevicesMu sync.Mutex
 	ConnDevices   []Device
-
-	ClipHistoryMu sync.Mutex
-	ClipHistory   []string
 )
 
 

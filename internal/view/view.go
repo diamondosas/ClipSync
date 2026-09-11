@@ -3,15 +3,18 @@ package view
 import (
 	"clipsync/gui"
 	"clipsync/gui/pages"
-	"clipsync/internal/globals"
+	"sync"
 )
-
+var(
+	ClipHistoryMu sync.Mutex
+	ClipHistory   []string
+)
 // AddNewDevice sends a new device to the global store and the GUI channel
-func AddNewDevice(device globals.Device) {
+func AddNewDevice(device Device) {
 	// 1. Update Global State
-	globals.ConnDevicesMu.Lock()
-	globals.ConnDevices = append(globals.ConnDevices, device)
-	globals.ConnDevicesMu.Unlock()
+	ConnDevicesMu.Lock()
+	ConnDevices = append(ConnDevices, device)
+	ConnDevicesMu.Unlock()
 
 	// 2. Send to GUI channel if GUI is running
 	if gui.State != nil && gui.State.DeviceUpdates != nil {
@@ -29,9 +32,9 @@ func UpdateClipboard(data string) {
 	}
 
 	// 1. Update Global State
-	globals.ClipHistoryMu.Lock()
-	globals.ClipHistory = append([]string{data}, globals.ClipHistory...)
-	globals.ClipHistoryMu.Unlock()
+	ClipHistoryMu.Lock()
+	ClipHistory = append([]string{data}, ClipHistory...)
+	ClipHistoryMu.Unlock()
 
 	// 2. Send to GUI channel if GUI is running
 	if gui.State != nil && gui.State.ClipUpdates != nil {
@@ -52,15 +55,15 @@ func UpdateDevices(activeIPs []string) {
 	}
 
 	// 1. Update Global State
-	globals.ConnDevicesMu.Lock()
-	var updatedGlobal []globals.Device
-	for _, d := range globals.ConnDevices {
+	ConnDevicesMu.Lock()
+	var updatedGlobal []Device
+	for _, d := range ConnDevices {
 		if activeMap[d.Ip] {
 			updatedGlobal = append(updatedGlobal, d)
 		}
 	}
-	globals.ConnDevices = updatedGlobal
-	globals.ConnDevicesMu.Unlock()
+	ConnDevices = updatedGlobal
+	ConnDevicesMu.Unlock()
 
 	// 2. Send pruned device list to GUI channel
 	if gui.State != nil && gui.State.DevicePruneUpdates != nil {

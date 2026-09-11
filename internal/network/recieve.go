@@ -1,12 +1,10 @@
 package network
 
-import(
+import (
 	"encoding/binary"
 	"log"
-	"slices"
 	"net"
-
-	"clipsync/internal/globals"
+	"slices"
 )
 
 var Addr *net.UDPAddr
@@ -16,7 +14,7 @@ func RecieveData() ([]byte, int) {
 		log.Println("RecieveClipboard: Conn is nil. Waiting for Ready...")
 		<-Ready
 	}
-	
+
 	tmpBuf := make([]byte, 65535)
 	_, addr, err := Conn.ReadFromUDP(tmpBuf)
 	Addr = addr
@@ -27,9 +25,7 @@ func RecieveData() ([]byte, int) {
 	}
 
 	length := binary.BigEndian.Uint32(tmpBuf[:4])
-	recievedData := tmpBuf[4 : 4 + length]
-	
-
+	recievedData := tmpBuf[4 : 4+length]
 
 	if slices.Equal(recievedData, []byte("---ClipSync---")) {
 		UpdateIP()
@@ -49,26 +45,25 @@ func RecieveData() ([]byte, int) {
 	return nil, 0
 }
 
-
-func UpdateIP(){
-	globals.IPSMu.Lock()
+func UpdateIP() {
+	IPSMu.Lock()
 	found := false
-	for _, existingIP := range globals.IPS {
+	for _, existingIP := range IPS {
 		if existingIP == Addr.IP.String() {
 			found = true
 			break
 		}
 	}
 	if !found {
-		globals.IPS = append(globals.IPS, Addr.IP.String())
+		IPS = append(IPS, Addr.IP.String())
 	}
-	globals.IPSMu.Unlock()
+	IPSMu.Unlock()
 }
 
-func UpdateDeviceState(){
-	globals.ConnDevicesMu.Lock()
-	for i := range globals.ConnDevices {
-		globals.ConnDevices[i].Alive = true
+func UpdateDeviceState() {
+	ConnDevicesMu.Lock()
+	for i := range ConnDevices {
+		ConnDevices[i].Alive = true
 	}
-	globals.ConnDevicesMu.Unlock()
+	ConnDevicesMu.Unlock()
 }

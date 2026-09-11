@@ -1,30 +1,28 @@
 package network
 
 import (
-	"clipsync/internal/globals"
 	"encoding/binary"
 	"log"
 	"net"
-
 )
 
-func PingIPS(ips []string){
+func PingIPS(ips []string) {
 	if len(ips) == 0 {
-		return 
+		return
 	}
 
-	for _, ip := range ips{
+	for _, ip := range ips {
 		SendPing(ip)
 	}
 }
 
-func SendPing(ip string){
+func SendPing(ip string) {
 	if Conn == nil {
 		return
 	}
 
-	addr, err := net.ResolveUDPAddr("udp", ip + ":" + globals.PORT)
-	
+	addr, err := net.ResolveUDPAddr("udp", ip+":"+PORT)
+
 	if err != nil {
 		log.Println("SendPing Resolve Error:", err)
 		return
@@ -42,7 +40,6 @@ func SendPing(ip string){
 	}
 }
 
-
-func CheckForPing(){
+func CheckForPing() {
 
 }

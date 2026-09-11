@@ -6,9 +6,6 @@ import (
 	"encoding/binary"
 	"log"
 	"net"
-
-	
-	"clipsync/internal/globals"
 )
 
 // type Info struct {
@@ -25,7 +22,7 @@ func Connect(ip string) {
 		log.Println("Cannot connect, Conn is not initialized. Waiting for Ready channel...")
 		<-Ready
 	}
-	addr, err := net.ResolveUDPAddr("udp", ip+":"+ globals.PORT)
+	addr, err := net.ResolveUDPAddr("udp", ip+":"+PORT)
 	if err != nil {
 		log.Println(err)
 		return
@@ -41,7 +38,7 @@ func Connect(ip string) {
 }
 
 func Listen(ctx context.Context) error {
-	addr, err := net.ResolveUDPAddr("udp", ":" + globals.PORT)
+	addr, err := net.ResolveUDPAddr("udp", ":"+PORT)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -58,5 +55,3 @@ func Listen(ctx context.Context) error {
 	<-ctx.Done()
 	return nil
 }
-
-
