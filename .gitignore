@@ -43,3 +43,4 @@ android/build
 run.bat
 go.sum
 .gitignore
+build.sh

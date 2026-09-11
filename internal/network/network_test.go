@@ -1,3 +1,4 @@
+//@ai-generated
 package network_test
 
 import (

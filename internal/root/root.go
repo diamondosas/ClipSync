@@ -1,4 +1,4 @@
-package init
+package root
 
 import (
 	"context"
@@ -8,14 +8,13 @@ import (
 	"clipsync/internal/clipboard"
 	"clipsync/internal/globals"
 	"clipsync/internal/network"
-	"clipsync/internal/ping"
 	"clipsync/internal/view"
 
 	"golang.org/x/sync/errgroup"
 )
 
-// StartSync initializes and runs all background synchronization tasks.
-func InitServices(ctx context.Context) error {
+// initializes and runs all background synchronization tasks.
+func StartClipSync(ctx context.Context) error {
 	eg, ctx := errgroup.WithContext(ctx)
 
 	// 1. Register our device on the network
@@ -35,24 +34,29 @@ func InitServices(ctx context.Context) error {
 
 	// 4. Watch local clipboard for changes
 	eg.Go(func() error {
+		clip := clipboard.WatchClipboard(ctx)
+		var clipCh = make(chan string, len(clip))
+		if clip == nil {
+			log.Println("[Sync] Warning: clipboard watch channel is nil (clipboard may not be initialized)")
+			<-ctx.Done()
+			return ctx.Err()
+		}
+
 		for {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
-			default:
-				data := clipboard.WatchClipboard(ctx)
-				if data == nil {
-					if ctx.Err() != nil {
-						return ctx.Err()
-					}
+			case data, ok := <-clipCh:
+				if !ok {
+					return nil
+				}
+				if len(data) == 0 {
 					continue
 				}
 				// Avoid loops: don't send if it's the same as what we just received
-				if !network.IsLastReceived(data) {
 					log.Printf("[Sync] Local change detected, sending to %d devices", len(globals.IPS))
-					network.SendClipboard(data)
+					network.SendClipboard([]byte(data))
 					view.UpdateClipboard(string(data))
-				}
 			}
 		}
 	})
@@ -73,7 +77,7 @@ func InitServices(ctx context.Context) error {
 				if n > 0 {
 					data := string(buffer[:n])
 					log.Printf("[Sync] Received new clipboard data (%d bytes)", n)
-					clipboard.WriteClipboard(data)
+					clipboard.WriteClipboard(ctx, data)
 					view.UpdateClipboard(data)
 				}
 			}
@@ -86,14 +90,15 @@ func InitServices(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
-			case <-time.After(10 * time.Second):
+			case <-time.After(5 * time.Second):
+				
 				globals.IPSMu.Lock()
-				ipsToPing := make([]string, len(globals.IPS))
+				var ipsToPing []string
 				copy(ipsToPing, globals.IPS)
 				globals.IPSMu.Unlock()
 
 				if len(ipsToPing) > 0 {
-					currentIPS := ping.PingIPS(ipsToPing)
+					currentIPS := network.PingIPS(ipsToPing)
 
 					globals.IPSMu.Lock()
 					globals.IPS = currentIPS

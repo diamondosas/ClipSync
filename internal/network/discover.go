@@ -15,36 +15,11 @@ import (
 
 var Entries = make(chan *zeroconf.ServiceEntry)
 
-func getAllInterfaces() []net.Interface {
-	ifaces, err := net.Interfaces()
-	if err != nil {
-		return nil
-	}
 
-	var result []net.Interface
-	for _, iface := range ifaces {
-		// Skip loopback and down interfaces
-		if iface.Flags&net.FlagLoopback != 0 {
-			continue
-		}
-		if iface.Flags&net.FlagUp == 0 {
-			continue
-		}
-		// Skip interfaces with no addresses
-		addrs, err := iface.Addrs()
-		if err != nil || len(addrs) == 0 {
-			continue
-		}
-		result = append(result, iface)
-	}
-	return result
-}
 
 func RegisterDevice(ctx context.Context, name string) error {
-	if name == "" {
-		globals.Username, _ = os.Hostname()
-		name = globals.Username
-	}
+	globals.Username, _ = os.Hostname()
+	name = globals.Username
 
 	ifaces := getAllInterfaces()
 
@@ -113,4 +88,29 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 			fmt.Println("Connected Device:", entry.Instance)
 		}
 	}
+}
+
+func getAllInterfaces() []net.Interface {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return nil
+	}
+
+	var result []net.Interface
+	for _, iface := range ifaces {
+		// Skip loopback and down interfaces
+		if iface.Flags&net.FlagLoopback != 0 {
+			continue
+		}
+		if iface.Flags&net.FlagUp == 0 {
+			continue
+		}
+		// Skip interfaces with no addresses
+		addrs, err := iface.Addrs()
+		if err != nil || len(addrs) == 0 {
+			continue
+		}
+		result = append(result, iface)
+	}
+	return result
 }

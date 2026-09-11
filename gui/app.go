@@ -1,3 +1,4 @@
+//ai-generated
 package gui
 
 import (

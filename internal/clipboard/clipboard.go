@@ -1,42 +1,52 @@
 package clipboard
 
 import (
-	"clipsync/internal/network"
 	"context"
 	"log"
-	// "sync"
+
+	"clipsync/internal/network"
 	"golang.design/x/clipboard"
-	// "clipsync/internal/network"
 )
 
-func Init() {	
+func init()  {	
 	err := clipboard.Init()
 	if err != nil {
 		log.Println(err)
+		panic(err)
 	}
 }
 
-func CopyClipboard() string {
-	data := clipboard.Read(clipboard.FmtText)
+func CopyClipboard(ctx context.Context) string {
+	data, err  := clipboard.Read(ctx, clipboard.FmtText)
+	if err != nil{
+		log.Println("Could not read Clipboard")
+	}
 	return string(data)
 }
 
-func WriteClipboard(data string) {
+func WriteClipboard(ctx context.Context, data string) {
 	byte := []byte(data)
-	clipboard.Write(clipboard.FmtText, byte)
-	
+	_, _ = clipboard.Write(ctx, clipboard.FmtText, byte)
 }
 
-func WatchClipboard(ctx context.Context) []byte {
+func WatchClipboard(ctx context.Context) <-chan []byte {
 	text := clipboard.Watch(ctx, clipboard.FmtText)
-	for {
-		select {
-		case data := <-text:
-			if !network.IsLastReceived(data) {
-				return data
-			}
-		case <-ctx.Done():
-			return nil
+	var out = make(chan []byte, 1)
+
+	go func(){
+		for {
+			select {
+			case data:= <-text:
+				if !network.IsLastReceived(data.Bytes){
+					select{
+					case out <- data.Bytes:
+					}
+				}
+			case <-ctx.Done():
+				return 
+			}		
 		}
-	}
+	}()
+
+	return out	
 }

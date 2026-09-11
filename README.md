@@ -98,6 +98,7 @@ go run main.go
 
 On Linux, ClipSync needs access to the X11 or Wayland clipboard layer. Install the right libraries for your distro first:
 
+
 **Debian / Ubuntu / Pop!_OS / Mint**
 ```bash
 sudo apt install libx11-dev libwayland-dev libxkbcommon-dev libvulkan-dev
@@ -111,6 +112,12 @@ sudo dnf install libX11-devel libwayland-dev libxkbcommon-dev vulkan-headers
 **Arch / Manjaro / EndeavourOS**
 ```bash
 sudo pacman -S libx11 libwayland-dev libxkbcommon-dev libvulkan-dev
+```
+
+**NB**: If you are using Wayland Display Server do 
+
+```bash
+sudo apt install wl-clipboard
 ```
 
 ---

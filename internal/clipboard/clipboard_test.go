@@ -1,52 +1,56 @@
-package clipboard_test
+//@ai-generated
+package clipboard
 
 import (
-	"clipsync/internal/clipboard"
-	"testing"
-	"bytes"
 	"context"
-	"os/signal"
-	"os"
-	"syscall"
+	"testing"
 	"time"
+	"clipsync/internal/network"
 )
 
-func TestReadWrite(t *testing.T) {
-	want := "Testing is taking place..."
-	clipboard.WriteClipboard(want)
-	output := clipboard.CopyClipboard()
+func TestClipboard_ReadWrite(t *testing.T) {
+	ctx := context.Background()
+	sampleText := "Player1 high score: 9999"
 
-	if want != output {
-		t.Errorf("Input: %v Output : %v", want, output)
+	WriteClipboard(ctx, sampleText)
+
+	got := CopyClipboard(ctx)
+	if got != sampleText {
+		t.Errorf("CopyClipboard() = %q; want %q", got, sampleText)
 	}
-
 }
 
-func TestWatch(t *testing.T) {
-	clipboard.Init()
-	want := "Tester"
-	
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+func TestWatchClipboard_ContextCancel(t *testing.T) {
+	// Cancel quickly to ensure WatchClipboard unblocks
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
 	defer cancel()
 
-	var Outputch = make(chan []byte)
+	data := WatchClipboard(ctx)
+	if data != nil {
+		t.Errorf("WatchClipboard() with canceled context = %v; want nil", data)
+	}
+}
 
-	go func(){
-		// Watch may yield multiple times if clipboard changes
-		// We'll just grab the first one
-		data := clipboard.WatchClipboard(ctx)	
-		Outputch <-data
+func TestWatchClipboard_IgnoreNetworkClip(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	// Simulate incoming network clip so WatchClipboard ignores it
+	ignoredPayload := []byte("sync-from-laptop")
+	network.LastRecievedClip = ignoredPayload
+
+	// Write the ignored text
+	WriteClipboard(ctx, string(ignoredPayload))
+
+	// Write a new real text shortly after
+	realPayload := "New game invite code"
+	go func() {
+		time.Sleep(100 * time.Millisecond)
+		WriteClipboard(ctx, realPayload)
 	}()
-	
-	clipboard.WriteClipboard(want)
-	
-	select {
-	case Output := <-Outputch:
-		if !bytes.Equal(Output, []byte(want)) {
-			// This could be flaky if another program modifies the clipboard.
-			t.Logf("Input: %v Output: %v", want, Output)
-		}
-	case <-time.After(2 * time.Second):
-		t.Log("Timeout waiting for clipboard watch")
+
+	got := WatchClipboard(ctx)
+	if string(<-got) != realPayload {
+		t.Errorf("WatchClipboard() = %q; want %q", string(<-got), realPayload)
 	}
 }
