@@ -1,17 +1,14 @@
-# ✂️ ClipSync — Clipboard Sync That Actually Works
 
-<p align="center">
-  <img src="assets/logo.jpg" alt="ClipSync logo" width="120">
-</p>
 
-<p align="center">
-  <b>Copy on your laptop. Paste on your desktop. Done.</b><br>
+
+
+<h3 align="center">
+  <b>Copy on your Desktop. Paste on your Android. Done.</b><br>
   <sub>No cloud. No account. No friction. Just your clipboard, everywhere on your network.</sub>
-</p>
+</h3>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Built with Go">
-  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=for-the-badge" alt="Windows, macOS, Linux">
   <img src="https://img.shields.io/badge/Network-LAN%20Only%2C%20No%20Cloud-green?style=for-the-badge" alt="Local network only">
   <a href="https://diamondosas.github.io/clipsync/">
     <img src="https://img.shields.io/badge/Download-Now-blue?style=for-the-badge&logo=appveyor" alt="Download ClipSync">
