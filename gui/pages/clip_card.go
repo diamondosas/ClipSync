@@ -4,6 +4,7 @@ package pages
 import (
 	"strings"
 
+	"clipsync/gui/assets"
 	"clipsync/gui/themes"
 	"clipsync/gui/widgets"
 
@@ -90,22 +91,25 @@ func ClipCard(gtx layout.Context, th *material.Theme, item *ClipItem) layout.Dim
 							// Buttons on right
 							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 								return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-									// Pin button
+									// Pin / Unpin button with pushpin image icon
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-										pinLabel := "Pin"
 										pinBg := themes.ColorSurface
-										pinFg := themes.ColorTextMuted
 										if item.IsPinned {
-											pinLabel = "Unpin"
 											pinBg = themes.ColorCyan
-											pinFg = themes.ColorBg
 										}
-										btn := material.Button(th, &item.PinBtn, pinLabel)
-										btn.Background = pinBg
-										btn.Color = pinFg
-										btn.TextSize = unit.Sp(11)
-										btn.Inset = layout.Inset{Top: unit.Dp(3), Bottom: unit.Dp(3), Left: unit.Dp(6), Right: unit.Dp(6)}
-										return btn.Layout(gtx)
+
+										return material.Clickable(gtx, &item.PinBtn, func(gtx layout.Context) layout.Dimensions {
+											return widgets.RoundedBox(gtx, 4, pinBg, func(gtx layout.Context) layout.Dimensions {
+												return layout.Inset{Top: unit.Dp(3), Bottom: unit.Dp(3), Left: unit.Dp(6), Right: unit.Dp(6)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+													img := widget.Image{
+														Src:      assets.PinImageOp,
+														Scale:    0.6,
+														Position: layout.Center,
+													}
+													return img.Layout(gtx)
+												})
+											})
+										})
 									}),
 									layout.Rigid(layout.Spacer{Width: unit.Dp(6)}.Layout),
 									// Delete button
