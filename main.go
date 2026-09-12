@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 
 	"clipsync/gui"
@@ -30,8 +31,13 @@ func main() {
 		}
 	}()
 
-	systray.Register(func() { tray.OnTrayReady(cancel) }, tray.OnTrayExit)
-	
+	go func() {
+		runtime.LockOSThread()
+		systray.Run(
+			func(){ tray.OnTrayReady(cancel, gui.ShowWindow)},
+			tray.OnTrayExit,
+		)
+	}()
 	log.Println("[Main] Launching GUI...")
 	gui.StartGUI()
 }

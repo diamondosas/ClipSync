@@ -1,29 +1,51 @@
-//ai-generated
+// ai-generated
 package gui
 
 import (
 	_ "embed"
 	_ "image/jpeg"
 	"log"
-	"os"
+	"sync"
+
+	// "os"
 
 	"clipsync/gui/components"
 	"clipsync/gui/pages"
 	"clipsync/gui/themes"
-	"clipsync/gui/widgets" 
+	"clipsync/gui/widgets"
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
+	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
 )
-var Window *app.Window
+var(
+	Window *app.Window
+	windowMu sync.Mutex
+	isWindowOpen bool
+)
 // StartGUI initializes and runs the Gio-based user interface.
 // This function will block until the application is closed.
 func StartGUI() {
+	ShowWindow()
+	app.Main()
+}
+
+
+func ShowWindow(){
+	windowMu.Lock()
+	defer windowMu.Unlock()
+
+	if isWindowOpen {
+		if Window != nil{
+			Window.Perform(system.ActionRaise)
+		}
+		return
+	}
 	go func() {
 		w := new(app.Window)
 		w.Option(
@@ -35,11 +57,14 @@ func StartGUI() {
 			log.Fatal(err)
 		}
 
-		os.Exit(0)
+		windowMu.Lock()
+		isWindowOpen = false
+		Window = nil
+		windowMu.Unlock()
+		log.Println("[GUI] Window closed. ClipSync continues running in system tray.")
+		// os.Exit(0)
 	}()
-	app.Main()
 }
-
 func run(w *app.Window) error {
 	// Initialize a material theme with default fonts
 	th := material.NewTheme()
