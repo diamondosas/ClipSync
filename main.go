@@ -9,8 +9,10 @@ import (
 
 	"clipsync/gui"
 	"clipsync/internal/root"
-)
+	"clipsync/internal/tray"
 
+	"github.com/getlantern/systray"
+)
 
 func main() {
 	// Setup context for graceful shutdown
@@ -28,6 +30,8 @@ func main() {
 		}
 	}()
 
+	systray.Register(func() { tray.OnTrayReady(cancel) }, tray.OnTrayExit)
+	
 	log.Println("[Main] Launching GUI...")
 	gui.StartGUI()
 }

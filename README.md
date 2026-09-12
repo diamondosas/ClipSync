@@ -52,7 +52,7 @@ or
 
 ---
 
-## ⚙️ Linux Setup — One Extra Step
+## Linux Setup — One Extra Step
 
 On Linux, ClipSync needs access to the X11 or Wayland clipboard layer. Install the right libraries for your distro first:
 
