@@ -1,2 +1,0 @@
-Run Without CMD
-go run -ldflags="-H windowsgui" gioui.org/example/hello@latest
