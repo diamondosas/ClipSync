@@ -115,7 +115,7 @@ func layoutMain(gtx layout.Context, s *AppState) layout.Dimensions {
 					if s.ActiveTab == 0 {
 						return pages.DevicesPage(gtx, s.Theme, &s.DeviceList, s.Devices)
 					}
-					return pages.ClipboardPage(gtx, s.Theme, &s.ClipList, s.History)
+					return pages.ClipboardPage(gtx, s.Theme, &s.ClipList, s.ClipItems, &s.ClearClipsBtn)
 				}),
 
 				// Footer (Navigation Tabs)

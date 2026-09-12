@@ -23,7 +23,7 @@ func DevicesPage(gtx layout.Context, th *material.Theme, list *widget.List, devi
 		// Sub-header text
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return layout.Inset{Bottom: unit.Dp(12), Left: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				lbl := material.Body1(th, "looking for devices...")
+				lbl := material.Body1(th, "Searching for devices...")
 				lbl.Color = themes.ColorTextMuted
 				return lbl.Layout(gtx)
 			})

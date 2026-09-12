@@ -8,4 +8,7 @@ var (
 	ColorSurface   = color.NRGBA{R: 30, G: 30, B: 30, A: 255}    // Card Background
 	ColorText      = color.NRGBA{R: 255, G: 255, B: 255, A: 255} // White Text
 	ColorTextMuted = color.NRGBA{R: 150, G: 150, B: 150, A: 255} // Gray Text
+	ColorSurfacePinned = color.NRGBA{R: 28, G: 38, B: 46, A: 255} // Subtle cyan tint for pinned cards
+	ColorRed       = color.NRGBA{R: 220, G: 60, B: 60, A: 255}   // Warning / delete
 )
+
