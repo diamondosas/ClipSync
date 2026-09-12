@@ -63,7 +63,7 @@ func ShowWindow(){
 		Window = nil
 		windowMu.Unlock()
 		log.Println("[GUI] Window closed. ClipSync continues running in system tray.")
-		// os.Exit(0)
+
 	}()
 }
 func run(w *app.Window) error {
@@ -115,7 +115,16 @@ func layoutMain(gtx layout.Context, s *AppState) layout.Dimensions {
 					if s.ActiveTab == 0 {
 						return pages.DevicesPage(gtx, s.Theme, &s.DeviceList, s.Devices)
 					}
-					return pages.ClipboardPage(gtx, s.Theme, &s.ClipList, s.ClipItems, &s.ClearClipsBtn)
+					return pages.ClipboardPage(
+						gtx,
+						s.Theme,
+						&s.ClipList,
+						s.FilteredClips(),
+						&s.ClearClipsBtn,
+						&s.SearchEditor,
+						&s.SearchClearBtn,
+						len(s.ClipItems),
+					)
 				}),
 
 				// Footer (Navigation Tabs)

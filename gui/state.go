@@ -4,6 +4,7 @@ package gui
 import (
 	"context"
 	"log"
+	"strings"
 
 	"clipsync/gui/pages"
 	"clipsync/gui/utils"
@@ -29,9 +30,11 @@ type AppState struct {
 	Devices    []pages.Device
 
 	// Clipboard Page State
-	ClipList      widget.List
-	ClipItems     []*pages.ClipItem
-	ClearClipsBtn widget.Clickable
+	ClipList       widget.List
+	ClipItems      []*pages.ClipItem
+	ClearClipsBtn  widget.Clickable
+	SearchEditor   widget.Editor
+	SearchClearBtn widget.Clickable
 
 	// Dialog State
 	HelpBtn      widget.Clickable
@@ -57,6 +60,7 @@ func NewAppState(th *material.Theme) *AppState {
 	// Setup Lists to be Vertical
 	s.DeviceList.Axis = layout.Vertical
 	s.ClipList.Axis = layout.Vertical
+	s.SearchEditor.Submit = true
 
 	// Load pinned clips from persistent disk storage
 	for _, text := range utils.LoadPinned() {
@@ -265,3 +269,20 @@ func (s *AppState) persistPinned() {
 		}
 	}(texts)
 }
+
+// FilteredClips returns clips matching the current search text (case-insensitive).
+func (s *AppState) FilteredClips() []*pages.ClipItem {
+	query := strings.TrimSpace(strings.ToLower(s.SearchEditor.Text()))
+	if query == "" {
+		return s.ClipItems
+	}
+
+	var matched []*pages.ClipItem
+	for _, item := range s.ClipItems {
+		if strings.Contains(strings.ToLower(item.Content), query) {
+			matched = append(matched, item)
+		}
+	}
+	return matched
+}
+
