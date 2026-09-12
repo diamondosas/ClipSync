@@ -41,7 +41,7 @@ func Toast(gtx layout.Context, th *material.Theme, message string, startTime tim
 		alpha = uint8((float32(remaining) / float32(fadeOut)) * 255)
 	}
 
-	bgColor := color.NRGBA{R: 28, G: 36, B: 44, A: alpha}
+	bgColor := color.NRGBA{R: themes.ColorSurface.R, G: themes.ColorSurface.G, B: themes.ColorSurface.B, A: alpha}
 	textColor := color.NRGBA{R: themes.ColorText.R, G: themes.ColorText.G, B: themes.ColorText.B, A: alpha}
 
 	return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {

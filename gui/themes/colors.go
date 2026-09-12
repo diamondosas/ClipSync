@@ -1,14 +1,30 @@
+// ai-generated
 package themes
 
 import "image/color"
 
 var (
-	ColorBg        = color.NRGBA{R: 18, G: 18, B: 18, A: 255}    // Dark Background
-	ColorCyan      = color.NRGBA{R: 0, G: 194, B: 255, A: 255}   // Electric Cyan
-	ColorSurface   = color.NRGBA{R: 30, G: 30, B: 30, A: 255}    // Card Background
-	ColorText      = color.NRGBA{R: 255, G: 255, B: 255, A: 255} // White Text
-	ColorTextMuted = color.NRGBA{R: 150, G: 150, B: 150, A: 255} // Gray Text
-	ColorSurfacePinned = color.NRGBA{R: 28, G: 38, B: 46, A: 255} // Subtle cyan tint for pinned cards
-	ColorRed       = color.NRGBA{R: 220, G: 60, B: 60, A: 255}   // Warning / delete
+	// Root background: Pure Black
+	ColorBg = color.NRGBA{R: 0, G: 0, B: 0, A: 255} // #000000 Pure Black
+
+	// Primary Accent: #B26925 (Rich Amber / Terracotta Brown)
+	ColorBrown  = color.NRGBA{R: 178, G: 105, B: 37, A: 255} // #B26925 Rich Amber Brown
+	ColorCyan   = ColorBrown                                 // Alias for backward compatibility across components
+	ColorAccent = ColorBrown
+
+	// Primary Text: #DAC9B9 (Warm Cream / Almond)
+	ColorCream = color.NRGBA{R: 218, G: 201, B: 185, A: 255} // #DAC9B9 Warm Cream
+	ColorText  = ColorCream
+
+	// Secondary Text / Subtitles: Warm Sand / Taupe
+	ColorTextMuted = color.NRGBA{R: 168, G: 148, B: 132, A: 255} // #A89484 Warm Muted Sand
+
+	// Surface & Card Backgrounds: Deep Warm Espresso Brown (for rich brown ambiance throughout)
+	ColorSurface       = color.NRGBA{R: 42, G: 27, B: 17, A: 255} // #2A1B11 Deep Warm Espresso Brown
+	ColorSurfacePinned = color.NRGBA{R: 72, G: 42, B: 22, A: 255} // #482A16 Rich Amber Brown Glow for Pinned Cards
+
+	// Destructive Action: Warm Rustic Terracotta Red
+	ColorRed = color.NRGBA{R: 215, G: 75, B: 60, A: 255} // #D74B3C Warning / Delete
 )
+
 

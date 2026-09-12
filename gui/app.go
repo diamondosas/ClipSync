@@ -70,6 +70,10 @@ func run(w *app.Window) error {
 	// Initialize a material theme with default fonts
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
+	th.Palette.Fg = themes.ColorText
+	th.Palette.Bg = themes.ColorBg
+	th.Palette.ContrastBg = themes.ColorBrown
+	th.Palette.ContrastFg = themes.ColorBg
 	Window = w
 	// Create application state
 	state := NewAppState(th)
