@@ -265,7 +265,7 @@ func (s *AppState) HandleClipEvents(gtx layout.Context) {
 	pinnedChanged := false
 
 	for _, item := range s.ClipItems {
-		// 1. Delete clicked
+		// 1. Delete clicked -> remove clip, skip copy
 		if item.DeleteBtn.Clicked(gtx) {
 			if item.IsPinned {
 				pinnedChanged = true
@@ -273,15 +273,25 @@ func (s *AppState) HandleClipEvents(gtx layout.Context) {
 			continue
 		}
 
-		// 2. Pin toggled
+		// 2. Pin toggled -> toggle pin, skip copy
 		if item.PinBtn.Clicked(gtx) {
 			item.IsPinned = !item.IsPinned
 			pinnedChanged = true
+			remaining = append(remaining, item)
+			continue
 		}
 
-		// 3. Card clicked -> write to system clipboard
+		// 3. Expand toggled -> toggle expansion, skip copy
+		if item.ExpandBtn.Clicked(gtx) {
+			item.IsExpanded = !item.IsExpanded
+			remaining = append(remaining, item)
+			continue
+		}
+
+		// 4. Entire card clicked -> write to system clipboard
 		if item.CardBtn.Clicked(gtx) {
 			_, _ = clipboard.Write(context.Background(), clipboard.FmtText, []byte(item.Content))
+			s.TriggerToast("Copied")
 		}
 
 		remaining = append(remaining, item)

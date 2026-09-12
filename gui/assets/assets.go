@@ -20,7 +20,7 @@ var PinImageOp paint.ImageOp
 func init() {
 	img, _, err := image.Decode(bytes.NewReader(PinIconBytes))
 	if err != nil {
-		log.Printf("[Assets] Failed to decode pin_small.png: %v", err)
+		log.Printf("[Assets] Failed to decode pin.png: %v", err)
 		return
 	}
 	PinImageOp = paint.NewImageOp(img)

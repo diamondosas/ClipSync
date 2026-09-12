@@ -43,6 +43,9 @@ func ClipboardPage(
 						if len(searchEditor.Text()) > 0 {
 							countStr = fmt.Sprintf("%d of %d clips", len(clips), totalClips)
 						}
+						if totalClips > 0 {
+							countStr += " • Click to copy"
+						}
 						lbl := material.Caption(th, countStr)
 						lbl.Color = themes.ColorTextMuted
 						return lbl.Layout(gtx)
