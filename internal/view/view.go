@@ -44,6 +44,19 @@ func UpdateClipboard(data string) {
 	}
 }
 
+// UpdateClipboardSynced sends incoming clipboard text from the network and triggers a sync notification
+func UpdateClipboardSynced(data string) {
+	UpdateClipboard(data)
+	if gui.State != nil && gui.State.ToastUpdates != nil {
+		select {
+		case gui.State.ToastUpdates <- "Synced new clip":
+			RedrawUI()
+		default:
+		}
+	}
+}
+
+
 // UpdateDevices updates the global and GUI device list based on reachable IPs
 func UpdateDevices(activeIPs []string) {
 	activeMap := make(map[string]bool, len(activeIPs))

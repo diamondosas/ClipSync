@@ -98,9 +98,12 @@ func layoutMain(gtx layout.Context, s *AppState) layout.Dimensions {
 	// Root background color
 	return widgets.ColorBox(gtx, themes.ColorBg, func(gtx layout.Context) layout.Dimensions {
 
-		// The main content of the application (Header, Body, Footer)
+		// The main content of the application (Header, Body, Footer + Toast)
 		mainContent := func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+			// Enforce full width so SpaceBetween and right-aligned buttons spread across the window
+			gtx.Constraints.Min.X = gtx.Constraints.Max.X
+
+			dims := layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				// Header (Persistent)
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					title := "ClipSync"
@@ -132,6 +135,19 @@ func layoutMain(gtx layout.Context, s *AppState) layout.Dimensions {
 					return components.FooterTabs(gtx, s.Theme, s.ActiveTab, &s.TabBtns)
 				}),
 			)
+
+			// Floating Toast Notification (rendered on top above footer)
+			if s.ToastMsg != "" && !s.ToastStartTime.IsZero() {
+				layout.Stack{Alignment: layout.S}.Layout(gtx,
+					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+						return layout.Inset{Bottom: unit.Dp(56)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							return components.Toast(gtx, s.Theme, s.ToastMsg, s.ToastStartTime)
+						})
+					}),
+				)
+			}
+
+			return dims
 		}
 
 		// Overlay the Help Dialog if `s.ShowHelp` is true

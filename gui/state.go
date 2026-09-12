@@ -5,6 +5,7 @@ import (
 	"context"
 	"log"
 	"strings"
+	"time"
 
 	"clipsync/gui/pages"
 	"clipsync/gui/utils"
@@ -36,6 +37,11 @@ type AppState struct {
 	SearchEditor   widget.Editor
 	SearchClearBtn widget.Clickable
 
+	// Toast State
+	ToastMsg       string
+	ToastStartTime time.Time
+	ToastUpdates   chan string
+
 	// Dialog State
 	HelpBtn      widget.Clickable
 	CloseHelpBtn widget.Clickable
@@ -53,6 +59,7 @@ func NewAppState(th *material.Theme) *AppState {
 		Theme:              th,
 		Devices:            []pages.Device{},
 		ClipItems:          []*pages.ClipItem{},
+		ToastUpdates:       make(chan string, 20),
 		DeviceUpdates:      make(chan pages.Device, 50),
 		DevicePruneUpdates: make(chan []string, 10),
 		ClipUpdates:        make(chan string, 50),
@@ -74,9 +81,26 @@ func NewAppState(th *material.Theme) *AppState {
 	return s
 }
 
+// TriggerToast triggers a temporary floating notification banner.
+func (s *AppState) TriggerToast(msg string) {
+	s.ToastMsg = msg
+	s.ToastStartTime = time.Now()
+}
+
 // UpdateUIValues drains background channels into UI slices.
 func (s *AppState) UpdateUIValues() {
-	// 1. Drain new device updates
+	// 1. Drain toast messages (e.g. from network sync)
+	for {
+		select {
+		case msg := <-s.ToastUpdates:
+			s.TriggerToast(msg)
+		default:
+			goto CheckDevices
+		}
+	}
+
+CheckDevices:
+	// 2. Drain new device updates
 	for {
 		select {
 		case dev := <-s.DeviceUpdates:
@@ -89,6 +113,7 @@ func (s *AppState) UpdateUIValues() {
 			}
 			if !exists {
 				s.Devices = append(s.Devices, dev)
+				s.TriggerToast("Device connected: " + dev.Name)
 			}
 		default:
 			goto CheckPrune
@@ -96,7 +121,7 @@ func (s *AppState) UpdateUIValues() {
 	}
 
 CheckPrune:
-	// 2. Drain device pruning updates
+	// 3. Drain device pruning updates
 	for {
 		select {
 		case activeIPs := <-s.DevicePruneUpdates:
@@ -108,6 +133,8 @@ CheckPrune:
 			for _, d := range s.Devices {
 				if activeMap[d.IP] {
 					remaining = append(remaining, d)
+				} else {
+					s.TriggerToast("Device disconnected: " + d.Name)
 				}
 			}
 			s.Devices = remaining
@@ -117,7 +144,7 @@ CheckPrune:
 	}
 
 CheckClip:
-	// 3. Drain clipboard updates
+	// 4. Drain clipboard updates
 	for {
 		select {
 		case clip := <-s.ClipUpdates:

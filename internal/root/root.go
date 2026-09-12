@@ -79,7 +79,7 @@ func StartClipSync(ctx context.Context) error {
 					data := string(buffer[:n])
 					log.Printf("[Sync] Received new clipboard data (%d bytes)", n)
 					clipboard.WriteClipboard(ctx, data)
-					view.UpdateClipboard(data)
+					view.UpdateClipboardSynced(data)
 				}
 			}
 		}
