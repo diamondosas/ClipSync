@@ -16,6 +16,7 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
+	"gioui.org/io/event"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -50,9 +51,8 @@ func ShowWindow(){
 		w := new(app.Window)
 		w.Option(
 			app.Title("ClipSync"),
-			app.Size(unit.Dp(250), unit.Dp(400)),
-			app.MaxSize(unit.Dp(250), unit.Dp(400)),
-			app.MinSize(unit.Dp(250), unit.Dp(400)),
+			app.Size(unit.Dp(300), unit.Dp(480)),
+			app.MinSize(unit.Dp(260), unit.Dp(380)),
 		)
 		if err := run(w); err != nil {
 			log.Fatal(err)
@@ -100,6 +100,9 @@ func layoutMain(gtx layout.Context, s *AppState) layout.Dimensions {
 
 		// The main content of the application (Header, Body, Footer + Toast)
 		mainContent := func(gtx layout.Context) layout.Dimensions {
+			// Register for global keyboard events
+			event.Op(gtx.Ops, s)
+
 			// Enforce full width so SpaceBetween and right-aligned buttons spread across the window
 			gtx.Constraints.Min.X = gtx.Constraints.Max.X
 

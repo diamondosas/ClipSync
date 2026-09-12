@@ -11,6 +11,7 @@ import (
 	"clipsync/gui/utils"
 	"golang.design/x/clipboard"
 
+	"gioui.org/io/key"
 	"gioui.org/layout"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -197,6 +198,9 @@ func (s *AppState) AddClip(text string) {
 func (s *AppState) Update(gtx layout.Context) {
 	s.UpdateUIValues()
 
+	// Handle Arrow Key Navigation (Left/Right to switch tabs)
+	s.HandleKeyEvents(gtx)
+
 	// Handle Tab Clicks
 	for i := range s.TabBtns {
 		if s.TabBtns[i].Clicked(gtx) {
@@ -219,6 +223,40 @@ func (s *AppState) Update(gtx layout.Context) {
 
 	// Handle Clipboard Item Actions (Copy, Pin, Delete)
 	s.HandleClipEvents(gtx)
+}
+
+// HandleKeyEvents navigates tabs using Left and Right arrow keys when search input is not focused.
+func (s *AppState) HandleKeyEvents(gtx layout.Context) {
+	// If search input is focused, allow normal caret navigation or Escape to unfocus
+	if gtx.Focused(&s.SearchEditor) {
+		for {
+			ev, ok := gtx.Event(key.Filter{Name: key.NameEscape})
+			if !ok {
+				break
+			}
+			if e, ok := ev.(key.Event); ok && e.State == key.Press {
+				gtx.Execute(key.FocusCmd{Tag: nil})
+			}
+		}
+		return
+	}
+
+	for {
+		ev, ok := gtx.Event(
+			key.Filter{Name: key.NameLeftArrow},
+			key.Filter{Name: key.NameRightArrow},
+		)
+		if !ok {
+			break
+		}
+		if e, ok := ev.(key.Event); ok && e.State == key.Press {
+			if e.Name == key.NameLeftArrow {
+				s.ActiveTab = 0 // Devices
+			} else if e.Name == key.NameRightArrow {
+				s.ActiveTab = 1 // Clipboard
+			}
+		}
+	}
 }
 
 // HandleClipEvents checks clicks on individual clipboard cards.
