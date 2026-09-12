@@ -46,7 +46,7 @@ Get the latest binary for your OS — run it, done.
 **[Download ClipSync — Windows, macOS, Linux](https://diamondosas.github.io/clipsync/)**
 
 or
-**[Go to Realeases]**(ttps://github.com/diamondosas/clipsync/releases)
+**[Go to Realeases]**(https://github.com/diamondosas/clipsync/releases)
 
 ---
 
@@ -72,8 +72,8 @@ sudo dnf install libX11-devel libwayland-dev libxkbcommon-dev vulkan-headers
 sudo pacman -S libx11 libwayland-dev libxkbcommon-dev libvulkan-dev
 ```
 
-**NB**: If you are using **Wayland ** Display Server do 
-
+**NB**: If you are using **Wayland** Display Server 
+_check using :_ `echo $XDG_SESSION_TYPE`
 ```bash
 sudo apt install wl-clipboard
 ```
