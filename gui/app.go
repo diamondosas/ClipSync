@@ -50,6 +50,7 @@ func ShowWindow(){
 		w := new(app.Window)
 		w.Option(
 			app.Title("ClipSync"),
+			app.Size(unit.Dp(250), unit.Dp(400)),
 			app.MaxSize(unit.Dp(250), unit.Dp(400)),
 			app.MinSize(unit.Dp(250), unit.Dp(400)),
 		)
