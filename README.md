@@ -1,7 +1,3 @@
-
-
-
-
 <h3 align="center">
   <b>Copy on your Desktop. Paste on your Android. Done.</b><br>
   <sub>No cloud. No account. No friction. Just your clipboard, everywhere on your network.</sub>
@@ -17,9 +13,7 @@
 
 ---
 
-**ClipSync** is an open-source clipboard tool that syncs across every device on your local network — Windows, macOS, Linux — instantly. Built in Go. Runs silent. Uses barely any RAM. No servers, no accounts, no nonsense.
-
-> Emailing yourself links in 2026 is embarrassing. Stop it.
+**ClipSync** is an open-source clipboard tool that syncs across every device on your local network — Windows, macOS, Linux — instantly. Built in Go. Runs silent. Uses barely any CPU,  RAM. No servers.
 
 ---
 
@@ -32,62 +26,29 @@
 
 ---
 
-### 🚨 Why It Matters
+## Features
 
-<table>
-<tr>
-<td width="33%" align="center" valign="top">⚡<br><b>Instant sync</b><br><sub>Copy on one machine,<br>paste on another — fast</sub></td>
-<td width="33%" align="center" valign="top">🔒<br><b>100% private</b><br><sub>Data never leaves<br>your local network</sub></td>
-<td width="33%" align="center" valign="top">🆓<br><b>Free forever</b><br><sub>No subscriptions.<br>No premium tiers.</sub></td>
-</tr>
-<tr>
-<td align="center" valign="top">🌐<br><b>Works everywhere</b><br><sub>Windows · macOS · Linux<br>X11 and Wayland</sub></td>
-<td align="center" valign="top">🔌<br><b>Zero setup</b><br><sub>Devices find each other<br>automatically on LAN</sub></td>
-<td align="center" valign="top">🪶<br><b>Tiny footprint</b><br><sub>~5 MB RAM · ~0.1% CPU<br>runs silently in background</sub></td>
-</tr>
-</table>
+- Fast clipboard sync across devices
+- Local-network only—your data stays private
+- Free forever with no subscriptions
+- Works on Windows, macOS, and Linux
+- Supports both X11 and Wayland
+- Automatic device discovery
+- Lightweight background process (~5 MB RAM, ~0.1% CPU)
+
 
 ---
 
-## 📥 Download ClipSync
+## Download ClipSync
 
 Get the latest binary for your OS — run it, done.
 
-**[⬇️ Download ClipSync — Windows, macOS, Linux](https://diamondosas.github.io/clipsync/)**
+**[Download ClipSync — Windows, macOS, Linux](https://diamondosas.github.io/clipsync/)**
+
+or
+**[Go to Realeases]**(ttps://github.com/diamondosas/clipsync/releases)
 
 ---
-
-## 🆚 ClipSync vs. Everything Else
-
-Most clipboard tools do too much. Mouse sharing, file transfer, notification mirroring — nobody asked for that. ClipSync does one thing: clipboard sync. Lean. Fast. Free.
-
-| Tool | Free | No Cloud | Cross-Platform | Open Source |
-|---|---|---|---|---|
-| **ClipSync** | ✅ | ✅ | ✅ | ✅ |
-| KDE Connect | ✅ | ✅ | Partial | ✅ |
-| Synergy | ❌ | ✅ | ✅ | Partial |
-| ShareMouse | ❌ | ✅ | ✅ | ❌ |
-| Pushbullet | Partial | ❌ | ✅ | ❌ |
-| Apple Handoff | ✅ | ❌ | Apple only | ❌ |
-
----
-
-## 🚀 Get It Running in 60 Seconds
-
-### Option 1: Download the Binary
-
-Go to **[diamondosas.github.io/clipsync](https://diamondosas.github.io/clipsync/)**, grab the file for your OS, run it. That's it. ClipSync starts listening on your network immediately.
-
-### Option 2: Build From Source
-
-```bash
-# Clone the repo
-git clone https://github.com/DiamondOsas/ClipSync.git
-cd ClipSync
-
-# Run it
-go run main.go
-```
 
 ---
 
@@ -111,32 +72,13 @@ sudo dnf install libX11-devel libwayland-dev libxkbcommon-dev vulkan-headers
 sudo pacman -S libx11 libwayland-dev libxkbcommon-dev libvulkan-dev
 ```
 
-**NB**: If you are using Wayland Display Server do 
+**NB**: If you are using **Wayland ** Display Server do 
 
 ```bash
 sudo apt install wl-clipboard
 ```
 
 ---
-
-## 🔍 How It Works
-
-ClipSync finds other ClipSync devices on your network automatically — no IPs, no pairing screens, no config files. When you copy something, it broadcasts to all connected devices over your LAN. Near-instant. Never leaves your network.
-
-**Use it for:**
-- Sync clipboard between your Windows PC and MacBook on the same Wi-Fi
-- Copy terminal output on a Linux server, paste it locally
-- Share a URL across machines in your home office without opening Slack
-- Move code snippets between desktop and laptop, fast
-
----
-
-## 🐛 Found a Bug? Want a Feature?
-
-ClipSync is actively built. If something breaks or you have an idea:
-
-👉 **[Open an issue on GitHub](https://github.com/DiamondOsas/ClipSync/issues)**
-
 ---
 
 ## ⭐ Star History
@@ -150,7 +92,3 @@ If ClipSync saves you time, star it. Helps other people find it.
 </picture> -->
 
 ---
-
-## 🏷️ Keywords
-
-`clipboard sync` · `cross-device clipboard` · `local network clipboard` · `LAN clipboard manager` · `copy paste between computers` · `clipboard sharing tool` · `sync clipboard Windows macOS Linux` · `offline clipboard sync` · `no cloud clipboard` · `KDE Connect alternative` · `developer productivity tool` · `Go clipboard tool`
