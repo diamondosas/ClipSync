@@ -30,7 +30,7 @@ func SendPing(ip string) {
 		return
 	}
 
-	msg := []byte(MsgTypePing)
+	msg := []byte{MsgTypePing}
 	payload := make([]byte, 4+len(msg))
 	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
 	copy(payload[4:], msg)

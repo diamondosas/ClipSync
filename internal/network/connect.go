@@ -28,7 +28,7 @@ func Connect(ip string) {
 		log.Println(err)
 		return
 	}
-	msg := []byte(MsgTypeHandshake)
+	msg := []byte{MsgTypeHandshake}
 	payload := make([]byte, 4+len(msg))
 	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
 	copy(payload[4:], msg)

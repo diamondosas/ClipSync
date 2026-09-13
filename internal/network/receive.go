@@ -34,9 +34,9 @@ func ReceiveData() ([]byte, int) {
 	length := binary.BigEndian.Uint32(tmpBuf[:4])
 	receivedData := tmpBuf[4 : 4+length]
 
-	if slices.Equal(receivedData, []byte(MsgTypeHandshake)) {
+	if slices.Equal(receivedData, []byte{MsgTypeHandshake}){
 		UpdateIP()
-	} else if slices.Equal(receivedData, []byte(MsgTypePing)) {
+	} else if slices.Equal(receivedData, []byte{MsgTypePing}) {
 		UpdateDeviceState()
 	} else {
 		// Set LastRecievedClip to receivedData so other goroutines checking network.LastRecievedClip match correctly
