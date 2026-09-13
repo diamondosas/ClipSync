@@ -10,6 +10,11 @@ import (
 func AddNewDevice(device internal.Device) {
 	// 1. Update Global State
 	internal.ConnDevicesMu.Lock()
+	for i := range internal.ConnDevices {
+		if internal.ConnDevices[i] == device {
+			return
+		}
+	}
 	internal.ConnDevices = append(internal.ConnDevices, device)
 	internal.ConnDevicesMu.Unlock()
 
@@ -18,6 +23,7 @@ func AddNewDevice(device internal.Device) {
 		select {
 		case gui.State.DeviceUpdates <- pages.Device{Name: device.Name, IP: device.Ip}:
 			RedrawUI()
+		default:
 		}
 	}
 }
@@ -55,7 +61,6 @@ func UpdateClipboardSynced(data string) {
 		}
 	}
 }
-
 
 // UpdateDevices updates the global and GUI device list based on reachable IPs
 func UpdateDevices(activeIPs []string) {

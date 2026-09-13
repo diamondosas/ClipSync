@@ -67,7 +67,7 @@ sudo apt install libx11-dev libwayland-dev libxkbcommon-dev libvulkan-dev
 sudo dnf install libX11-devel libwayland-dev libxkbcommon-dev vulkan-headers
 ```
 
-**Arch / Manjaro / EndeavourOS**
+**Arch / Manjaro / EndeavourOS**w
 ```bash
 sudo pacman -S libx11 libwayland-dev libxkbcommon-dev libvulkan-dev
 ```

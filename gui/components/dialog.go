@@ -12,7 +12,9 @@ import (
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
-var helpMsg string =  "Start the Application on another device & Make sure devices are on the same network."
+
+var helpMsg string = "Start the Application on another device & Make sure devices are on the same network."
+
 // HelpDialog overlays a help message over the current layout if show is true.
 func HelpDialog(gtx layout.Context, th *material.Theme, closeBtn *widget.Clickable, show bool, underlying layout.Widget) layout.Dimensions {
 	// Always lay out the underlying content first
@@ -29,7 +31,7 @@ func HelpDialog(gtx layout.Context, th *material.Theme, closeBtn *widget.Clickab
 		// 1. Background content (already rendered, we just need to stack it so it's behind)
 		// Actually, standard Gio way is to render the underlying content inside the stack,
 		// but since we called it above to get dims, we can just render it again or assume
-		// the overlay draws on top of whatever was just drawn. 
+		// the overlay draws on top of whatever was just drawn.
 		// By drawing our scrim with `Expanded` it will cover the previous drawing operations.
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			return widgets.ColorBox(gtx, scrimColor, func(gtx layout.Context) layout.Dimensions {

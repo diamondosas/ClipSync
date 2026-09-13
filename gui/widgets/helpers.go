@@ -15,11 +15,11 @@ func ColorBox(gtx layout.Context, c color.NRGBA, inner layout.Widget) layout.Dim
 	m := op.Record(gtx.Ops)
 	dims := inner(gtx)
 	call := m.Stop()
-	
+
 	// Draw the background color
 	defer clip.Rect{Max: dims.Size}.Push(gtx.Ops).Pop()
 	paint.Fill(gtx.Ops, c)
-	
+
 	// Add the widget content on top
 	call.Add(gtx.Ops)
 	return dims
@@ -30,14 +30,14 @@ func RoundedBox(gtx layout.Context, radius int, c color.NRGBA, inner layout.Widg
 	m := op.Record(gtx.Ops)
 	dims := inner(gtx)
 	call := m.Stop()
-	
+
 	// Draw the rounded background color
 	defer clip.RRect{
 		Rect: image.Rect(0, 0, dims.Size.X, dims.Size.Y),
 		NW:   radius, NE: radius, SW: radius, SE: radius,
 	}.Push(gtx.Ops).Pop()
 	paint.Fill(gtx.Ops, c)
-	
+
 	// Add the widget content on top
 	call.Add(gtx.Ops)
 	return dims

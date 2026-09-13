@@ -8,7 +8,7 @@ import (
 	"golang.design/x/clipboard"
 )
 
-func init()  {	
+func init() {
 	err := clipboard.Init()
 	if err != nil {
 		log.Println(err)
@@ -17,36 +17,39 @@ func init()  {
 }
 
 func CopyClipboard(ctx context.Context) string {
-	data, err  := clipboard.Read(ctx, clipboard.FmtText)
-	if err != nil{
+	data, err := clipboard.Read(ctx, clipboard.FmtText)
+	if err != nil {
 		log.Println("Could not read Clipboard")
 	}
 	return string(data)
 }
 
 func WriteClipboard(ctx context.Context, data string) {
-	byte := []byte(data)
-	_, _ = clipboard.Write(ctx, clipboard.FmtText, byte)
+	buf := []byte(data)
+	_, _ = clipboard.Write(ctx, clipboard.FmtText, buf)
 }
 
 func WatchClipboard(ctx context.Context) <-chan []byte {
 	text := clipboard.Watch(ctx, clipboard.FmtText)
 	var out = make(chan []byte, 1)
 
-	go func(){
+	//REFACTOR: Put in root.go so that it ca avoid it importing network module
+	go func() {
 		for {
 			select {
-			case data:= <-text:
-				if !network.IsLastReceived(data.Bytes){
-					select{
+			case data := <-text:
+				if !network.IsLastReceived(data.Bytes) {
+					select {
 					case out <- data.Bytes:
+					case <-ctx.Done():
+						return
 					}
 				}
 			case <-ctx.Done():
-				return 
-			}		
+				return
+			}
 		}
 	}()
 
-	return out	
+	return out
 }

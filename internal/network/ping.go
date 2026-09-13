@@ -23,14 +23,14 @@ func SendPing(ip string) {
 		return
 	}
 
-	addr, err := net.ResolveUDPAddr("udp", ip + ":" + internal.PORT)
+	addr, err := net.ResolveUDPAddr("udp", ip+":"+internal.PORT)
 
 	if err != nil {
 		log.Println("SendPing Resolve Error:", err)
 		return
 	}
 
-	msg := []byte("~")
+	msg := []byte(MsgTypePing)
 	payload := make([]byte, 4+len(msg))
 	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
 	copy(payload[4:], msg)
@@ -44,12 +44,9 @@ func SendPing(ip string) {
 
 func CheckForPing() {
 	internal.ConnDevicesMu.Lock()
-	time.Sleep(time.Second * 1)
-	for i := range 	internal.ConnDevices{
-		if string(Addr.IP.String()) == string(internal.ConnDevices[i].Ip){
-			if (time.Since(internal.ConnDevices[i].LastSeen) <= (time.Second * 11)){
-				internal.ConnDevices[i].Alive = false
-			}
+	for i := range internal.ConnDevices {
+		if time.Since(internal.ConnDevices[i].LastSeen) >= (time.Second * 5) {
+			internal.ConnDevices[i].Alive = false
 		}
 	}
 	internal.ConnDevicesMu.Unlock()

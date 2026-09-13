@@ -2,10 +2,10 @@
 package clipboard
 
 import (
+	"clipsync/internal/network"
 	"context"
 	"testing"
 	"time"
-	"clipsync/internal/network"
 )
 
 func TestClipboard_ReadWrite(t *testing.T) {
@@ -37,8 +37,9 @@ func TestWatchClipboard_IgnoreNetworkClip(t *testing.T) {
 
 	// Simulate incoming network clip so WatchClipboard ignores it
 	ignoredPayload := []byte("sync-from-laptop")
+	network.BufferMu.Lock()
 	network.LastReceivedClip = ignoredPayload
-
+	network.BufferMu.Unlock()
 	// Write the ignored text
 	WriteClipboard(ctx, string(ignoredPayload))
 

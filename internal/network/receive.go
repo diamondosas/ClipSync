@@ -11,37 +11,42 @@ import (
 
 var Addr *net.UDPAddr
 
-func RecieveData() ([]byte, int) {
+const (
+	MsgTypeHandshake byte = 0x01
+	MsgTypePing      byte = 0x02
+)
+
+func ReceiveData() ([]byte, int) {
 	if Conn == nil {
-		log.Println("RecieveClipboard: Conn is nil. Waiting for Ready...")
+		log.Println("ReceiveClipboard: Conn is nil. Waiting for Ready...")
 		<-Ready
 	}
 
 	tmpBuf := make([]byte, 65535)
-	_, addr, err := Conn.ReadFromUDP(tmpBuf)
+	n, addr, err := Conn.ReadFromUDP(tmpBuf)
 	Addr = addr
 
-	if err != nil {
+	if err != nil || n < 4 {
 		log.Println("ReadFromUDP Error:", err)
 		return nil, 0
 	}
 
 	length := binary.BigEndian.Uint32(tmpBuf[:4])
-	recievedData := tmpBuf[4 : 4+length]
+	receivedData := tmpBuf[4 : 4+length]
 
-	if slices.Equal(recievedData, []byte("---ClipSync---")) {
+	if slices.Equal(receivedData, []byte(MsgTypeHandshake)) {
 		UpdateIP()
-	} else if slices.Equal(recievedData, []byte("~")) {
+	} else if slices.Equal(receivedData, []byte(MsgTypePing)) {
 		UpdateDeviceState()
 	} else {
-		// Set LastRecievedClip to recievedData so other goroutines checking network.LastRecievedClip match correctly
+		// Set LastRecievedClip to receivedData so other goroutines checking network.LastRecievedClip match correctly
 		BufferMu.Lock()
-		LastReceivedClip = make([]byte, len(recievedData))
-		copy(LastReceivedClip, recievedData)
+		LastReceivedClip = make([]byte, len(receivedData))
+		copy(LastReceivedClip, receivedData)
 		BufferMu.Unlock()
 
-		log.Println("Recieved Clipboard From Addr:", addr, "Content Length:", len(LastReceivedClip	))
-		return recievedData, len(recievedData)
+		log.Println("Recieved Clipboard From Addr:", addr, "Content Length:", len(LastReceivedClip))
+		return receivedData, len(receivedData)
 	}
 
 	return nil, 0
@@ -65,11 +70,11 @@ func UpdateIP() {
 func UpdateDeviceState() {
 	internal.ConnDevicesMu.Lock()
 	for i := range internal.ConnDevices {
-		if string(Addr.IP.String()) == string(internal.ConnDevices[i].Ip){
+		if string(Addr.IP.String()) == string(internal.ConnDevices[i].Ip) {
 			internal.ConnDevices[i].Alive = true
 			internal.ConnDevices[i].LastSeen = time.Now()
 		}
 	}
 	internal.ConnDevicesMu.Unlock()
-	
+
 }

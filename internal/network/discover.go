@@ -9,8 +9,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/grandcat/zeroconf"
 	"clipsync/internal/view"
+	"github.com/grandcat/zeroconf"
 )
 
 var Entries = make(chan *zeroconf.ServiceEntry)
@@ -18,12 +18,13 @@ var Entries = make(chan *zeroconf.ServiceEntry)
 func RegisterDevice(ctx context.Context) error {
 	internal.Username, _ = os.Hostname()
 	name := internal.Username
+	// internal.UsernameMu.Unlock()
 
 	ifaces := getAllInterfaces()
 
-	intPORT, _ := strconv.ParseInt(internal.PORT, 10, 8)
+	intPORT, _ := strconv.Atoi(internal.PORT)
 
-	server, err := zeroconf.Register(name, "_clipsync._tcp", "local.", int(intPORT), []string{""}, ifaces)
+	server, err := zeroconf.Register(name, "_clipsync._udp", "local.", int(intPORT), []string{""}, ifaces)
 
 	if err != nil {
 		log.Println(err)
@@ -40,7 +41,7 @@ func RegisterDevice(ctx context.Context) error {
 
 func BrowseForDevices(ctx context.Context) error {
 	ifaces := getAllInterfaces()
-	reslover, err := zeroconf.NewResolver(zeroconf.SelectIfaces(ifaces))
+	resolver, err := zeroconf.NewResolver(zeroconf.SelectIfaces(ifaces))
 
 	if err != nil {
 		log.Println(err)
@@ -49,7 +50,7 @@ func BrowseForDevices(ctx context.Context) error {
 
 	go entry(Entries)
 
-	err = reslover.Browse(ctx, "_clipsync._tcp", "local.", Entries)
+	err = resolver.Browse(ctx, "_clipsync._tcp", "local.", Entries)
 
 	if err != nil {
 		log.Println(err)

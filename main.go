@@ -34,10 +34,11 @@ func main() {
 	go func() {
 		runtime.LockOSThread()
 		systray.Run(
-			func(){ tray.OnTrayReady(cancel, gui.ShowWindow)},
-			tray.OnTrayExit,
+			func() { tray.OnTrayReady(cancel, gui.ShowWindow) },
+			func() { tray.OnTrayExit(cancel) },
 		)
 	}()
 	log.Println("[Main] Launching GUI...")
+
 	gui.StartGUI()
 }

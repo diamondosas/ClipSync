@@ -24,11 +24,13 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget/material"
 )
-var(
-	Window *app.Window
-	windowMu sync.Mutex
+
+var (
+	Window       *app.Window
+	windowMu     sync.Mutex
 	isWindowOpen bool
 )
+
 // StartGUI initializes and runs the Gio-based user interface.
 // This function will block until the application is closed.
 func StartGUI() {
@@ -36,13 +38,12 @@ func StartGUI() {
 	app.Main()
 }
 
-
-func ShowWindow(){
+func ShowWindow() {
 	windowMu.Lock()
 	defer windowMu.Unlock()
 
 	if isWindowOpen {
-		if Window != nil{
+		if Window != nil {
 			Window.Perform(system.ActionRaise)
 		}
 		return
@@ -51,6 +52,7 @@ func ShowWindow(){
 		w := new(app.Window)
 		w.Option(
 			app.Title("ClipSync"),
+			app.Decorated(false),
 			app.Size(unit.Dp(300), unit.Dp(480)),
 			app.MinSize(unit.Dp(260), unit.Dp(380)),
 		)
@@ -111,13 +113,13 @@ func layoutMain(gtx layout.Context, s *AppState) layout.Dimensions {
 			gtx.Constraints.Min.X = gtx.Constraints.Max.X
 
 			dims := layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				// Header (Persistent)
+				// Custom Draggable TitleBar (Replaces OS title bar)
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					title := "ClipSync"
 					if s.ActiveTab == 1 {
 						title = "Clipboard"
 					}
-					return components.Header(gtx, s.Theme, &s.HelpBtn, title)
+					return components.TitleBar(gtx, s.Theme, &s.HelpBtn, &s.MinimizeBtn, &s.CloseBtn, title)
 				}),
 
 				// Body (Dynamic Page Content)

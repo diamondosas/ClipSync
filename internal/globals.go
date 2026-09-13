@@ -6,17 +6,18 @@ import (
 )
 
 type Device struct {
-	Name   string
-	Ip     string
-	Alive  bool  
+	Name     string
+	Ip       string
+	Alive    bool
 	LastSeen time.Time
 }
 
 var (
-	IPSMu    sync.Mutex
-	IPS     []string
+	IPSMu sync.Mutex
+	IPS   []string
 
-	PORT     string ="9999"
+	PORT string = "9999"
+
 	Username string
 
 	ConnDevicesMu sync.Mutex
@@ -25,5 +26,3 @@ var (
 	ClipHistoryMu sync.Mutex
 	ClipHistory   []string
 )
-
-

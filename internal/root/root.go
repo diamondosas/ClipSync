@@ -53,7 +53,9 @@ func StartClipSync(ctx context.Context) error {
 					continue
 				}
 				// Avoid loops: don't send if it's the same as what we just received
+				internal.IPSMu.Lock()
 				log.Printf("[Sync] Local change detected, sending to %d devices", len(internal.IPS))
+				internal.IPSMu.Unlock()
 				network.SendClipboard([]byte(data))
 				view.UpdateClipboard(string(data))
 			}
@@ -73,7 +75,7 @@ func StartClipSync(ctx context.Context) error {
 				return ctx.Err()
 			default:
 				//If the Data is Clipboard it iwll
-				buffer, n := network.RecieveData()
+				buffer, n := network.ReceiveData()
 
 				if n > 0 {
 					data := string(buffer[:n])
@@ -94,7 +96,7 @@ func StartClipSync(ctx context.Context) error {
 			case <-time.After(5 * time.Second):
 
 				internal.IPSMu.Lock()
-				var ipsToPing []string
+				ipsToPing := make([]string, len(internal.IPS))
 				copy(ipsToPing, internal.IPS)
 				internal.IPSMu.Unlock()
 

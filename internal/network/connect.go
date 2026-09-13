@@ -2,11 +2,11 @@ package network
 
 import (
 	// "bufio"
+	"clipsync/internal"
 	"context"
 	"encoding/binary"
 	"log"
 	"net"
-	"clipsync/internal"
 )
 
 // type Info struct {
@@ -23,13 +23,13 @@ func Connect(ip string) {
 		log.Println("Cannot connect, Conn is not initialized. Waiting for Ready channel...")
 		<-Ready
 	}
-	addr, err := net.ResolveUDPAddr("udp", ip + ":" + internal.PORT)
+	addr, err := net.ResolveUDPAddr("udp", ip+":"+internal.PORT)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	msg := []byte("---ClipSync---")
-	payload := make([]byte, 4 + len(msg))
+	msg := []byte(MsgTypeHandshake)
+	payload := make([]byte, 4+len(msg))
 	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
 	copy(payload[4:], msg)
 	_, err = Conn.WriteToUDP(payload, addr)
@@ -39,7 +39,8 @@ func Connect(ip string) {
 }
 
 func Listen(ctx context.Context) error {
-	addr, err := net.ResolveUDPAddr("udp", ":" + internal.PORT)
+	defer close(Ready)
+	addr, err := net.ResolveUDPAddr("udp", ":"+internal.PORT)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -54,5 +55,8 @@ func Listen(ctx context.Context) error {
 	close(Ready)
 
 	<-ctx.Done()
+	if Conn != nil {
+		Conn.Close()
+	}
 	return nil
 }

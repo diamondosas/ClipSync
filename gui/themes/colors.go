@@ -9,7 +9,7 @@ var (
 
 	// Primary Accent: Vibrant Amber Caramel (#C67628 / enhanced #B26925)
 	ColorBrown  = color.NRGBA{R: 198, G: 118, B: 40, A: 255} // #C67628 Glowing Warm Amber
-	ColorCyan   = ColorBrown                                  // Backward compatibility alias
+	ColorCyan   = ColorBrown                                 // Backward compatibility alias
 	ColorAccent = ColorBrown
 
 	// Primary Text: Bright Warm Ivory Cream
@@ -28,5 +28,3 @@ var (
 	// Destructive Action: Warm Rustic Terracotta Red
 	ColorRed = color.NRGBA{R: 220, G: 75, B: 60, A: 255} // #DC4B3C Warm Crimson Red
 )
-
-

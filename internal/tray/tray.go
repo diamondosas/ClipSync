@@ -1,10 +1,10 @@
 package tray
 
 import (
+	"context"
 	_ "embed"
 	"log"
 	"os"
-	"context"
 	"runtime"
 
 	"github.com/getlantern/systray"
@@ -15,29 +15,30 @@ var trayIcon_ico []byte
 
 //go:embed icon.png
 var trayIcon_png []byte
-func OnTrayReady(cancel context.CancelFunc,onOpenWindow func()){
 
-	if runtime.GOOS == "windows"{
+func OnTrayReady(cancel context.CancelFunc, onOpenWindow func()) {
+
+	if runtime.GOOS == "windows" {
 		systray.SetIcon(trayIcon_ico)
-	}else{
+	} else {
 		systray.SetIcon(trayIcon_png)
 	}
 	systray.SetTitle("Clipsync")
 	systray.SetTooltip("Clipsync is Running")
-	
+
 	open := systray.AddMenuItem("Open ", "Open Clipsync")
 	quit := systray.AddMenuItem("Quit", "Quit Clipsync")
 
-	go func(){
-		for{
-			select{
+	go func() {
+		for {
+			select {
 			case <-open.ClickedCh:
-				if onOpenWindow != nil{
+				if onOpenWindow != nil {
 					onOpenWindow()
 				}
 			case <-quit.ClickedCh:
 				cancel()
-				systray.Quit() 
+				systray.Quit()
 				return
 			}
 		}
@@ -45,7 +46,8 @@ func OnTrayReady(cancel context.CancelFunc,onOpenWindow func()){
 	}()
 }
 
-func OnTrayExit(){
+func OnTrayExit(cancel context.CancelFunc) {
 	log.Println("Exiting")
+	cancel()
 	os.Exit(0)
 }

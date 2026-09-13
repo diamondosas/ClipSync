@@ -12,6 +12,7 @@ import (
 	"golang.design/x/clipboard"
 
 	"gioui.org/io/key"
+	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -47,6 +48,10 @@ type AppState struct {
 	HelpBtn      widget.Clickable
 	CloseHelpBtn widget.Clickable
 	ShowHelp     bool
+
+	// Window Controls
+	CloseBtn    widget.Clickable
+	MinimizeBtn widget.Clickable
 
 	// Channels For Thread-Safe UI Updates
 	DeviceUpdates      chan pages.Device
@@ -221,6 +226,18 @@ func (s *AppState) Update(gtx layout.Context) {
 		s.ClearUnpinnedClips()
 	}
 
+	// Handle Window Controls
+	if s.CloseBtn.Clicked(gtx) {
+		if Window != nil {
+			Window.Perform(system.ActionClose)
+		}
+	}
+	if s.MinimizeBtn.Clicked(gtx) {
+		if Window != nil {
+			Window.Perform(system.ActionMinimize)
+		}
+	}
+
 	// Handle Clipboard Item Actions (Copy, Pin, Delete)
 	s.HandleClipEvents(gtx)
 }
@@ -360,4 +377,3 @@ func (s *AppState) FilteredClips() []*pages.ClipItem {
 	}
 	return matched
 }
-
