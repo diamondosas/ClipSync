@@ -17,11 +17,11 @@
 
 ---
 
-<h3 align="center">🎬 Demo</h3>
+<h3 align="center">Screenshots</h3>
 
 <p align="center">
-  <!-- Drop your GIF here: assets/demo.gif -->
-  <img src="assets/demo.gif" alt="ClipSync demo" width="700">
+  <img src="gui/assets/screenshots/clipboard.png" alt="Clipboard View" width="380" style="border-radius: 8px; margin: 6px;" />
+  <img src="gui/assets/screenshots/devices.png" alt="Devices View" width="380" style="border-radius: 8px; margin: 6px;" />
 </p>
 
 ---

@@ -2,11 +2,13 @@ package pages
 
 import (
 	"fmt"
+	"time"
 
 	"clipsync/gui/themes"
 	"clipsync/gui/widgets"
 
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -20,10 +22,33 @@ type Device struct {
 // DevicesPage lays out the connection info and devices list.
 func DevicesPage(gtx layout.Context, th *material.Theme, list *widget.List, devices []Device) layout.Dimensions {
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-		// Sub-header text
+		// Sub-header text with animated progress dots
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			now := gtx.Now
+			if now.IsZero() {
+				now = time.Now()
+			}
+			nowMillis := now.UnixMilli()
+			interval := int64(450)
+			step := (nowMillis / interval) % 4
+			dots := ""
+			switch step {
+			case 1:
+				dots = "."
+			case 2:
+				dots = ".."
+			case 3:
+				dots = "..."
+			}
+
+			remaining := interval - (nowMillis % interval)
+			if remaining <= 0 {
+				remaining = interval
+			}
+			gtx.Execute(op.InvalidateCmd{At: now.Add(time.Duration(remaining) * time.Millisecond)})
+
 			return layout.Inset{Bottom: unit.Dp(12), Left: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				lbl := material.Body1(th, "Searching for devices...")
+				lbl := material.Body1(th, "Searching for devices"+dots)
 				lbl.Color = themes.ColorTextMuted
 				return lbl.Layout(gtx)
 			})
