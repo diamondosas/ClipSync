@@ -2,11 +2,11 @@ package network
 
 import (
 	"clipsync/internal"
-	"encoding/binary"
 	"log"
-	"net"
 	"slices"
 	"sync"
+
+	"github.com/xtaci/kcp-go/v5"
 )
 
 var (
@@ -22,14 +22,10 @@ func IsLastReceived(data []byte) bool {
 }
 
 func SendClipboard(data []byte) {
-	if Conn == nil {
+	if Sess == nil {
 		log.Println("SendClipboard: Conn is nil, skipping.")
 		return
 	}
-
-	payload := make([]byte, 4+len(data))
-	binary.BigEndian.PutUint32(payload[:4], uint32(len(data)))
-	copy(payload[4:], data)
 
 	internal.IPSMu.Lock()
 	ips := make([]string, len(internal.IPS))
@@ -37,12 +33,12 @@ func SendClipboard(data []byte) {
 	internal.IPSMu.Unlock()
 
 	for _, ip := range ips {
-		addr, err := net.ResolveUDPAddr("udp", ip+":"+internal.PORT)
+		Sess , err:= kcp.DialWithOptions(ip + ":" + internal.PORT, BlockCrypt, 10, 3)
 		if err != nil {
 			log.Println("SendClipboard Resolve Error:", err)
 			continue
 		}
-		_, err = Conn.WriteToUDP(payload, addr)
+		_, err = Sess.Write(data)
 		if err != nil {
 			log.Println("SendClipboard Write Error:", err)
 		}

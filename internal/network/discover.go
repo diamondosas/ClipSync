@@ -50,7 +50,7 @@ func BrowseForDevices(ctx context.Context) error {
 
 	go entry(Entries)
 
-	err = resolver.Browse(ctx, "_clipsync._tcp", "local.", Entries)
+	err = resolver.Browse(ctx, "_clipsync._udp", "local.", Entries)
 
 	if err != nil {
 		log.Println(err)

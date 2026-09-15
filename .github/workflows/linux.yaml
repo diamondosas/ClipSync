@@ -1,0 +1,96 @@
+name: Linux Build
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install System & GUI Dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y \
+            pkg-config \
+            libx11-dev libx11-xcb-dev \
+            libwayland-dev wayland-protocols \
+            libxkbcommon-dev libxkbcommon-x11-dev \
+            libvulkan-dev libegl-dev libgles2-mesa-dev \
+            libxcursor-dev libxi-dev libxrandr-dev \
+            libxinerama-dev libxxf86vm-dev \
+            libxfixes-dev
+
+      - name: Compile Linux Binary
+        env:
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: 1
+        run: |
+          mkdir -p build
+          go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync .
+
+      - name: Package Tarball
+        run: |
+          tar -czf build/clipsync-linux.tar.gz -C build clipsync
+
+      - name: Build Debian Package (.deb)
+        run: |
+          DEB_DIR="build/deb-structure"
+          mkdir -p "${DEB_DIR}/DEBIAN"
+          mkdir -p "${DEB_DIR}/usr/bin"
+          mkdir -p "${DEB_DIR}/usr/share/applications"
+          mkdir -p "${DEB_DIR}/usr/share/icons/hicolor/256x256/apps"
+
+          # Copy binary & assets
+          cp build/clipsync "${DEB_DIR}/usr/bin/clipsync"
+          chmod 755 "${DEB_DIR}/usr/bin/clipsync"
+          cp assets/icon.png "${DEB_DIR}/usr/share/icons/hicolor/256x256/apps/clipsync.png"
+
+          # Create desktop launcher
+          cat > "${DEB_DIR}/usr/share/applications/clipsync.desktop" << 'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=ClipSync
+          Comment=Cross-platform clipboard synchronization tool
+          Exec=/usr/bin/clipsync
+          Icon=clipsync
+          Terminal=false
+          Categories=Utility;
+          EOF
+
+          # Create Debian control file
+          cat > "${DEB_DIR}/DEBIAN/control" << EOF
+          Package: clipsync
+          Version: ${{ inputs.version }}
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Maintainer: DiamondOsas
+          Description: ClipSync desktop application
+           Fast, cross-platform clipboard synchronization tool.
+          EOF
+
+          # Build .deb package
+          dpkg-deb --build --root-owner-group "${DEB_DIR}" build/clipsync-linux.deb
+
+      - name: Upload Linux Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: clipsync-linux
+          path: |
+            build/clipsync-linux.tar.gz
+            build/clipsync-linux.deb
+          if-no-files-found: error

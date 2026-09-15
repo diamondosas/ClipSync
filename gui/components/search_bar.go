@@ -17,9 +17,10 @@ import (
 func SearchBar(gtx layout.Context, th *material.Theme, editor *widget.Editor, clearBtn *widget.Clickable) layout.Dimensions {
 	editor.Submit = true
 
-	// Clean any accidental newlines so input stays on one straight line
-	if txt := editor.Text(); strings.Contains(txt, "\n") || strings.Contains(txt, "\r") {
-		cleaned := strings.ReplaceAll(strings.ReplaceAll(txt, "\r", ""), "\n", "")
+	// Clean any accidental newlines or tabs so input stays clean on one straight line
+	if txt := editor.Text(); strings.ContainsAny(txt, "\n\r\t") {
+		cleaned := strings.ReplaceAll(txt, "\t", " ")
+		cleaned = strings.ReplaceAll(strings.ReplaceAll(cleaned, "\r", ""), "\n", "")
 		editor.SetText(cleaned)
 	}
 

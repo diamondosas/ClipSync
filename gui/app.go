@@ -28,7 +28,7 @@ import (
 var (
 	Window       *app.Window
 	windowMu     sync.Mutex
-	isWindowOpen bool
+	IsWindowOpen bool
 )
 
 // StartGUI initializes and runs the Gio-based user interface.
@@ -42,7 +42,7 @@ func ShowWindow() {
 	windowMu.Lock()
 	defer windowMu.Unlock()
 
-	if isWindowOpen {
+	if IsWindowOpen {
 		if Window != nil {
 			Window.Perform(system.ActionRaise)
 		}
@@ -61,7 +61,7 @@ func ShowWindow() {
 		}
 
 		windowMu.Lock()
-		isWindowOpen = false
+		IsWindowOpen = false
 		Window = nil
 		windowMu.Unlock()
 		log.Println("[GUI] Window closed. ClipSync continues running in system tray.")

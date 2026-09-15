@@ -1,7 +1,7 @@
-<h3 align="center">
-  <b>Copy on your Desktop. Paste on your Android. Done.</b><br>
-  <sub>No cloud. No account. No friction. Just your clipboard, everywhere on your network.</sub>
-</h3>
+<h2 align="center">
+  <b>Copy on your Android. Paste on your Desktop.</b><br>
+  <sub>No account. No friction. Same clipboard content on all devices connected.</sub>
+</h2>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Built with Go">
@@ -11,33 +11,19 @@
   </a>
 </p>
 
----
+<!-- ---
 
 **ClipSync** is an open-source clipboard tool that syncs across every device on your local network — Windows, macOS, Linux — instantly. Built in Go. Runs silent. Uses barely any CPU,  RAM. No servers.
 
----
+--- -->
 
 <h3 align="center">Screenshots</h3>
 
 <p align="center">
-  <img src="gui/assets/screenshots/clipboard.png" alt="Clipboard View" width="380" style="border-radius: 8px; margin: 6px;" />
-  <img src="gui/assets/screenshots/devices.png" alt="Devices View" width="380" style="border-radius: 8px; margin: 6px;" />
+  <img src="assets/screenshots/devices.png" alt="Devices View" width="380" style="border-radius: 8px; margin: 6px;" />
+  <img src="assets/screenshots/clipboard.png" alt="Clipboard View" width="380" style="border-radius: 8px; margin: 6px;" />
 </p>
 
----
-
-## Features
-
-- Fast clipboard sync across devices
-- Local-network only—your data stays private
-- Free forever with no subscriptions
-- Works on Windows, macOS, and Linux
-- Supports both X11 and Wayland
-- Automatic device discovery
-- Lightweight background process (~5 MB RAM, ~0.1% CPU)
-
-
----
 
 ## Download ClipSync
 
@@ -46,7 +32,22 @@ Get the latest binary for your OS — run it, done.
 **[Download ClipSync — Windows, macOS, Linux](https://diamondosas.github.io/clipsync/)**
 
 or
-**[Go to Realeases]**(https://github.com/diamondosas/clipsync/releases)
+
+**[Go to Realeases](https://github.com/diamondosas/clipsync/releases)**
+
+---
+
+---
+
+## Features
+
+- Automatic device discovery
+- Lightweight background process (~15 MB RAM, ~0.1% CPU)
+- Fast clipboard sync across devices
+- Local-network only—your data stays private
+- Works on Windows, macOS, and Linux
+- Supports both X11 and Wayland
+
 
 ---
 
@@ -72,11 +73,16 @@ sudo dnf install libX11-devel libwayland-dev libxkbcommon-dev vulkan-headers
 sudo pacman -S libx11 libwayland-dev libxkbcommon-dev libvulkan-dev
 ```
 
-**NB**: If you are using **Wayland** Display Server 
-_check using :_ `echo $XDG_SESSION_TYPE`
+Display Server Libraies _check using :_ `echo $XDG_SESSION_TYPE`
+
+**Wayland** 
+
 ```bash
 sudo apt install wl-clipboard
 ```
+
+**X11** 
+
 
 ---
 ---

@@ -58,14 +58,22 @@ func TitleBar(
 						)
 
 						// Allow dragging from title area
-						defer clip.Rect{Max: dims.Size}.Push(gtx.Ops).Pop()
+						dragSize := dims.Size
+						if minH := gtx.Dp(unit.Dp(28)); dragSize.Y < minH {
+							dragSize.Y = minH
+						}
+						defer clip.Rect{Max: dragSize}.Push(gtx.Ops).Pop()
 						system.ActionInputOp(system.ActionMove).Add(gtx.Ops)
 						return dims
 					}),
 
-					// 2. Middle area: Draggable spacer (click & drag anywhere to move window)
+					// 2. Middle area: Draggable free spacer (click & drag anywhere in free space to move window)
 					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-						return layout.Spacer{Width: unit.Dp(16)}.Layout(gtx)
+						h := gtx.Dp(unit.Dp(28))
+						size := image.Pt(gtx.Constraints.Min.X, h)
+						defer clip.Rect{Max: size}.Push(gtx.Ops).Pop()
+						system.ActionInputOp(system.ActionMove).Add(gtx.Ops)
+						return layout.Dimensions{Size: size}
 					}),
 
 					// 3. Right side: Action controls [ ? ] [ – ] [ ✕ ]

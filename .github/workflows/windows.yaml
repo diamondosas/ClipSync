@@ -1,0 +1,62 @@
+name: Windows Build
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install rsrc Tool
+        run: go install github.com/akavel/rsrc@latest
+
+      - name: Embed Windows Icon
+        run: |
+          rsrc -ico assets/icon.ico -o rsrc.syso
+
+      - name: Compile Windows Binary
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          CGO_ENABLED: 0
+        run: |
+          New-Item -ItemType Directory -Force -Path build | Out-Null
+          go build -ldflags="-X main.Version=${{ inputs.version }} -s -w -H windowsgui" -o build/clipsync.exe .
+
+      - name: Build Inno Setup Installer (Ultra LZMA2 Compression)
+        run: |
+          if (Get-Command iscc -ErrorAction SilentlyContinue) {
+              iscc /DAppVersion=${{ inputs.version }} .github/installer.iss
+          } elseif (Test-Path "C:\Program Files (x86)\Inno Setup 6\ISCC.exe") {
+              & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DAppVersion=${{ inputs.version }} build/windows/installer.iss
+          } else {
+              choco install innosetup -y
+              & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DAppVersion=${{ inputs.version }} build/windows/installer.iss
+          }
+
+      - name: Package Portable Zip
+        run: |
+          Compress-Archive -Path build/clipsync.exe -DestinationPath build/clipsync-windows.zip -Force
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: clipsync-windows
+          path: |
+            build/ClipSync-Setup.exe
+            build/clipsync-windows.zip
+          if-no-files-found: error

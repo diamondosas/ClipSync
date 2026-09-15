@@ -25,4 +25,6 @@ var (
 
 	ClipHistoryMu sync.Mutex
 	ClipHistory   []string
-)
+
+	SecretKey  []byte = []byte("clipboardsyncapp")
+)	

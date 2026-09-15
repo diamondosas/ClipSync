@@ -2,10 +2,10 @@ package network
 
 import (
 	"clipsync/internal"
-	"encoding/binary"
 	"log"
-	"net"
 	"time"
+
+	"github.com/xtaci/kcp-go/v5"
 )
 
 func PingIPS(ips []string) {
@@ -19,24 +19,19 @@ func PingIPS(ips []string) {
 }
 
 func SendPing(ip string) {
-	if Conn == nil {
+	if Sess == nil {
 		return
 	}
 
-	addr, err := net.ResolveUDPAddr("udp", ip+":"+internal.PORT)
-
-	if err != nil {
+	Sess, err :=  kcp.DialWithOptions(ip + ":" + internal.PORT, BlockCrypt, 10, 3)
+if err != nil {
 		log.Println("SendPing Resolve Error:", err)
 		return
 	}
 
 	msg := []byte{MsgTypePing}
-	payload := make([]byte, 4+len(msg))
-	binary.BigEndian.PutUint32(payload[:4], uint32(len(msg)))
-	copy(payload[4:], msg)
 
-	_, err = Conn.WriteToUDP(payload, addr)
-
+	_, err = Sess.Write(msg)
 	if err != nil {
 		log.Println("SendPing Write Error:", err)
 	}

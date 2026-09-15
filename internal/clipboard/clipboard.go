@@ -32,7 +32,7 @@ func WriteClipboard(ctx context.Context, data string) {
 func WatchClipboard(ctx context.Context) <-chan []byte {
 	text := clipboard.Watch(ctx, clipboard.FmtText)
 	var out = make(chan []byte, 1)
-
+	
 	//REFACTOR: Put in root.go so that it ca avoid it importing network module
 	go func() {
 		for {

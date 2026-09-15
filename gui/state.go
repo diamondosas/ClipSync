@@ -371,7 +371,7 @@ func (s *AppState) FilteredClips() []*pages.ClipItem {
 
 	var matched []*pages.ClipItem
 	for _, item := range s.ClipItems {
-		if strings.Contains(strings.ToLower(item.Content), query) {
+		if strings.Contains(strings.ToLower(item.Content), query) || strings.Contains(strings.ToLower(utils.CleanDisplayText(item.Content)), query) {
 			matched = append(matched, item)
 		}
 	}

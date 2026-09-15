@@ -2,7 +2,6 @@ package network
 
 import (
 	"clipsync/internal"
-	"encoding/binary"
 	"log"
 	"net"
 	"slices"
@@ -17,22 +16,20 @@ const (
 )
 
 func ReceiveData() ([]byte, int) {
-	if Conn == nil {
+	if Sess == nil {
 		log.Println("ReceiveClipboard: Conn is nil. Waiting for Ready...")
 		<-Ready
 	}
 
 	tmpBuf := make([]byte, 65535)
-	n, addr, err := Conn.ReadFromUDP(tmpBuf)
-	Addr = addr
-
-	if err != nil || n < 4 {
+	n, err := Sess.Read(tmpBuf)
+	if err != nil {
 		log.Println("ReadFromUDP Error:", err)
 		return nil, 0
 	}
+	Addr = Sess.RemoteAddr().(*net.UDPAddr)
 
-	length := binary.BigEndian.Uint32(tmpBuf[:4])
-	receivedData := tmpBuf[4 : 4+length]
+	receivedData := tmpBuf[:n]
 
 	if slices.Equal(receivedData, []byte{MsgTypeHandshake}){
 		UpdateIP()
@@ -45,7 +42,7 @@ func ReceiveData() ([]byte, int) {
 		copy(LastReceivedClip, receivedData)
 		BufferMu.Unlock()
 
-		log.Println("Recieved Clipboard From Addr:", addr, "Content Length:", len(LastReceivedClip))
+		log.Println("Recieved Clipboard ", receivedData)
 		return receivedData, len(receivedData)
 	}
 

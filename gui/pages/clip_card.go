@@ -6,6 +6,7 @@ import (
 
 	"clipsync/gui/assets"
 	"clipsync/gui/themes"
+	"clipsync/gui/utils"
 	"clipsync/gui/widgets"
 
 	"gioui.org/layout"
@@ -32,7 +33,8 @@ func ClipCard(gtx layout.Context, th *material.Theme, item *ClipItem) layout.Dim
 		bg = themes.ColorSurfacePinned
 	}
 
-	isLong := strings.Count(item.Content, "\n") >= 2 || len(item.Content) > 80
+	displayText := utils.CleanDisplayText(item.Content)
+	isLong := strings.Count(displayText, "\n") >= 2 || len(displayText) > 80
 
 	return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16), Bottom: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		gtx.Constraints.Min.X = gtx.Constraints.Max.X
@@ -42,7 +44,7 @@ func ClipCard(gtx layout.Context, th *material.Theme, item *ClipItem) layout.Dim
 					return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 						// 1. Text display (entire card is clickable)
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							lbl := material.Body2(th, item.Content)
+							lbl := material.Body2(th, displayText)
 							lbl.Color = themes.ColorText
 							if isLong && !item.IsExpanded {
 								lbl.MaxLines = 2

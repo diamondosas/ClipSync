@@ -1,0 +1,61 @@
+name: macOS Build
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Compile macOS Universal Binary
+        run: |
+          mkdir -p build
+
+          echo "==> Building macOS arm64 (Apple Silicon)..."
+          CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync-arm64 . || {
+            echo "Fallback to CGO_ENABLED=0 for arm64..."
+            CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync-arm64 .
+          }
+
+          echo "==> Building macOS amd64 (Intel)..."
+          CGO_ENABLED=1 CC="clang -target x86_64-apple-macos11" GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync-amd64 . || {
+            echo "Fallback to CGO_ENABLED=0 for amd64..."
+            CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync-amd64 .
+          }
+
+          if [ -f "build/clipsync-arm64" ] && [ -f "build/clipsync-amd64" ]; then
+            echo "==> Combining into Universal Binary with lipo..."
+            lipo -create -output build/clipsync build/clipsync-arm64 build/clipsync-amd64
+            rm build/clipsync-arm64 build/clipsync-amd64
+          elif [ -f "build/clipsync-arm64" ]; then
+            cp build/clipsync-arm64 build/clipsync
+          elif [ -f "build/clipsync-amd64" ]; then
+            cp build/clipsync-amd64 build/clipsync
+          fi
+
+          chmod +x build/clipsync
+
+      - name: Package Tarball
+        run: |
+          tar -czf build/clipsync-macos.tar.gz -C build clipsync
+
+      - name: Upload macOS Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: clipsync-macos
+          path: build/clipsync-macos.tar.gz
+          if-no-files-found: error
