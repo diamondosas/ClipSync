@@ -18,7 +18,7 @@ var (
 
 	PORT string = "9999"
 
-	Username string
+	Hostname string
 
 	ConnDevicesMu sync.Mutex
 	ConnDevices   []Device

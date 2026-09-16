@@ -17,17 +17,12 @@ import (
 func StartClipSync(ctx context.Context) error {
 	eg, ctx := errgroup.WithContext(ctx)
 
-	// 1. Register our device on the network
+	// 1. Auto-discover and register dynamically
 	eg.Go(func() error {
-		return network.RegisterDevice(ctx)
+		return network.StartAutoDiscovery(ctx)
 	})
 
-	// 2. Discover other devices
-	eg.Go(func() error {
-		return network.BrowseForDevices(ctx)
-	})
-
-	// 3. Listen for incoming UDP connections
+	// 2. Listen for incoming UDP connections
 	eg.Go(func() error {
 		return network.Listen(ctx)
 	})
@@ -35,12 +30,6 @@ func StartClipSync(ctx context.Context) error {
 	// 4. Watch local clipboard for changes
 	eg.Go(func() error {
 		clip := clipboard.WatchClipboard(ctx)
-		if clip == nil {
-			log.Println("[Sync] Warning: clipboard watch channel is nil (clipboard may not be initialized)")
-			<-ctx.Done()
-			return ctx.Err()
-		}
-
 		for {
 			select {
 			case <-ctx.Done():
@@ -62,24 +51,19 @@ func StartClipSync(ctx context.Context) error {
 		}
 	})
 
-	// 5. Receive data, clipboard and pings from other devices and Update Clipboard if it contain the Data
+	// 5. Receive Clipboard data from each peers on the network (it reieves from session independently)
 	eg.Go(func() error {
-		select {
-		case <-network.Ready:
-		case <-ctx.Done():
-			return ctx.Err()
-		}
 		for {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
 			default:
 				//If the Data is Clipboard it iwll
-				buffer, n := network.ReceiveData()
+				buffer:= network.ReceiveClipboard(ctx)
 
-				if n > 0 {
-					data := string(buffer[:n])
-					log.Printf("[Sync] Received new clipboard data (%d bytes)", n)
+				if len(buffer) > 0 {
+					data := string(buffer)
+					log.Printf("[Sync] Received new clipboard data (%d bytes)", len(buffer))
 					clipboard.WriteClipboard(ctx, data)
 					view.UpdateClipboardSynced(data)
 				}
@@ -87,14 +71,13 @@ func StartClipSync(ctx context.Context) error {
 		}
 	})
 
-	// 6. Periodically ping devices to keep the list fresh
+	// 6. Periodically ping devices to tell them I am still alive
 	eg.Go(func() error {
 		for {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
-			case <-time.After(5 * time.Second):
-
+			case <-time.After(2 * time.Second):
 				internal.IPSMu.Lock()
 				ipsToPing := make([]string, len(internal.IPS))
 				copy(ipsToPing, internal.IPS)
@@ -106,6 +89,23 @@ func StartClipSync(ctx context.Context) error {
 			}
 		}
 	})
+
+	//Perodically Check whether devices in the []ConnDevice list has sent that they are alive
+	eg.Go(func() error{
+		for{
+			select{
+			case <-ctx.Done():
+				return ctx.Err()
+			case <-time.After(1 * time.Second):
+				internal.ConnDevicesMu.Lock()
+				if internal.ConnDevices != nil{
+					internal.ConnDevicesMu.Unlock()
+					log.Println("Checking for Dead Connection")
+					network.CheckForPing()
+				}
+			}
+		}
+	} )
 
 	return eg.Wait()
 }

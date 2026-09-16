@@ -18,23 +18,24 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: desktop/go.mod
           cache: true
+          cache-dependency-path: desktop/go.sum
 
       - name: Compile macOS Universal Binary
         run: |
           mkdir -p build
 
           echo "==> Building macOS arm64 (Apple Silicon)..."
-          CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync-arm64 . || {
+          (cd desktop && CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o ../build/clipsync-arm64 .) || {
             echo "Fallback to CGO_ENABLED=0 for arm64..."
-            CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync-arm64 .
+            (cd desktop && CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o ../build/clipsync-arm64 .)
           }
 
           echo "==> Building macOS amd64 (Intel)..."
-          CGO_ENABLED=1 CC="clang -target x86_64-apple-macos11" GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync-amd64 . || {
+          (cd desktop && CGO_ENABLED=1 CC="clang -target x86_64-apple-macos11" GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o ../build/clipsync-amd64 .) || {
             echo "Fallback to CGO_ENABLED=0 for amd64..."
-            CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o build/clipsync-amd64 .
+            (cd desktop && CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.Version=${{ inputs.version }} -s -w" -o ../build/clipsync-amd64 .)
           }
 
           if [ -f "build/clipsync-arm64" ] && [ -f "build/clipsync-amd64" ]; then

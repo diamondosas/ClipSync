@@ -4,6 +4,7 @@ import (
 	"clipsync/gui"
 	"clipsync/gui/pages"
 	"clipsync/internal"
+	"time"
 )
 
 // AddNewDevice sends a new device to the global store and the GUI channel
@@ -17,6 +18,11 @@ func AddNewDevice(device internal.Device) {
 	}
 	internal.ConnDevices = append(internal.ConnDevices, device)
 	internal.ConnDevicesMu.Unlock()
+
+	if !gui.IsGUIReady{
+		time.Sleep(time.Millisecond * 200)
+		AddNewDevice(device)
+	}
 
 	// 2. Send to GUI channel if GUI is running
 	if gui.State != nil && gui.State.DeviceUpdates != nil {

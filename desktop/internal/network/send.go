@@ -6,7 +6,6 @@ import (
 	"slices"
 	"sync"
 
-	"github.com/xtaci/kcp-go/v5"
 )
 
 var (
@@ -22,25 +21,22 @@ func IsLastReceived(data []byte) bool {
 }
 
 func SendClipboard(data []byte) {
-	if Sess == nil {
-		log.Println("SendClipboard: Conn is nil, skipping.")
-		return
-	}
-
 	internal.IPSMu.Lock()
 	ips := make([]string, len(internal.IPS))
 	copy(ips, internal.IPS)
 	internal.IPSMu.Unlock()
 
 	for _, ip := range ips {
-		Sess , err:= kcp.DialWithOptions(ip + ":" + internal.PORT, BlockCrypt, 10, 3)
-		if err != nil {
-			log.Println("SendClipboard Resolve Error:", err)
+		sess , err := createPeer(ip)
+		if err != nil || sess == nil{
 			continue
 		}
-		_, err = Sess.Write(data)
+		_, err = sess.Write(data)
 		if err != nil {
 			log.Println("SendClipboard Write Error:", err)
+			removePeer(ip)
+			return
 		}
+
 	}
 }

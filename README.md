@@ -25,6 +25,8 @@
 </p>
 
 
+<div align="center">
+
 ## Download ClipSync
 
 Get the latest binary for your OS — run it, done.
@@ -33,7 +35,12 @@ Get the latest binary for your OS — run it, done.
 
 or
 
-**[Go to Realeases](https://github.com/diamondosas/clipsync/releases)**
+**[Go to Releases](https://github.com/diamondosas/clipsync/releases)**
+
+or 
+
+</div>
+
 
 ---
 
@@ -47,7 +54,6 @@ or
 - Local-network only—your data stays private
 - Works on Windows, macOS, and Linux
 - Supports both X11 and Wayland
-
 
 ---
 
@@ -82,8 +88,9 @@ sudo apt install wl-clipboard
 ```
 
 **X11** 
-
-
+```bash
+sudo apt install xclip
+```
 ---
 ---
 

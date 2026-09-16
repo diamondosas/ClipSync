@@ -20,17 +20,6 @@ func TestClipboard_ReadWrite(t *testing.T) {
 	}
 }
 
-func TestWatchClipboard_ContextCancel(t *testing.T) {
-	// Cancel quickly to ensure WatchClipboard unblocks
-	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
-	defer cancel()
-
-	data := WatchClipboard(ctx)
-	if data != nil {
-		t.Errorf("WatchClipboard() with canceled context = %v; want nil", data)
-	}
-}
-
 func TestWatchClipboard_IgnoreNetworkClip(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()

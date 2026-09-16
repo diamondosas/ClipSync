@@ -15,9 +15,9 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-OutputDir=..\
+OutputDir=..\build
 OutputBaseFilename=ClipSync-Setup
-SetupIconFile=..\..\assets\icon.ico
+SetupIconFile=..\assets\icon.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
 LZMAUseSeparateProcess=yes
@@ -33,8 +33,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "clipsync.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\assets\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\build\clipsync.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\assets\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon.ico"

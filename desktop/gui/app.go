@@ -29,6 +29,7 @@ var (
 	Window       *app.Window
 	windowMu     sync.Mutex
 	IsWindowOpen bool
+	IsGUIReady bool
 )
 
 // StartGUI initializes and runs the Gio-based user interface.
@@ -95,6 +96,8 @@ func run(w *app.Window) error {
 			layoutMain(gtx, state)
 
 			e.Frame(gtx.Ops)
+			
+			IsGUIReady = true
 		}
 	}
 }
