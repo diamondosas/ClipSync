@@ -13,18 +13,18 @@ type Device struct {
 }
 
 var (
-	IPSMu sync.Mutex
-	IPS   []string
-
 	PORT string = "9999"
 
 	Hostname string
 
-	ConnDevicesMu sync.Mutex
 	ConnDevices   []Device
+	ConnDevicesMu sync.Mutex
 
-	ClipHistoryMu sync.Mutex
 	ClipHistory   []string
+	ClipHistoryMu sync.Mutex
+
+	LastRecvClip []byte
+	LastRecvClipMu sync.Mutex
 
 	SecretKey  []byte = []byte("clipboardsyncapp")
 )	

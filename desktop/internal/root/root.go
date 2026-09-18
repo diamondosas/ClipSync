@@ -42,9 +42,11 @@ func StartClipSync(ctx context.Context) error {
 					continue
 				}
 				// Avoid loops: don't send if it's the same as what we just received
-				internal.IPSMu.Lock()
-				log.Printf("[Sync] Local change detected, sending to %d devices", len(internal.IPS))
-				internal.IPSMu.Unlock()
+				internal.ConnDevicesMu.Lock()
+				for i := range internal.ConnDevices{
+					log.Println("[Sync] Local change detected, sending to Device: ", internal.ConnDevices[i].Ip)
+				}
+				internal.ConnDevicesMu.Unlock()
 				network.SendClipboard([]byte(data))
 				view.UpdateClipboard(string(data))
 			}
@@ -57,13 +59,10 @@ func StartClipSync(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
-			default:
-				//If the Data is Clipboard it iwll
-				buffer:= network.ReceiveClipboard(ctx)
-
-				if len(buffer) > 0 {
-					data := string(buffer)
-					log.Printf("[Sync] Received new clipboard data (%d bytes)", len(buffer))
+			case clip := <- network.ReceiveClipboard(ctx):
+				if len(clip) > 0 {
+					data := string(clip)
+					log.Printf("[Sync] Received new clipboard data (%d bytes)", len(clip))
 					clipboard.WriteClipboard(ctx, data)
 					view.UpdateClipboardSynced(data)
 				}
@@ -78,10 +77,15 @@ func StartClipSync(ctx context.Context) error {
 			case <-ctx.Done():
 				return ctx.Err()
 			case <-time.After(2 * time.Second):
-				internal.IPSMu.Lock()
-				ipsToPing := make([]string, len(internal.IPS))
-				copy(ipsToPing, internal.IPS)
-				internal.IPSMu.Unlock()
+				internal.ConnDevicesMu.Lock()
+				var ipsToPing []string
+				if internal.ConnDevices != nil{
+					for i:= range internal.ConnDevices{
+						ipsToPing = append(ipsToPing, internal.ConnDevices[i].Ip)
+					}
+				}
+
+				internal.ConnDevicesMu.Unlock()
 
 				if len(ipsToPing) > 0 {
 					network.PingIPS(ipsToPing)
@@ -90,7 +94,7 @@ func StartClipSync(ctx context.Context) error {
 		}
 	})
 
-	//Perodically Check whether devices in the []ConnDevice list has sent that they are alive
+	// Perodically Check whether devices in the []ConnDevice list has sent that they are alive
 	eg.Go(func() error{
 		for{
 			select{

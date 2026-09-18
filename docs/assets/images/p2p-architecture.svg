@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#362214"/>
+      <stop offset="100%" stop-color="#1A1009"/>
+    </linearGradient>
+    <linearGradient id="glowLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C67628" stop-opacity="0.2"/>
+      <stop offset="50%" stop-color="#C67628" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#C67628" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="amberGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <rect width="800" height="320" rx="16" fill="#0D0704" stroke="#5A3416" stroke-width="1.5"/>
+
+  <!-- Left: Desktop Node -->
+  <g transform="translate(60, 50)">
+    <rect width="200" height="220" rx="12" fill="url(#cardBg)" stroke="#C67628" stroke-width="1.5" filter="url(#amberGlow)"/>
+    <rect width="200" height="220" rx="12" fill="url(#cardBg)" stroke="#C67628" stroke-width="1.5"/>
+    
+    <!-- Monitor Icon Header -->
+    <rect x="75" y="24" width="50" height="36" rx="4" fill="#5A3416" stroke="#C67628" stroke-width="1.5"/>
+    <line x1="100" y1="60" x2="100" y2="72" stroke="#C67628" stroke-width="2"/>
+    <line x1="86" y1="72" x2="114" y2="72" stroke="#C67628" stroke-width="2"/>
+
+    <text x="100" y="105" fill="#FFF6EC" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Desktop</text>
+    <text x="100" y="125" fill="#DAC9B9" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">Windows / Linux / macOS</text>
+
+    <!-- Specs Pills -->
+    <rect x="25" y="145" width="150" height="24" rx="12" fill="#1C110A" stroke="#C67628" stroke-width="1"/>
+    <text x="100" y="161" fill="#C67628" font-family="monospace" font-size="11" text-anchor="middle">Port 9999 (UDP / KCP)</text>
+
+    <rect x="25" y="175" width="150" height="24" rx="12" fill="#1C110A" stroke="#C67628" stroke-width="1"/>
+    <text x="100" y="191" fill="#2ECC71" font-family="monospace" font-size="11" text-anchor="middle">mDNS Discovery (5353)</text>
+  </g>
+
+  <!-- Middle: Connection Tunnel -->
+  <g transform="translate(280, 70)">
+    <!-- Router / LAN Box -->
+    <rect x="50" y="40" width="140" height="100" rx="10" fill="#1C110A" stroke="#5A3416" stroke-dasharray="4,4" stroke-width="1.5"/>
+    <text x="120" y="68" fill="#FFF6EC" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Local LAN Only</text>
+    <text x="120" y="88" fill="#2ECC71" font-family="system-ui, sans-serif" font-size="11" text-anchor="middle">● Zero Cloud / Zero Server</text>
+    <text x="120" y="112" fill="#DAC9B9" font-family="monospace" font-size="10" text-anchor="middle">AES-128 Block Cipher</text>
+
+    <!-- Data Exchange Arrows -->
+    <path d="M -15 60 L 45 60" stroke="url(#glowLine)" stroke-width="3" stroke-linecap="round"/>
+    <polygon points="40,55 50,60 40,65" fill="#C67628"/>
+
+    <path d="M 195 60 L 255 60" stroke="url(#glowLine)" stroke-width="3" stroke-linecap="round"/>
+    <polygon points="250,55 260,60 250,65" fill="#C67628"/>
+
+    <path d="M 255 120 L 195 120" stroke="url(#glowLine)" stroke-width="3" stroke-linecap="round"/>
+    <polygon points="205,115 195,120 205,125" fill="#C67628"/>
+
+    <path d="M 45 120 L -15 120" stroke="url(#glowLine)" stroke-width="3" stroke-linecap="round"/>
+    <polygon points="-5,115 -15,120 -5,125" fill="#C67628"/>
+
+    <!-- Pulse status -->
+    <circle cx="120" cy="165" r="4" fill="#2ECC71">
+      <animate attributeName="r" values="3;7;3" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="120" y="195" fill="#DAC9B9" font-family="system-ui, sans-serif" font-size="11" text-anchor="middle">Realtime Clipboard Sync (&lt;10ms)</text>
+  </g>
+
+  <!-- Right: Mobile Node -->
+  <g transform="translate(540, 50)">
+    <rect width="200" height="220" rx="12" fill="url(#cardBg)" stroke="#C67628" stroke-width="1.5" filter="url(#amberGlow)"/>
+    <rect width="200" height="220" rx="12" fill="url(#cardBg)" stroke="#C67628" stroke-width="1.5"/>
+    
+    <!-- Phone Icon Header -->
+    <rect x="82" y="24" width="36" height="52" rx="6" fill="#5A3416" stroke="#C67628" stroke-width="1.5"/>
+    <circle cx="100" cy="67" r="3" fill="#C67628"/>
+    <line x1="93" y1="30" x2="107" y2="30" stroke="#C67628" stroke-width="1.5" stroke-linecap="round"/>
+
+    <text x="100" y="105" fill="#FFF6EC" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Android Mobile</text>
+    <text x="100" y="125" fill="#DAC9B9" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">Android 8.0+ / Gio UI</text>
+
+    <!-- Specs Pills -->
+    <rect x="25" y="145" width="150" height="24" rx="12" fill="#1C110A" stroke="#C67628" stroke-width="1"/>
+    <text x="100" y="161" fill="#C67628" font-family="monospace" font-size="11" text-anchor="middle">Port 9999 (UDP / KCP)</text>
+
+    <rect x="25" y="175" width="150" height="24" rx="12" fill="#1C110A" stroke="#C67628" stroke-width="1"/>
+    <text x="100" y="191" fill="#2ECC71" font-family="monospace" font-size="11" text-anchor="middle">mDNS Discovery (5353)</text>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+clipsync-*
+*.sh
+*.apk
+*.txt
+
+# Windows Resource files
+rsrc.syso
+
+# Go
+vendor/
+go.work
+.mndebug
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+#Custom Files & Folders
+explain/
+learn/
+run.bat
+desktop/clipsync

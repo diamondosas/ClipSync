@@ -2,6 +2,14 @@ name: Release Desktop
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.0.0 or v1.0.0). Defaults to .github/VERSION if empty.'
+        required: false
+        type: string
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -17,17 +25,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Read .github/VERSION
+      - name: Determine Version
         id: version
         run: |
-          if [ -f ".github/VERSION" ]; then
-            VER=$(cat .github/VERSION | tr -d '[:space:]')
+          if [ -n "${{ inputs.version }}" ]; then
+            RAW_VER="${{ inputs.version }}"
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            RAW_VER="${GITHUB_REF#refs/tags/}"
+          elif [ -f ".github/VERSION" ]; then
+            RAW_VER=$(cat .github/VERSION | tr -d '[:space:]')
           else
-            VER="1.0.0"
+            RAW_VER="1.0.0"
           fi
-          echo "version=${VER}" >> $GITHUB_OUTPUT
-          echo "tag=v${VER}" >> $GITHUB_OUTPUT
-          echo "Detected version: ${VER} (Tag: v${VER})"
+          CLEAN_VER="${RAW_VER#v}"
+          echo "version=${CLEAN_VER}" >> $GITHUB_OUTPUT
+          echo "tag=v${CLEAN_VER}" >> $GITHUB_OUTPUT
+          echo "Detected version: ${CLEAN_VER} (Tag: v${CLEAN_VER})"
 
   build-windows:
     name: Windows
@@ -51,7 +64,7 @@ jobs:
       version: ${{ needs.get-version.outputs.version }}
 
   release:
-    name: Publish Release
+    name: Publish Desktop Release Assets
     needs: [get-version, build-windows, build-linux, build-macos]
     if: always() && !cancelled() && needs.get-version.result == 'success'
     runs-on: ubuntu-latest
@@ -59,7 +72,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download All Artifacts
+      - name: Download Desktop Artifacts
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
@@ -69,10 +82,10 @@ jobs:
 
       - name: Display Release Files
         run: |
-          echo "Listing files to publish:"
+          echo "Listing desktop files to publish:"
           ls -la dist/
 
-      - name: Publish or Overwrite GitHub Release
+      - name: Publish or Attach to GitHub Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -3,39 +3,31 @@ package network
 import (
 	"clipsync/internal"
 	"log"
-	"slices"
-	"sync"
 
 )
 
-var (
-	BufferMu         sync.RWMutex
-	LastReceivedClip []byte
-)
-
-// IsLastReceived checks whether data matches the last received clipboard buffer in a thread-safe way.
-func IsLastReceived(data []byte) bool {
-	BufferMu.RLock()
-	defer BufferMu.RUnlock()
-	return slices.Equal(data, LastReceivedClip)
-}
-
+//Sends Clipboard To all Connected Peers
 func SendClipboard(data []byte) {
-	internal.IPSMu.Lock()
-	ips := make([]string, len(internal.IPS))
-	copy(ips, internal.IPS)
-	internal.IPSMu.Unlock()
+	var ips []string
+
+	internal.ConnDevicesMu.Lock()
+	for i := range internal.ConnDevices{
+		ips = append(ips, internal.ConnDevices[i].Ip)
+	} 
+	internal.ConnDevicesMu.Unlock()
+		
+	payload := append([]byte{MsgTypeClipboard}, data...)
 
 	for _, ip := range ips {
 		sess , err := createPeer(ip)
 		if err != nil || sess == nil{
 			continue
 		}
-		_, err = sess.Write(data)
+		_, err = sess.Write(payload)
 		if err != nil {
 			log.Println("SendClipboard Write Error:", err)
 			removePeer(ip)
-			return
+			continue
 		}
 
 	}

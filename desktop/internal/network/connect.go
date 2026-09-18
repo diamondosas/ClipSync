@@ -16,7 +16,6 @@ var(
 	peersMu sync.Mutex
 
 	BlockCrypt kcp.BlockCrypt
-	// Ready = make(chan struct{})
 )
 
 func Connect(ip string) {

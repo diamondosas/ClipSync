@@ -1,0 +1,78 @@
+name: Android Build
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK & NDK
+        run: |
+          echo "Setting up Android SDK and NDK..."
+          ANDROID_SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=${ANDROID_SDK}" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=${ANDROID_SDK}" >> $GITHUB_ENV
+          export ANDROID_HOME="${ANDROID_SDK}"
+          export ANDROID_SDK_ROOT="${ANDROID_SDK}"
+
+          # Accept SDK licenses and install platform tools, platforms, build tools, and NDK
+          yes | sdkmanager --licenses || true
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
+
+          # Determine installed NDK path
+          if [ -d "${ANDROID_SDK}/ndk/26.1.10909125" ]; then
+            NDK_DIR="${ANDROID_SDK}/ndk/26.1.10909125"
+          else
+            NDK_DIR=$(ls -d ${ANDROID_SDK}/ndk/* 2>/dev/null | tail -n 1)
+          fi
+
+          echo "ANDROID_NDK_HOME=${NDK_DIR}" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=${NDK_DIR}" >> $GITHUB_ENV
+          echo "Using Android SDK: ${ANDROID_SDK}"
+          echo "Using Android NDK: ${NDK_DIR}"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: android/go.mod
+          cache: true
+          cache-dependency-path: android/go.sum
+
+      - name: Install Gio Packaging Tool (gogio)
+        run: |
+          go install gioui.org/cmd/gogio@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Compile Android APK
+        run: |
+          mkdir -p build
+          cd android
+          echo "Building Android APK for ClipSync..."
+          gogio -target android -appid com.diamond.clipsync -manifest AndroidManifest.xml -o ../build/ClipSync.apk .
+          cp ../build/ClipSync.apk ../build/clipsync-android.apk
+          cd ..
+          ls -lh build/
+
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: clipsync-android
+          path: |
+            build/ClipSync.apk
+            build/clipsync-android.apk
+          if-no-files-found: error

@@ -3,8 +3,10 @@ package clipboard
 import (
 	"context"
 	"log"
+	"slices"
 
-	"clipsync/internal/network"
+	"clipsync/internal"
+
 	"golang.design/x/clipboard"
 )
 
@@ -38,7 +40,9 @@ func WatchClipboard(ctx context.Context) <-chan []byte {
 		for {
 			select {
 			case data := <-text:
-				if !network.IsLastReceived(data.Bytes) {
+				internal.LastRecvClipMu.Lock()
+				if !slices.Equal(data.Bytes, internal.LastRecvClip) {
+					internal.LastRecvClipMu.Unlock()
 					select {
 					case out <- data.Bytes:
 					case <-ctx.Done():

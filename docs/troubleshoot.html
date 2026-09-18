@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troubleshooting & Common Problems — ClipSync</title>
+  <meta name="description" content="Debug and solve common ClipSync connection issues: firewall rules (UDP 9999/5353), Linux Wayland vs X11 clipboard tools, Android background limits, and missing libraries.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon.png">
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="styles/variables.css">
+  <link rel="stylesheet" href="styles/reset.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/pages.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="assets/icon.png" alt="ClipSync Logo" width="32" height="32">
+        <span>Clip</span>Sync
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="download.html" class="nav-link">Download</a>
+        <a href="guide.html" class="nav-link">Connection Guide</a>
+        <a href="troubleshoot.html" class="nav-link active">Troubleshooting</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" rel="noopener noreferrer" class="btn-github" title="Star ClipSync on GitHub">
+          <span class="star-icon">★</span>
+          <span class="btn-github-text">Star</span>
+          <span class="star-count">...</span>
+        </a>
+
+        <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-drawer">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="download.html" class="nav-link">Download</a>
+    <a href="guide.html" class="nav-link">Connection Guide</a>
+    <a href="troubleshoot.html" class="nav-link">Troubleshooting</a>
+    <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" class="btn btn-secondary">
+      GitHub Repository (★ <span class="star-count">...</span>)
+    </a>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="section-tag">Debugging & Fixes</div>
+      <h1>Troubleshooting & Common Problems</h1>
+      <p>Quick, verified solutions for firewall ports, Linux display servers, Android background sync, and network configuration.</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="section">
+    <div class="container">
+
+      <!-- Real-time Search Filter Bar -->
+      <div class="search-container">
+        <span class="search-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <input type="text" id="troubleshoot-search" class="search-input" placeholder="Search problems (e.g. firewall, wayland, android, port 9999, discovery, libraries)..." autocomplete="off">
+      </div>
+
+      <div id="no-search-results" style="display: none; text-align: center; color: var(--color-text-muted); padding: 2.5rem; background: var(--color-bg-alt); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: 2rem;">
+        No troubleshooting guides matching your search query. Try searching for <em>firewall</em>, <em>wayland</em>, or <em>android</em>.
+      </div>
+
+      <!-- Accordion Problem Guides -->
+      <div class="troubleshoot-list">
+
+        <!-- 1. Discovery & Firewall -->
+        <div class="accordion-item" data-keywords="firewall ufw port 9999 5353 discovery mdns zeroconf router ap isolation wifi subnet not connecting">
+          <button class="accordion-header">
+            <span>1. Devices are not discovering each other on the local network</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>ClipSync relies on <strong>mDNS / Zeroconf (UDP Port 5353)</strong> for discovery and <strong>KCP (UDP Port 9999)</strong> for encrypted data transport. If your devices do not see each other in the <em>Devices</em> tab:</p>
+
+            <h4 style="color: var(--color-text); margin: 1.25rem 0 0.5rem; font-size: 1.1rem;">A. Allow UDP Ports in OS Firewall</h4>
+            
+            <div class="code-block">
+              <div class="code-header">
+                <span>Linux (UFW Firewall)</span>
+                <button class="btn-copy" data-copy-target="cmd-ufw-fix">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code id="cmd-ufw-fix"><span class="command-prompt">$</span>sudo ufw allow 9999/udp &amp;&amp; sudo ufw allow 5353/udp
+<span class="command-prompt">$</span>sudo ufw reload</code>
+              </div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span>Windows (PowerShell as Administrator)</span>
+                <button class="btn-copy" data-copy-target="cmd-win-firewall-fix">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code id="cmd-win-firewall-fix"><span class="command-prompt">PS&gt;</span>New-NetFirewallRule -DisplayName "ClipSync UDP Ports" -Direction Inbound -LocalPort 9999,5353 -Protocol UDP -Action Allow</code>
+              </div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span>macOS</span>
+                <button class="btn-copy" data-copy-text="System Settings > Network > Firewall > Options > Allow incoming connections for ClipSync">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code>Open <strong>System Settings &gt; Network &gt; Firewall</strong> and ensure incoming connections are allowed for ClipSync.</code>
+              </div>
+            </div>
+
+            <h4 style="color: var(--color-text); margin: 1.5rem 0 0.5rem; font-size: 1.1rem;">B. Check Wi-Fi Router "AP Isolation" / "Guest Mode"</h4>
+            <p>
+              Many Wi-Fi routers (especially Guest networks and public Wi-Fi) enable <strong>AP Isolation / Client Isolation</strong>, which prevents connected devices on the same Wi-Fi from talking to each other directly.
+            </p>
+            <p style="margin-top: 0.5rem;">
+              <strong>Fix:</strong> Connect both devices to your primary home/office Wi-Fi network and ensure AP Isolation is turned OFF in your router settings.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2. Linux Wayland vs X11 -->
+        <div class="accordion-item" data-keywords="linux wayland x11 wl-clipboard xclip xsel display server gtk clipboard not working">
+          <button class="accordion-header">
+            <span>2. Linux: Clipboard does not sync (Wayland vs X11 tools)</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>On Linux, ClipSync monitors the operating system clipboard through standard display server tools. If copied text on Linux does not trigger a sync, install the proper tool for your environment:</p>
+
+            <h4 style="color: var(--color-text); margin: 1.25rem 0 0.5rem; font-size: 1.1rem;">Step 1: Check your display server type</h4>
+            <div class="code-block">
+              <div class="code-header">
+                <span>Terminal</span>
+                <button class="btn-copy" data-copy-target="cmd-check-xdg">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code id="cmd-check-xdg"><span class="command-prompt">$</span>echo $XDG_SESSION_TYPE</code>
+              </div>
+            </div>
+
+            <h4 style="color: var(--color-text); margin: 1.25rem 0 0.5rem; font-size: 1.1rem;">Step 2: Install the matching clipboard tool</h4>
+            <ul style="list-style: disc; margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem;">
+              <li>
+                <strong>If output is <code>wayland</code>:</strong>
+                <div class="code-block" style="margin: 0.5rem 0 1rem;">
+                  <div class="code-header"><span>Wayland Tool</span><button class="btn-copy" data-copy-text="sudo apt install wl-clipboard"><span>Copy</span></button></div>
+                  <div class="code-content"><code><span class="command-prompt">$</span>sudo apt install wl-clipboard  <span style="color:#A39182;"># Ubuntu/Debian</span>
+<span class="command-prompt">$</span>sudo dnf install wl-clipboard  <span style="color:#A39182;"># Fedora</span>
+<span class="command-prompt">$</span>sudo pacman -S wl-clipboard    <span style="color:#A39182;"># Arch</span></code></div>
+                </div>
+              </li>
+              <li>
+                <strong>If output is <code>x11</code>:</strong>
+                <div class="code-block" style="margin: 0.5rem 0;">
+                  <div class="code-header"><span>X11 Tool</span><button class="btn-copy" data-copy-text="sudo apt install xclip"><span>Copy</span></button></div>
+                  <div class="code-content"><code><span class="command-prompt">$</span>sudo apt install xclip  <span style="color:#A39182;"># Ubuntu/Debian</span>
+<span class="command-prompt">$</span>sudo dnf install xclip  <span style="color:#A39182;"># Fedora</span>
+<span class="command-prompt">$</span>sudo pacman -S xclip    <span style="color:#A39182;"># Arch</span></code></div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 3. Android Background Sync -->
+        <div class="accordion-item" data-keywords="android background battery optimization sleep tap to copy api 29 service killed">
+          <button class="accordion-header">
+            <span>3. Android: Why doesn't the phone auto-paste into other apps automatically?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>
+              Starting with <strong>Android 10 (API 29)</strong>, the Android operating system strictly prohibits background applications from silently modifying or reading the system clipboard to prevent malicious apps from stealing passwords or private data.
+            </p>
+
+            <h4 style="color: var(--color-text); margin: 1.25rem 0 0.5rem; font-size: 1.1rem;">How to use ClipSync on Android:</h4>
+            <ol style="list-style: decimal; margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+              <li>When you copy text on your computer, ClipSync on Android receives it in the background and logs it in your <strong>Clipboard History</strong>.</li>
+              <li>Open ClipSync on your phone and tap <strong>COPY</strong> on any card to place it into the Android system clipboard.</li>
+              <li>You can now paste it into WhatsApp, Gmail, Chrome, or any app.</li>
+            </ol>
+
+            <h4 style="color: var(--color-text); margin: 1.5rem 0 0.5rem; font-size: 1.1rem;">Keep Background Discovery Alive:</h4>
+            <p>
+              To prevent Android OS from putting ClipSync to sleep when the screen is locked:
+              Go to <code>Android Settings &gt; Apps &gt; ClipSync &gt; Battery &gt; Set to "Unrestricted"</code>.
+            </p>
+          </div>
+        </div>
+
+        <!-- 4. Linux Missing GUI Libraries -->
+        <div class="accordion-item" data-keywords="linux libraries libx11 libwayland libvulkan libxkbcommon crash gtk appindicator">
+          <button class="accordion-header">
+            <span>4. Linux: App crashes on launch with missing `.so` library errors</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>If you downloaded the generic <code>clipsync-linux.tar.gz</code> archive on a minimal Linux installation, make sure the graphical runtime libraries are installed:</p>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span>Debian / Ubuntu / Linux Mint</span>
+                <button class="btn-copy" data-copy-target="cmd-install-all-libs">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code id="cmd-install-all-libs"><span class="command-prompt">$</span>sudo apt install -y libx11-dev libx11-xcb-dev libwayland-dev wayland-protocols libxkbcommon-dev libxkbcommon-x11-dev libvulkan-dev libegl-dev libgles2-mesa-dev libxcursor-dev libxi-dev libxrandr-dev libxinerama-dev libxxf86vm-dev libxfixes-dev libgtk-3-dev libayatana-appindicator3-dev</code>
+              </div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span>Fedora / CentOS / RHEL</span>
+                <button class="btn-copy" data-copy-target="cmd-fedora-libs">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code id="cmd-fedora-libs"><span class="command-prompt">$</span>sudo dnf install -y libX11-devel libwayland-dev libxkbcommon-dev vulkan-headers libayatana-appindicator3-devel gtk3-devel</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Single Instance & System Tray -->
+        <div class="accordion-item" data-keywords="tray system tray minimize single instance already running daemon quit restart">
+          <button class="accordion-header">
+            <span>5. "Instance already running" or window won't reappear after closing</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>
+              ClipSync uses a single-instance lock to ensure multiple background listeners don't collide on port <code>9999</code>.
+            </p>
+            <p style="margin-top: 0.5rem;">
+              When you close the application window, ClipSync <strong>does not quit</strong>; it minimizes to your system notification tray so that clipboard synchronization continues in the background uninterrupted.
+            </p>
+            <ul style="list-style: disc; margin-left: 1.5rem; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem;">
+              <li><strong>To show the window:</strong> Click the ClipSync icon in your Windows Taskbar System Tray, macOS Menu Bar, or Linux Tray.</li>
+              <li><strong>To completely exit:</strong> Right-click the ClipSync tray icon and click <strong>Quit</strong>.</li>
+              <li><strong>Force kill if stuck (Linux/macOS):</strong> Run <code>killall clipsync</code> in your terminal.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom GitHub Issues Help Card -->
+      <div class="card" style="margin-top: 3.5rem; text-align: center; background: var(--color-bg-alt);">
+        <h3 style="color: var(--color-text); margin-bottom: 0.5rem;">Still running into an issue?</h3>
+        <p style="color: var(--color-text-muted); max-width: 600px; margin: 0 auto 1.5rem;">
+          ClipSync is completely open source. If you found a bug or need help with a unique network setup, open an issue on GitHub.
+        </p>
+        <a href="https://github.com/DiamondOsas/ClipSync/issues" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>Open an Issue on GitHub</span>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>ClipSync</h4>
+          <p>The free, fast, zero-cloud clipboard synchronization tool for desktops and mobile devices.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="download.html">Download</a></li>
+            <li><a href="guide.html">Connection Guide</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>GitHub</h5>
+          <ul>
+            <li><a href="https://github.com/DiamondOsas/ClipSync" target="_blank">Repository</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/releases" target="_blank">Releases</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>License</h5>
+          <ul>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/blob/main/LICENCE" target="_blank">MIT License</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 ClipSync. Open-source software under the MIT License.</div>
+        <div style="color: var(--color-accent);">Built with Go & Gio UI</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modular Scripts -->
+  <script src="scripts/os-detect.js"></script>
+  <script src="scripts/github-api.js"></script>
+  <script src="scripts/clipboard.js"></script>
+  <script src="scripts/ui-tabs.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

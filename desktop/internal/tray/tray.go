@@ -27,6 +27,7 @@ func OnTrayReady(cancel context.CancelFunc, onOpenWindow func()) {
 	systray.SetTooltip("Clipsync is Running")
 
 	open := systray.AddMenuItem("Open ", "Open Clipsync")
+	systray.AddSeparator()
 	quit := systray.AddMenuItem("Quit", "Quit Clipsync")
 
 	go func() {

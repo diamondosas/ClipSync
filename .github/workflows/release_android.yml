@@ -1,0 +1,81 @@
+name: Release Android
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.0.0 or v1.0.0). Defaults to .github/VERSION if empty.'
+        required: false
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  get-version:
+    name: Read Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Determine Version
+        id: version
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            RAW_VER="${{ inputs.version }}"
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            RAW_VER="${GITHUB_REF#refs/tags/}"
+          elif [ -f ".github/VERSION" ]; then
+            RAW_VER=$(cat .github/VERSION | tr -d '[:space:]')
+          else
+            RAW_VER="1.0.0"
+          fi
+          CLEAN_VER="${RAW_VER#v}"
+          echo "version=${CLEAN_VER}" >> $GITHUB_OUTPUT
+          echo "tag=v${CLEAN_VER}" >> $GITHUB_OUTPUT
+          echo "Detected version: ${CLEAN_VER} (Tag: v${CLEAN_VER})"
+
+  build-android:
+    name: Android
+    needs: get-version
+    uses: ./.github/workflows/android.yaml
+    with:
+      version: ${{ needs.get-version.outputs.version }}
+
+  release:
+    name: Publish Android Release Asset
+    needs: [get-version, build-android]
+    if: always() && !cancelled() && needs.get-version.result == 'success' && needs.build-android.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Android Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: clipsync-android
+          path: dist
+
+      - name: Display Release Files
+        run: |
+          echo "Listing Android release files to publish:"
+          ls -la dist/
+
+      - name: Publish or Attach to GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.get-version.outputs.tag }}
+          name: ClipSync ${{ needs.get-version.outputs.tag }}
+          generate_release_notes: true
+          make_latest: true
+          files: dist/*

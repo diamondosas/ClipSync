@@ -119,19 +119,6 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 			newIP := entry.AddrIPv4[0].String()
 			newDevice := internal.Device{Name: entry.HostName, Ip: newIP, Alive: true, LastSeen: time.Now()}
 
-			internal.IPSMu.Lock()
-			exists := false
-			for _, ip := range internal.IPS {
-				if ip == newIP {
-					exists = true
-					break
-				}
-			}
-			if !exists {
-				internal.IPS = append(internal.IPS, newIP)
-			}
-			internal.IPSMu.Unlock()
-			
 			
 			view.AddNewDevice(newDevice)
 			Connect(newIP)

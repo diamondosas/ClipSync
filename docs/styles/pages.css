@@ -1,0 +1,448 @@
+/**
+ * ClipSync Page-Specific Styles — Light Theme
+ * Download Matrix, Step-by-Step Guide, Architecture Visuals, Screenshots Showcase
+ */
+
+/* ==========================================================================
+   1. Download Hero & OS Detection
+   ========================================================================== */
+.download-hero-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFFDF9 60%, #FAF4EC 100%);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #DE842D, #C67628, #A45D1C);
+}
+
+.detected-os-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--color-accent-dim);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 0.4rem 1.2rem;
+  color: var(--color-accent-dark);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.detected-os-badge svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--color-accent);
+}
+
+.download-hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.download-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.download-main-btn {
+  padding: 1.1rem 2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.download-main-btn .btn-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.download-main-btn .btn-subtext {
+  font-size: 0.82rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.download-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+}
+
+.download-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.download-hero-info {
+  border-left: 1px solid var(--color-border);
+  padding-left: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  gap: 1rem;
+}
+
+.info-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-dim);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.info-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.2rem;
+}
+
+.info-desc {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   2. Platform Download Matrix Cards
+   ========================================================================== */
+.os-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.75rem;
+}
+
+.os-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.os-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.os-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.os-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-dim);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.os-card-icon svg {
+  width: 26px;
+  height: 26px;
+  fill: var(--color-accent);
+}
+
+.os-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.os-card-version {
+  font-size: 0.82rem;
+  color: var(--color-text-dim);
+  font-weight: 500;
+}
+
+.os-card-downloads {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.os-card-downloads .btn {
+  width: 100%;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding: 0.7rem 1rem;
+}
+
+.file-type-badge {
+  font-size: 0.75rem;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.btn-primary .file-type-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   3. Step-by-Step Connection Guide
+   ========================================================================== */
+.steps-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  position: relative;
+  margin: 3rem 0;
+}
+
+.step-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2.2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+
+.step-number {
+  position: absolute;
+  top: -16px;
+  left: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px var(--color-accent-glow);
+}
+
+.step-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 0.5rem;
+}
+
+.step-desc {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   4. Visual Screenshots & Mockups
+   ========================================================================== */
+.screenshots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 2.5rem;
+  margin: 2.5rem 0;
+}
+
+.screenshot-frame {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+}
+
+.screenshot-frame:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-lg);
+}
+
+.screenshot-topbar {
+  background: #FAF6F1;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.window-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.window-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #D5C5B5;
+}
+
+.window-title {
+  font-size: 0.85rem;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.screenshot-img-wrapper {
+  background: #110B07; /* Dark viewport container so the app screenshots contrast gorgeously */
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.screenshot-img-wrapper img {
+  border-radius: var(--radius-sm);
+  max-height: 380px;
+  object-fit: contain;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.screenshot-caption {
+  padding: 1.25rem 1.5rem;
+  background: #FFFFFF;
+  border-top: 1px solid var(--color-border);
+}
+
+.screenshot-caption h5 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.35rem;
+}
+
+.screenshot-caption p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.asset-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-accent-dark);
+  background: var(--color-accent-dim);
+  border: 1px solid var(--color-border);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-xs);
+  margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   5. Architecture & LAN Protocol Visuals
+   ========================================================================== */
+.protocol-banner {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  margin: 2.5rem 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.protocol-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.protocol-spec-item {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.protocol-spec-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-dim);
+  font-weight: 700;
+}
+
+.protocol-spec-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-accent-dark);
+  font-family: var(--font-mono);
+}
+
+.protocol-spec-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .download-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .download-hero-info {
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    padding-left: 0;
+    padding-top: 2rem;
+  }
+  .steps-container {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .screenshots-grid {
+    grid-template-columns: 1fr;
+  }
+}

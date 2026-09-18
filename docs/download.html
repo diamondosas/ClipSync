@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download ClipSync — Windows, macOS, Linux & Android</title>
+  <meta name="description" content="Download ClipSync for Windows (.exe / .zip), Linux (.deb / .tar.gz), macOS (Universal binary), and Android (.apk). Automatic OS detection and direct download links.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon.png">
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="styles/variables.css">
+  <link rel="stylesheet" href="styles/reset.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/pages.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="assets/icon.png" alt="ClipSync Logo" width="32" height="32">
+        <span>Clip</span>Sync
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="download.html" class="nav-link active">Download</a>
+        <a href="guide.html" class="nav-link">Connection Guide</a>
+        <a href="troubleshoot.html" class="nav-link">Troubleshooting</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" rel="noopener noreferrer" class="btn-github" title="Star ClipSync on GitHub">
+          <span class="star-icon">★</span>
+          <span class="btn-github-text">Star</span>
+          <span class="star-count">...</span>
+        </a>
+
+        <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-drawer">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="download.html" class="nav-link">Download</a>
+    <a href="guide.html" class="nav-link">Connection Guide</a>
+    <a href="troubleshoot.html" class="nav-link">Troubleshooting</a>
+    <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" class="btn btn-secondary">
+      GitHub Repository (★ <span class="star-count">...</span>)
+    </a>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="section-tag">Downloads Hub</div>
+      <h1>Download ClipSync</h1>
+      <p>Free, fast, and cross-platform clipboard synchronization. Choose your operating system below.</p>
+    </div>
+  </div>
+
+  <!-- Download Main Section -->
+  <main class="section">
+    <div class="container">
+
+      <!-- 1. Detected OS Hero Box (Default Highlight) -->
+      <div class="download-hero-card">
+        <div class="download-hero-grid">
+          <div class="download-actions">
+            <div class="detected-os-badge" id="detected-os-badge">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z"/>
+              </svg>
+              <span>Recommended for your OS: <strong id="detected-os-text">Detecting platform...</strong></span>
+            </div>
+
+            <!-- Main Direct Download Button -->
+            <a href="https://github.com/DiamondOsas/ClipSync/releases/latest" id="hero-download-btn" class="btn btn-primary btn-lg download-main-btn" data-target-file="ClipSync-Setup.exe">
+              <div class="btn-text-group">
+                <span id="hero-btn-title" style="font-size: 1.15rem;">Download ClipSync</span>
+                <span id="hero-btn-sub" class="btn-subtext">Automatic Installer</span>
+              </div>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </a>
+
+            <!-- Secondary CTA (Portable Zip / Tarball) -->
+            <a href="https://github.com/DiamondOsas/ClipSync/releases/latest" id="hero-secondary-btn" class="btn btn-secondary" style="display: none;" data-target-file="clipsync-windows.zip">
+              Download Portable (.zip)
+            </a>
+
+            <!-- Release metadata -->
+            <div class="download-meta">
+              <div class="download-meta-item">
+                <span class="badge badge-amber release-version-tag">v1.0.0</span>
+              </div>
+              <div class="download-meta-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span class="release-date-tag">Latest GitHub Release</span>
+              </div>
+              <div class="download-meta-item">
+                <span class="badge badge-green">100% Free & Open Source</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature Bullets -->
+          <div class="download-hero-info">
+            <div class="info-item">
+              <div class="info-icon">⚡</div>
+              <div>
+                <div class="info-title">Lightweight Background Service</div>
+                <div class="info-desc">Uses only ~15 MB RAM and ~0.1% CPU. Operates seamlessly in your system tray.</div>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-icon">🔒</div>
+              <div>
+                <div class="info-title">AES Encrypted LAN Sockets</div>
+                <div class="info-desc">End-to-end encrypted packet stream using high-speed KCP/UDP over port 9999.</div>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-icon">🎯</div>
+              <div>
+                <div class="info-title">Zero Configuration</div>
+                <div class="info-desc">mDNS automatically pairs active machines on your local network.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. All Other Operating Systems Matrix (Always Visible and Selectable) -->
+      <div class="section-header" style="text-align: left; margin-top: 4rem; margin-bottom: 2rem;">
+        <div class="section-tag">All Platforms</div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--color-text);">Select Any Operating System</h2>
+        <p style="color: var(--color-text-muted);">
+          ClipSync is available for Windows, Linux, macOS, and Android. Switch tabs below to download installers, portable archives, or package manager commands:
+        </p>
+      </div>
+
+      <div class="tabs-group" id="os-tabs">
+        <div class="tabs-nav" role="tablist">
+          <button class="tab-btn active" data-tab="windows" role="tab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+            <span>Windows</span>
+          </button>
+          <button class="tab-btn" data-tab="linux" role="tab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.004 0c-2.316 0-4.086 1.765-4.086 4.081 0 .762.203 1.487.564 2.115C7.309 6.77 6.334 7.94 5.767 9.387c-1.157.34-1.996 1.408-1.996 2.68 0 .848.375 1.603.968 2.115-.173.578-.27 1.189-.27 1.818 0 4.418 3.358 8 7.535 8s7.535-3.582 7.535-8c0-.629-.097-1.24-.27-1.818.593-.512.968-1.267.968-2.115 0-1.272-.839-2.34-1.996-2.68-.567-1.447-1.542-2.617-2.715-3.191.361-.628.564-1.353.564-2.115C16.09 1.765 14.32 0 12.004 0z"/></svg>
+            <span>Linux</span>
+          </button>
+          <button class="tab-btn" data-tab="macos" role="tab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.88c.67-.82 1.13-1.96.99-3.13-1 .04-2.22.67-2.93 1.49-.62.72-1.17 1.88-1.02 3 .12.02.24.03.36.03.95 0 2.1-.64 2.6-1.39z"/></svg>
+            <span>macOS</span>
+          </button>
+          <button class="tab-btn" data-tab="android" role="tab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.4114 13.8533 8.1 12 8.1s-3.5902.3114-5.1367.8497L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.77h24c-.3432-4.1111-2.6889-7.5833-6.1185-9.4486"/></svg>
+            <span>Android</span>
+          </button>
+        </div>
+
+        <!-- Windows Tab Pane -->
+        <div class="tab-pane active" data-pane="windows" role="tabpanel">
+          <div class="os-matrix-grid">
+            <div class="os-card">
+              <div>
+                <div class="os-card-header">
+                  <div class="os-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+                  </div>
+                  <div>
+                    <h4 class="os-card-title">Windows Installer</h4>
+                    <span class="os-card-version">Setup Wizard (.exe)</span>
+                  </div>
+                </div>
+                <p class="card-desc" style="margin-top: 1rem;">
+                  Full Inno Setup installer. Automatically creates start menu & desktop shortcuts and configures tray launch on startup.
+                </p>
+              </div>
+              <div class="os-card-downloads">
+                <a href="https://github.com/DiamondOsas/ClipSync/releases/latest/download/ClipSync-Setup.exe" class="btn btn-primary" data-target-file="ClipSync-Setup.exe">
+                  <span>Download Installer</span>
+                  <span class="file-type-badge">.EXE</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="os-card">
+              <div>
+                <div class="os-card-header">
+                  <div class="os-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 10H6v-2h8v2zm4-4H6v-2h12v2z"/></svg>
+                  </div>
+                  <div>
+                    <h4 class="os-card-title">Windows Portable</h4>
+                    <span class="os-card-version">Standalone Archive (.zip)</span>
+                  </div>
+                </div>
+                <p class="card-desc" style="margin-top: 1rem;">
+                  Zero installation. Extract anywhere and launch <code>clipsync.exe</code> directly. Perfect for USB thumb drives.
+                </p>
+              </div>
+              <div class="os-card-downloads">
+                <a href="https://github.com/DiamondOsas/ClipSync/releases/latest/download/clipsync-windows.zip" class="btn btn-secondary" data-target-file="clipsync-windows.zip">
+                  <span>Download Portable Zip</span>
+                  <span class="file-type-badge">.ZIP</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Linux Tab Pane -->
+        <div class="tab-pane" data-pane="linux" role="tabpanel">
+          <div class="os-matrix-grid">
+            <div class="os-card">
+              <div>
+                <div class="os-card-header">
+                  <div class="os-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                  </div>
+                  <div>
+                    <h4 class="os-card-title">Debian / Ubuntu Package</h4>
+                    <span class="os-card-version">Debian Binary (.deb)</span>
+                  </div>
+                </div>
+                <p class="card-desc" style="margin-top: 1rem;">
+                  For Ubuntu, Debian, Pop!_OS, Linux Mint, and derivatives. Installs binary to <code>/usr/bin/clipsync</code> and creates app launcher.
+                </p>
+              </div>
+              <div class="os-card-downloads">
+                <a href="https://github.com/DiamondOsas/ClipSync/releases/latest/download/clipsync-linux.deb" class="btn btn-primary" data-target-file="clipsync-linux.deb">
+                  <span>Download .deb Package</span>
+                  <span class="file-type-badge">.DEB</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="os-card">
+              <div>
+                <div class="os-card-header">
+                  <div class="os-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                  </div>
+                  <div>
+                    <h4 class="os-card-title">Linux Portable Tarball</h4>
+                    <span class="os-card-version">Generic 64-bit (.tar.gz)</span>
+                  </div>
+                </div>
+                <p class="card-desc" style="margin-top: 1rem;">
+                  Universal x86_64 tarball for Fedora, Arch Linux, Manjaro, openSUSE, and any standard Linux distribution.
+                </p>
+              </div>
+              <div class="os-card-downloads">
+                <a href="https://github.com/DiamondOsas/ClipSync/releases/latest/download/clipsync-linux.tar.gz" class="btn btn-secondary" data-target-file="clipsync-linux.tar.gz">
+                  <span>Download Tarball</span>
+                  <span class="file-type-badge">.TAR.GZ</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Terminal Install Guides -->
+          <div style="margin-top: 2.5rem;">
+            <h3 style="color: var(--color-text); margin-bottom: 0.75rem; font-size: 1.15rem;">Quick Linux Terminal Setup:</h3>
+            
+            <div class="code-block">
+              <div class="code-header">
+                <span>Ubuntu / Debian / Mint</span>
+                <button class="btn-copy" data-copy-target="cmd-linux-deb-install">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code id="cmd-linux-deb-install"><span class="command-prompt">$</span>sudo apt install -y libx11-dev libwayland-dev libxkbcommon-dev libvulkan-dev wl-clipboard xclip
+<span class="command-prompt">$</span>sudo dpkg -i clipsync-linux.deb</code>
+              </div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span>Fedora / RHEL</span>
+                <button class="btn-copy" data-copy-target="cmd-fedora-install">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code id="cmd-fedora-install"><span class="command-prompt">$</span>sudo dnf install -y libX11-devel libwayland-dev libxkbcommon-dev vulkan-headers wl-clipboard xclip</code>
+              </div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span>Arch Linux / Manjaro</span>
+                <button class="btn-copy" data-copy-target="cmd-arch-install">
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="code-content">
+                <code id="cmd-arch-install"><span class="command-prompt">$</span>sudo pacman -S --needed libx11 libwayland-dev libxkbcommon-dev libvulkan-dev wl-clipboard xclip</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- macOS Tab Pane -->
+        <div class="tab-pane" data-pane="macos" role="tabpanel">
+          <div class="os-matrix-grid">
+            <div class="os-card">
+              <div>
+                <div class="os-card-header">
+                  <div class="os-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.88c.67-.82 1.13-1.96.99-3.13-1 .04-2.22.67-2.93 1.49-.62.72-1.17 1.88-1.02 3 .12.02.24.03.36.03.95 0 2.1-.64 2.6-1.39z"/></svg>
+                  </div>
+                  <div>
+                    <h4 class="os-card-title">macOS Universal Binary</h4>
+                    <span class="os-card-version">Apple Silicon & Intel (macOS 11+)</span>
+                  </div>
+                </div>
+                <p class="card-desc" style="margin-top: 1rem;">
+                  Universal fat binary built with <code>lipo</code>. Runs natively on Apple Silicon (M1, M2, M3, M4) as well as Intel Macs.
+                </p>
+              </div>
+              <div class="os-card-downloads">
+                <a href="https://github.com/DiamondOsas/ClipSync/releases/latest/download/clipsync-macos.tar.gz" class="btn btn-primary" data-target-file="clipsync-macos.tar.gz">
+                  <span>Download macOS Tarball</span>
+                  <span class="file-type-badge">.TAR.GZ</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Android Tab Pane -->
+        <div class="tab-pane" data-pane="android" role="tabpanel">
+          <div class="os-matrix-grid">
+            <div class="os-card">
+              <div>
+                <div class="os-card-header">
+                  <div class="os-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.4114 13.8533 8.1 12 8.1s-3.5902.3114-5.1367.8497L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.77h24c-.3432-4.1111-2.6889-7.5833-6.1185-9.4486"/></svg>
+                  </div>
+                  <div>
+                    <h4 class="os-card-title">ClipSync for Android</h4>
+                    <span class="os-card-version">Android 8.0+ (ARM64 / APK)</span>
+                  </div>
+                </div>
+                <p class="card-desc" style="margin-top: 1rem;">
+                  Standalone APK for Android phones and tablets. Tap-to-copy history cards, animated radar scan, and lightweight background sync.
+                </p>
+              </div>
+              <div class="os-card-downloads">
+                <a href="https://github.com/DiamondOsas/ClipSync/releases/latest/download/ClipSync.apk" class="btn btn-primary" data-target-file="ClipSync.apk">
+                  <span>Download Android APK</span>
+                  <span class="file-type-badge">.APK</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>ClipSync</h4>
+          <p>The free, fast, zero-cloud clipboard synchronization tool for desktops and mobile devices.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="guide.html">Connection Guide</a></li>
+            <li><a href="troubleshoot.html">Troubleshooting</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>GitHub</h5>
+          <ul>
+            <li><a href="https://github.com/DiamondOsas/ClipSync" target="_blank">Repository</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/releases" target="_blank">All Releases</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>License</h5>
+          <ul>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/blob/main/LICENCE" target="_blank">MIT License</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 ClipSync. Open-source software under the MIT License.</div>
+        <div style="color: var(--color-accent);">Built with Go & Gio UI</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modular Scripts -->
+  <script src="scripts/os-detect.js"></script>
+  <script src="scripts/github-api.js"></script>
+  <script src="scripts/clipboard.js"></script>
+  <script src="scripts/ui-tabs.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

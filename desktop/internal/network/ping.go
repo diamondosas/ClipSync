@@ -5,47 +5,44 @@ import (
 	"log"
 	"time"
 
-
-	"github.com/xtaci/kcp-go/v5"
 )
 
-func PingIPS(ips []string) {
+func PingIPS(ips []string){
 	if len(ips) == 0 {
 		return
 	}
 
 	for _, ip := range ips {
-		SendPing(ip)
+		sess, err :=  createPeer(ip)
+		if err != nil {
+			log.Println("SendPing Resolve Error:", err)
+			return
+		}
+
+		msg := []byte{MsgTypePing}
+
+		_, err = sess.Write(msg)
+		if err != nil {
+			log.Println("SendPing Write Error:", err)
+			removePeer(ip)
+		}
+
+		log.Println("Sent Ping to", sess.RemoteAddr())
 	}
-}
-
-func SendPing(ip string) {
-	sess, err :=  kcp.DialWithOptions(ip + ":" + internal.PORT, BlockCrypt, 10, 3)
-	if err != nil {
-		log.Println("SendPing Resolve Error:", err)
-		return
-	}
-
-	msg := []byte{MsgTypePing}
-
-	_, err = sess.Write(msg)
-	if err != nil {
-		log.Println("SendPing Write Error:", err)
-	}
-
-	log.Println("Sent Ping to", sess.RemoteAddr())
 }
 
 func CheckForPing() {
+	var activeIPS []string
 	internal.ConnDevicesMu.Lock()
 	for i := range internal.ConnDevices {
-		if time.Since(internal.ConnDevices[i].LastSeen) >= (time.Second * 5) {
-			log.Println("Dead connection Found", )
-			//Remove it from internal completely and make sure to send the signal to the GUI
+		if time.Since(internal.ConnDevices[i].LastSeen) <= (5 * time.Second) {
+			internal.ConnDevices[i].Alive = true
+			activeIPS= append(activeIPS, internal.ConnDevices[i].Ip)
+		}else{
+			log.Printf("[Ping] Device timed out: %s (%s)", internal.ConnDevices[i].Name, internal.ConnDevices[i].Ip)
 			internal.ConnDevices[i].Alive = false
 			removePeer(internal.ConnDevices[i].Ip)
 		}
 	}
-
-	internal.ConnDevicesMu.Unlock()
 }
+

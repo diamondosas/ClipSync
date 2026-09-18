@@ -1,5 +1,5 @@
 <h2 align="center">
-  <b>Copy on your Android. Paste on your Desktop.</b><br>
+  <b>Copy on your Desktop. Paste on your Android. </b><i>(and vice versa)</i><br>
   <sub>No account. No friction. Same clipboard content on all devices connected.</sub>
 </h2>
 
@@ -20,26 +20,18 @@
 <h3 align="center">Screenshots</h3>
 
 <p align="center">
-  <img src="assets/screenshots/devices.png" alt="Devices View" width="380" style="border-radius: 8px; margin: 6px;" />
-  <img src="assets/screenshots/clipboard.png" alt="Clipboard View" width="380" style="border-radius: 8px; margin: 6px;" />
+  <img src="assets/screenshots/devices.png" alt="Devices View" width="250" style="border-radius: 8px; margin: 6px;" />
+  <img src="assets/screenshots/clipboard.png" alt="Clipboard View" width="250" style="border-radius: 8px; margin: 6px;" />
 </p>
 
+---
+<h2 align="center">
 
-<div align="center">
 
-## Download ClipSync
 
-Get the latest binary for your OS — run it, done.
+**[> Download ClipSync <](https://github.com/diamondosas/clipsync/releases)**
 
-**[Download ClipSync — Windows, macOS, Linux](https://diamondosas.github.io/clipsync/)**
-
-or
-
-**[Go to Releases](https://github.com/diamondosas/clipsync/releases)**
-
-or 
-
-</div>
+</h2>
 
 
 ---
@@ -51,10 +43,10 @@ or
 - Automatic device discovery
 - Lightweight background process (~15 MB RAM, ~0.1% CPU)
 - Fast clipboard sync across devices
-- Local-network only—your data stays private
+- Support Wifi
 - Works on Windows, macOS, and Linux
 - Supports both X11 and Wayland
-
+- Clipboard Management
 ---
 
 ---

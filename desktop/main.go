@@ -46,7 +46,7 @@ func main() {
 	go func() {
 		runtime.LockOSThread()
 		systray.Run(
-			func() { tray.OnTrayReady(cancel, gui.ShowWindow) },
+			func() { tray.OnTrayReady(cancel, gui.ShowWindow)},
 			func() { tray.OnTrayExit(cancel) },
 		)
 	}()

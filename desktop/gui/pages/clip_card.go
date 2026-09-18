@@ -90,13 +90,27 @@ func ClipCard(gtx layout.Context, th *material.Theme, item *ClipItem) layout.Dim
 									return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
 										// Pin / Unpin button with pushpin image icon
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											pinBg := themes.ColorSurface
-											if item.IsPinned {
-												pinBg = themes.ColorCyan
-											}
-
 											return material.Clickable(gtx, &item.PinBtn, func(gtx layout.Context) layout.Dimensions {
-												return widgets.RoundedBox(gtx, 4, pinBg, func(gtx layout.Context) layout.Dimensions {
+												if item.IsPinned {
+													return widget.Border{
+														Color:        themes.ColorWhite,
+														CornerRadius: unit.Dp(4),
+														Width:        unit.Dp(1),
+													}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+														return widgets.RoundedBox(gtx, 4, themes.ColorBlack, func(gtx layout.Context) layout.Dimensions {
+															return layout.Inset{Top: unit.Dp(3), Bottom: unit.Dp(3), Left: unit.Dp(6), Right: unit.Dp(6)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+																img := widget.Image{
+																	Src:      assets.PinImageOp,
+																	Scale:    0.6,
+																	Position: layout.Center,
+																}
+																return img.Layout(gtx)
+															})
+														})
+													})
+												}
+
+												return widgets.RoundedBox(gtx, 4, themes.ColorSurface, func(gtx layout.Context) layout.Dimensions {
 													return layout.Inset{Top: unit.Dp(3), Bottom: unit.Dp(3), Left: unit.Dp(6), Right: unit.Dp(6)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 														img := widget.Image{
 															Src:      assets.PinImageOp,
@@ -109,14 +123,20 @@ func ClipCard(gtx layout.Context, th *material.Theme, item *ClipItem) layout.Dim
 											})
 										}),
 										layout.Rigid(layout.Spacer{Width: unit.Dp(6)}.Layout),
-										// Delete button
+										// Delete button with cancel image icon
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											btn := material.Button(th, &item.DeleteBtn, "X")
-											btn.Background = themes.ColorSurface
-											btn.Color = themes.ColorRed
-											btn.TextSize = unit.Sp(11)
-											btn.Inset = layout.Inset{Top: unit.Dp(3), Bottom: unit.Dp(3), Left: unit.Dp(6), Right: unit.Dp(6)}
-											return btn.Layout(gtx)
+											return material.Clickable(gtx, &item.DeleteBtn, func(gtx layout.Context) layout.Dimensions {
+												return widgets.RoundedBox(gtx, 4, themes.ColorSurface, func(gtx layout.Context) layout.Dimensions {
+													return layout.Inset{Top: unit.Dp(3), Bottom: unit.Dp(3), Left: unit.Dp(6), Right: unit.Dp(6)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+														img := widget.Image{
+															Src:      assets.CancelImageOp,
+															Scale:    0.6,
+															Position: layout.Center,
+														}
+														return img.Layout(gtx)
+													})
+												})
+											})
 										}),
 									)
 								}),

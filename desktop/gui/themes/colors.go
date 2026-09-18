@@ -27,4 +27,8 @@ var (
 
 	// Destructive Action: Warm Rustic Terracotta Red
 	ColorRed = color.NRGBA{R: 220, G: 75, B: 60, A: 255} // #DC4B3C Warm Crimson Red
+
+	// Common neutrals
+	ColorWhite = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
+	ColorBlack = color.NRGBA{R: 0, G: 0, B: 0, A: 255}
 )

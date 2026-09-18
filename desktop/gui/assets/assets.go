@@ -14,14 +14,25 @@ import (
 //go:embed pin.png
 var PinIconBytes []byte
 
+//go:embed cancel.png
+var CancelIconBytes []byte
+
 // PinImageOp is the pre-decoded pushpin image operation for Gio.
 var PinImageOp paint.ImageOp
 
+// CancelImageOp is the pre-decoded cancel/delete image operation for Gio.
+var CancelImageOp paint.ImageOp
+
 func init() {
-	img, _, err := image.Decode(bytes.NewReader(PinIconBytes))
-	if err != nil {
+	if img, _, err := image.Decode(bytes.NewReader(PinIconBytes)); err != nil {
 		log.Printf("[Assets] Failed to decode pin.png: %v", err)
-		return
+	} else {
+		PinImageOp = paint.NewImageOp(img)
 	}
-	PinImageOp = paint.NewImageOp(img)
+
+	if img, _, err := image.Decode(bytes.NewReader(CancelIconBytes)); err != nil {
+		log.Printf("[Assets] Failed to decode cancel.png: %v", err)
+	} else {
+		CancelImageOp = paint.NewImageOp(img)
+	}
 }

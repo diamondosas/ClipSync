@@ -11,18 +11,24 @@ import (
 func AddNewDevice(device internal.Device) {
 	// 1. Update Global State
 	internal.ConnDevicesMu.Lock()
+	exists := false
 	for i := range internal.ConnDevices {
-		if internal.ConnDevices[i] == device {
-			return
+		if internal.ConnDevices[i].Ip == device.Ip {
+			internal.ConnDevices[i].Alive = true
+			internal.ConnDevices[i].LastSeen = time.Now()
+			exists = true
+			break
 		}
 	}
-	internal.ConnDevices = append(internal.ConnDevices, device)
+	if exists == false{
+		internal.ConnDevices = append(internal.ConnDevices, device)
+	}
 	internal.ConnDevicesMu.Unlock()
 
-	if !gui.IsGUIReady{
-		time.Sleep(time.Millisecond * 200)
-		AddNewDevice(device)
-	}
+	// if !gui.IsGUIReady{
+	// 	time.Sleep(time.Millisecond * 200)
+	// 	AddNewDevice(device)
+	// }
 
 	// 2. Send to GUI channel if GUI is running
 	if gui.State != nil && gui.State.DeviceUpdates != nil {

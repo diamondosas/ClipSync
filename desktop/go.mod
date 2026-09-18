@@ -7,9 +7,10 @@ require (
 	github.com/allan-simon/go-singleinstance v0.0.0-20210120080615-d0997106ab37
 	github.com/getlantern/systray v1.2.2
 	github.com/grandcat/zeroconf v1.0.0
+	github.com/xtaci/kcp-go/v5 v5.6.72
 	golang.design/x/clipboard v0.9.0
 	golang.org/x/sync v0.20.0
-	golang.org/x/sys v0.48.0 // direct
+	golang.org/x/sys v0.48.0
 )
 
 require (
@@ -30,7 +31,6 @@ require (
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
-	github.com/xtaci/kcp-go/v5 v5.6.72 // indirect
 	golang.design/x/x11 v0.2.0 // indirect
 	golang.org/x/crypto v0.45.0 // indirect
 	golang.org/x/exp/shiny v0.0.0-20250606033433-dcc06ee1d476 // indirect

@@ -54,7 +54,8 @@ func ShowWindow() {
 		w.Option(
 			app.Title("ClipSync"),
 			app.Decorated(false),
-			app.Size(unit.Dp(300), unit.Dp(480)),
+			app.Size(unit.Dp(300), unit.Dp(450)),
+			app.MaxSize(unit.Dp(500), unit.Dp(600)),
 			app.MinSize(unit.Dp(260), unit.Dp(380)),
 		)
 		if err := run(w); err != nil {

@@ -1,8 +1,8 @@
-//@ai-generated
+// @ai-generated
 package clipboard
 
 import (
-	"clipsync/internal/network"
+	"clipsync/internal"
 	"context"
 	"testing"
 	"time"
@@ -26,9 +26,9 @@ func TestWatchClipboard_IgnoreNetworkClip(t *testing.T) {
 
 	// Simulate incoming network clip so WatchClipboard ignores it
 	ignoredPayload := []byte("sync-from-laptop")
-	network.BufferMu.Lock()
-	network.LastReceivedClip = ignoredPayload
-	network.BufferMu.Unlock()
+	internal.LastRecvClipMu.Lock()
+	internal.LastRecvClip = ignoredPayload
+	internal.LastRecvClipMu.Unlock()
 	// Write the ignored text
 	WriteClipboard(ctx, string(ignoredPayload))
 
