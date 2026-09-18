@@ -63,7 +63,7 @@ jobs:
           cd android
           echo "Compiling Gio core into AAR archive..."
           mkdir -p app/libs
-          gogio -target android -buildmode archive -o app/libs/clipsync.aar .
+          gogio -target android -buildmode archive -arch arm64 -ldflags="-s -w" -o app/libs/clipsync.aar .
           ls -lh app/libs/
 
       - name: Build Final Android APK with Gradle
