@@ -22,7 +22,7 @@ From the `android/` directory, build the Android APK specifying the target and m
 
 ```bash
 cd android
-gogio -target android -appid com.diamond.clipsync -manifest AndroidManifest.xml -o clipsync.apk .
+gogio -target android -appid com.diamond.clipsync -icon ../assets/icon.png -o clipsync.apk .
 ```
 
 ---

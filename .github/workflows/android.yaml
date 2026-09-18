@@ -63,7 +63,7 @@ jobs:
           mkdir -p build
           cd android
           echo "Building Android APK for ClipSync with gogio..."
-          gogio -target android -appid com.diamond.clipsync -manifest AndroidManifest.xml -o ../build/ClipSync.apk .
+          gogio -target android -appid com.diamond.clipsync -icon ../assets/icon.png -o ../build/ClipSync.apk .
           cp ../build/ClipSync.apk ../build/clipsync-android.apk
           cd ..
           ls -lh build/
