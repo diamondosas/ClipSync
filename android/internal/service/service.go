@@ -43,6 +43,10 @@ func NewClipSyncService(bus *events.EventBus, config Config) *ClipSyncService {
 			config.Hostname = h
 		}
 	}
+	if config.Port <= 0 {
+		p, _ := strconv.Atoi(internal.DefaultPort)
+		config.Port = p
+	}
 	if len(config.SecretKey) == 0 {
 		config.SecretKey = internal.SecretKey
 	}

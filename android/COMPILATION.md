@@ -21,9 +21,9 @@ Ensure you have the following installed:
 ```bash
 cd android
 
-# Step 1: Build the Gio Core AAR library
+# Step 1: Build the Gio Core AAR library (dual 64-bit arm64 and 32-bit arm support)
 mkdir -p app/libs
-gogio -target android -buildmode archive -arch arm -ldflags="-s -w" -o app/libs/clipsync.aar .
+gogio -target android -buildmode archive -appid com.diamond.clipsync -arch arm,arm64 -tags="android" -ldflags="-s -w" -minsdk 24 -o app/libs/clipsync.aar .
 
 # Step 2: Assemble the final APK with Accessibility Service
 ./gradlew assembleRelease

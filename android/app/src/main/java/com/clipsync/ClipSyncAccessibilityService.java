@@ -36,6 +36,13 @@ public class ClipSyncAccessibilityService extends AccessibilityService {
         super.onServiceConnected();
         Log.i(TAG, "ClipSync Accessibility Service connected");
 
+        // Ensure Gio Go runtime is initialized if service started before UI
+        try {
+            org.gioui.Gio.init(getApplicationContext());
+        } catch (Throwable t) {
+            Log.w(TAG, "Gio.init in AccessibilityService: " + t.getMessage());
+        }
+
         // 1. Acquire MulticastLock for Zeroconf / mDNS Wi-Fi discovery
         try {
             WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);

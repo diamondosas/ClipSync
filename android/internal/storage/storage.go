@@ -28,8 +28,12 @@ func (s *Storage) getFilePath() (string, error) {
 	}
 
 	configDir, err := os.UserConfigDir()
-	if err != nil {
-		configDir = "."
+	if err != nil || configDir == "" || configDir == "." {
+		if home := os.Getenv("HOME"); home != "" {
+			configDir = filepath.Join(home, "config")
+		} else {
+			configDir = filepath.Join(os.TempDir(), "clipsync-config")
+		}
 	}
 	dir := filepath.Join(configDir, "clipsync")
 	if err := os.MkdirAll(dir, 0755); err != nil {

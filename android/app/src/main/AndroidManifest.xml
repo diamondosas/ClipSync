@@ -18,11 +18,12 @@
 
     <!-- Application Definition -->
     <application
+        android:name="com.diamond.clipsync.ClipSyncApp"
         android:label="ClipSync"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.NoTitleBar"
+        android:theme="@style/Theme.GioApp"
         tools:ignore="MissingApplicationIcon">
 
         <!-- Gio Main UI Activity -->
@@ -30,6 +31,7 @@
             android:name="org.gioui.GioActivity"
             android:label="ClipSync"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/Theme.GioApp"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>

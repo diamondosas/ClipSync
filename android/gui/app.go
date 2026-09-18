@@ -7,7 +7,6 @@ import (
 	"clipsync-android/gui/widgets"
 	"clipsync-android/internal/service"
 	"log"
-	"os"
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
@@ -35,9 +34,8 @@ func StartGUI(svc *service.ClipSyncService) {
 		MainWindow = w
 
 		if err := run(w, svc); err != nil {
-			log.Fatal(err)
+			log.Printf("[GUI] Window event loop error: %v", err)
 		}
-		os.Exit(0)
 	}()
 	app.Main()
 }
