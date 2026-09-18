@@ -1,84 +1,98 @@
 /**
- * ClipSync Theme Variables — Clean White Background with colors.go Accents
- * Palette:
- * - Background: Pure White (#FFFFFF) & Crisp Light Off-White (#FBF9F7)
- * - Accent: Warm Amber Caramel (#C67628) from colors.go
- * - Surface / Card: Crisp White (#FFFFFF) with warm borders
- * - Pinned Card: Warm Bronze / Cream Tint (#FDF6EE) with #C67628 border
- * - Text Primary: Deep Rich Charcoal Brown (#1A120B)
- * - Text Muted: Warm Almond Slate (#5C4E43)
- * - Red Action: Warm Rustic Terracotta (#DC4B3C) from colors.go
+ * ClipSync Design System Variables — Lighter Warm Mocha & Glowing Amber Palette
+ * Crafted for a warm, inviting, visible mocha-brown canvas with radiant amber highlights:
+ * - Canvas / Base: Rich Warm Mocha Brown (#2A1B12)
+ * - Elevated Surface: Warm Milk Chocolate Mocha (#38251A / #442D20)
+ * - Pinned Card Glow: Radiant Warm Bronze (#4D311F) with #E28B38 border
+ * - Primary Text: Luminous Warm Cream Ivory (#FFF8F0)
+ * - Secondary Text: Bright Almond Latte (#E8D7C8)
+ * - Signature Accent: Glowing Golden Amber Caramel (#E28B38 / #F59E0B)
  */
 
 :root {
-  /* Clean White Canvas */
-  --color-bg: #FFFFFF;
-  --color-bg-alt: #F9F6F2;
-  --color-bg-subtle: #F3ECE5;
+  /* Surface & Background Canvas (Lighter, warmer, clearly visible brown) */
+  --color-bg: #2A1B12;              /* Rich warm mocha brown canvas */
+  --color-bg-alt: #342217;          /* Elevated warm mocha */
+  --color-bg-subtle: #3E2A1E;       /* Layered mocha container background */
+  
+  --color-surface: #38251A;         /* Primary card surface */
+  --color-surface-hover: #442E20;   /* Card hover surface */
+  --color-surface-card: #38251A;    /* Base card */
+  --color-surface-card-hover: #483123;
+  --color-surface-glass: rgba(56, 37, 26, 0.88);
+  --color-surface-dark: #1E120B;    /* Recessed terminal/footer background */
+  --color-surface-dark-alt: #26170E;
 
-  /* Primary Accent: Glowing Warm Amber Caramel (#C67628) */
-  --color-accent: #C67628;
-  --color-accent-light: #DE842D;
-  --color-accent-dark: #A45D1C;
-  --color-accent-hover: #B8671E;
-  --color-accent-dim: rgba(198, 118, 40, 0.10);
-  --color-accent-glow: rgba(198, 118, 40, 0.25);
+  /* Signature Brand Accent: Glowing Golden Amber Caramel (#E28B38) */
+  --color-accent: #E28B38;
+  --color-accent-light: #FBBF24;
+  --color-accent-dark: #B4641C;
+  --color-accent-hover: #F59E0B;
+  --color-accent-active: #C87524;
+  --color-accent-dim: rgba(226, 139, 56, 0.18);
+  --color-accent-subtle: rgba(226, 139, 56, 0.09);
+  --color-accent-glow: rgba(226, 139, 56, 0.38);
+  --color-accent-border: rgba(226, 139, 56, 0.5);
 
-  /* Primary Text: Deep Rich Dark Charcoal */
-  --color-text: #1C130D;
-  --color-text-dark: #000000;
+  /* Pinned / Highlighted Surfaces */
+  --color-surface-pinned: #4D311F;
+  --color-surface-pinned-border: #E28B38;
+
+  /* Secondary & Status Colors */
+  --color-green: #34D399;
+  --color-green-light: #6EE7B7;
+  --color-green-dim: rgba(52, 211, 153, 0.18);
+  --color-green-glow: rgba(52, 211, 153, 0.35);
+
+  --color-red: #F87171;
+  --color-red-dim: rgba(248, 113, 113, 0.18);
+
+  --color-blue: #60A5FA;
+  --color-blue-dim: rgba(96, 165, 250, 0.18);
+
+  /* Typography: Ultra-High-Contrast Luminous Ivory & Bright Almond Latte */
+  --color-text: #FFF8F0;            /* Luminous Warm Cream Ivory primary text */
+  --color-text-dark: #1A1009;
   --color-text-white: #FFFFFF;
-
-  /* Secondary Text: Warm Almond Slate */
-  --color-text-muted: #5C4E43;
-  --color-text-dim: #827265;
-
-  /* Surface & Card Backgrounds */
-  --color-surface: #FFFFFF;
-  --color-surface-hover: #FCFAF8;
-  --color-surface-card: #FFFFFF;
-  --color-surface-card-hover: #FFFDFB;
-  --color-surface-dark: #1F140D; /* Rich warm chocolate from colors.go for headers/footer */
-
-  /* Surface Pinned / Highlight */
-  --color-surface-pinned: #FEF8F0;
-  --color-surface-pinned-border: #C67628;
-
-  /* Destructive & Alert Action */
-  --color-red: #DC4B3C;
-  --color-red-dim: rgba(220, 75, 60, 0.10);
-
-  /* Success & Status Glow */
-  --color-green: #16A34A;
-  --color-green-glow: rgba(22, 163, 74, 0.25);
+  --color-text-muted: #E8D7C8;      /* Bright Almond Latte secondary text */
+  --color-text-dim: #BFA997;        /* Soft warm latte tertiary text */
+  --color-text-light: #FFF8F0;
 
   /* Borders & Dividers */
-  --color-border: #E8DCD1;
-  --color-border-subtle: #F0E8E0;
-  --color-border-focus: #C67628;
+  --color-border: #563A27;          /* Defined warm mocha border */
+  --color-border-subtle: #452D1E;   /* Subtle divider */
+  --color-border-hover: #7A5439;   /* Lighter border highlight on hover */
+  --color-border-focus: #E28B38;
 
-  /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  /* Typography Stacks */
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Spacing & Sizing */
-  --max-width: 1200px;
-  --header-height: 72px;
+  /* Sizing & Layout */
+  --max-width: 1240px;
+  --header-height: 70px;
 
   /* Border Radii */
-  --radius-xs: 4px;
+  --radius-xs: 5px;
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 2px 6px rgba(40, 20, 5, 0.05);
-  --shadow-md: 0 6px 18px rgba(40, 20, 5, 0.08);
-  --shadow-lg: 0 12px 32px rgba(40, 20, 5, 0.12);
-  --shadow-accent: 0 4px 20px rgba(198, 118, 40, 0.22);
+  /* Elevation Shadows & Inner Highlights */
+  --shadow-xs: 0 1px 3px rgba(18, 10, 5, 0.35);
+  --shadow-sm: 0 3px 10px rgba(18, 10, 5, 0.45), 0 1px 3px rgba(18, 10, 5, 0.25);
+  --shadow-md: 0 8px 24px rgba(18, 10, 5, 0.55), 0 2px 8px rgba(18, 10, 5, 0.35);
+  --shadow-lg: 0 16px 40px rgba(18, 10, 5, 0.65), 0 4px 14px rgba(18, 10, 5, 0.4);
+  --shadow-xl: 0 24px 60px rgba(18, 10, 5, 0.75), 0 8px 24px rgba(18, 10, 5, 0.5);
+  --shadow-accent: 0 8px 32px rgba(226, 139, 56, 0.35);
+  --shadow-inner: inset 0 1px 1px rgba(255, 255, 255, 0.12);
 
-  /* Transitions */
-  --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Transitions & Motion */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 150ms var(--ease-spring);
+  --transition: 220ms var(--ease-spring);
+  --transition-slow: 350ms var(--ease-spring);
 }

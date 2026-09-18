@@ -1,5 +1,6 @@
 /**
- * ClipSync Clean Modern CSS Reset — Light Theme
+ * ClipSync CSS Reset — Dark Brown Espresso Aesthetic
+ * Optimized for typography rendering, keyboard accessibility, and rich dark surfaces
  */
 
 *, *::before, *::after {
@@ -12,25 +13,64 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
-  line-height: 1.6;
+  font-weight: 400;
+  line-height: 1.65;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 18% 15%, rgba(198, 118, 40, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 82% 65%, rgba(198, 118, 40, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
 }
 
-/* Custom Scrollbars */
+/* Accessibility: Skip to Content */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1.5rem;
+  background: var(--color-accent);
+  color: #FFFFFF;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  z-index: 9999;
+  text-decoration: none;
+  box-shadow: var(--shadow-lg);
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1.5rem;
+  outline: 3px solid #FFFFFF;
+}
+
+/* Accessible Focus States */
+:focus-visible {
+  outline: 2px solid var(--color-accent-light);
+  outline-offset: 3px;
+}
+
+/* Selection Highlight */
+::selection {
+  background: var(--color-accent);
+  color: #FFFFFF;
+}
+
+/* Dark Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
 }
 
 ::-webkit-scrollbar-track {
@@ -38,37 +78,34 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D5C5B5;
-  border-radius: 4px;
+  background: #63432D;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-bg-alt);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent);
 }
 
-/* Selection */
-::selection {
-  background: var(--color-accent);
-  color: #FFFFFF;
-}
-
+/* Media Elements */
 img, svg, video {
   display: block;
   max-width: 100%;
   height: auto;
 }
 
+/* Links */
 a {
-  color: var(--color-accent);
+  color: var(--color-accent-light);
   text-decoration: none;
-  transition: var(--transition);
+  transition: color var(--transition-fast), opacity var(--transition-fast);
 }
 
 a:hover {
-  color: var(--color-accent-hover);
-  text-decoration: underline;
+  color: #FFFFFF;
 }
 
+/* Form Elements */
 button, input, select, textarea {
   font: inherit;
   color: inherit;
@@ -80,10 +117,15 @@ button {
   background: none;
 }
 
+button:active {
+  transform: scale(0.98);
+}
+
 ul, ol {
   list-style: none;
 }
 
 code, pre, kbd {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }

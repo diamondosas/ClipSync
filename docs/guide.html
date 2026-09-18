@@ -3,12 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connection Guide — ClipSync Setup & Pairing Tutorial</title>
-  <meta name="description" content="Step-by-step tutorial on connecting ClipSync between Windows, macOS, Linux, and Android over your local Wi-Fi. Screenshot asset map and debugging tips.">
+  <title>Connection Guide — ClipSync Setup &amp; Pairing Tutorial</title>
+  <meta name="description" content="Step-by-step tutorial on connecting ClipSync between Windows, macOS, Linux, and Android over your local Wi-Fi. Screenshot asset map and workflow tips.">
+  <meta name="keywords" content="clipsync connection guide, pair clipsync android desktop, clipsync wifi tutorial, local clipboard pairing">
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="assets/icon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <!-- Modular Stylesheets -->
   <link rel="stylesheet" href="styles/variables.css">
@@ -19,15 +25,18 @@
 </head>
 <body>
 
+  <!-- Accessibility Skip Link -->
+  <a href="#guide-main" class="skip-link">Skip to main content</a>
+
   <!-- Navigation Bar -->
   <header class="navbar">
     <div class="container">
-      <a href="index.html" class="nav-brand">
+      <a href="index.html" class="nav-brand" aria-label="ClipSync Homepage">
         <img src="assets/icon.png" alt="ClipSync Logo" width="32" height="32">
         <span>Clip</span>Sync
       </a>
 
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="Main Navigation">
         <a href="index.html" class="nav-link">Home</a>
         <a href="download.html" class="nav-link">Download</a>
         <a href="guide.html" class="nav-link active">Connection Guide</a>
@@ -41,7 +50,7 @@
           <span class="star-count">...</span>
         </a>
 
-        <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+        <button class="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
           <span></span>
           <span></span>
           <span></span>
@@ -51,36 +60,36 @@
   </header>
 
   <!-- Mobile Drawer Menu -->
-  <div class="mobile-drawer">
+  <div class="mobile-drawer" role="dialog" aria-label="Mobile Navigation Menu">
     <a href="index.html" class="nav-link">Home</a>
     <a href="download.html" class="nav-link">Download</a>
-    <a href="guide.html" class="nav-link">Connection Guide</a>
+    <a href="guide.html" class="nav-link active">Connection Guide</a>
     <a href="troubleshoot.html" class="nav-link">Troubleshooting</a>
-    <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" class="btn btn-secondary">
+    <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
       GitHub Repository (★ <span class="star-count">...</span>)
     </a>
   </div>
 
   <!-- Page Header -->
-  <div class="page-header">
+  <header class="page-header">
     <div class="container">
-      <div class="section-tag">Setup & Connection</div>
-      <h1>Help to Connect</h1>
-      <p>Learn how ClipSync discovers peers on your Wi-Fi network and how to pair your desktop and mobile devices effortlessly.</p>
+      <div class="section-tag">Setup &amp; Pairing</div>
+      <h1>How to Connect ClipSync</h1>
+      <p>Discover peers effortlessly on your local Wi-Fi network and verify real-time clipboard sync between desktops and mobile devices.</p>
     </div>
-  </div>
+  </header>
 
   <!-- Main Content -->
-  <main class="section">
+  <main class="section" id="guide-main">
     <div class="container">
 
-      <!-- 3-Step Overview -->
-      <div class="steps-container">
+      <!-- 3-Step Connection Roadmap -->
+      <section class="steps-container" aria-label="3-Step Connection Process">
         <div class="step-card">
           <div class="step-number">1</div>
           <h3 class="step-title">Connect to Same Wi-Fi</h3>
           <p class="step-desc">
-            Connect both your computer (Windows, macOS, Linux) and your Android phone or laptop to the <strong>same Wi-Fi router</strong> or local subnet.
+            Ensure your computer (Windows, macOS, Linux) and phone or secondary laptop are connected to the <strong>same Wi-Fi router</strong> or local subnet.
           </p>
         </div>
 
@@ -88,7 +97,7 @@
           <div class="step-number">2</div>
           <h3 class="step-title">Launch ClipSync</h3>
           <p class="step-desc">
-            Open ClipSync on all devices. Discovery begins immediately in the background using mDNS (Zeroconf) on port <code>5353</code> and <code>9999</code>.
+            Open ClipSync on both devices. The background engine immediately initiates Zeroconf mDNS peer discovery on UDP ports <code>5353</code> and <code>9999</code>.
           </p>
         </div>
 
@@ -96,25 +105,31 @@
           <div class="step-number">3</div>
           <h3 class="step-title">Instant Synchronization</h3>
           <p class="step-desc">
-            Copy any text snippet or URL on device A. It immediately arrives on device B's clipboard history and notification feed in less than 10 milliseconds.
+            Copy any text snippet on Device A. It arrives in Device B's clipboard history feed in under 10 milliseconds, ready for immediate use.
           </p>
         </div>
-      </div>
+      </section>
 
       <!-- Interactive Platform Tutorial Tabs -->
-      <div class="tabs-group" id="guide-tabs" style="margin-top: 3.5rem;">
-        <div class="tabs-nav" role="tablist">
-          <button class="tab-btn active" data-tab="guide-desktop" role="tab">Desktop-to-Desktop Tutorial</button>
-          <button class="tab-btn" data-tab="guide-android" role="tab">Desktop-to-Android Tutorial</button>
-          <button class="tab-btn" data-tab="guide-assets" role="tab">Screenshot Asset Map</button>
+      <div class="tabs-group" id="guide-tabs" style="margin-top: 4rem;">
+        <div class="tabs-nav" role="tablist" aria-label="Tutorial Sections">
+          <button class="tab-btn active" data-tab="guide-desktop" role="tab" aria-selected="true">
+            <span>Desktop Workstations</span>
+          </button>
+          <button class="tab-btn" data-tab="guide-android" role="tab" aria-selected="false">
+            <span>Android Mobile</span>
+          </button>
+          <button class="tab-btn" data-tab="guide-assets" role="tab" aria-selected="false">
+            <span>Screenshot Asset Map</span>
+          </button>
         </div>
 
         <!-- 1. Desktop Guide -->
         <div class="tab-pane active" data-pane="guide-desktop" role="tabpanel">
           <div class="card">
-            <h3 style="color: var(--color-text); margin-bottom: 0.75rem; font-size: 1.35rem;">Desktop Pairing & Verification (Windows / macOS / Linux)</h3>
+            <h3 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--color-text); margin-bottom: 0.5rem;">Desktop Pairing &amp; Workflow (Windows / macOS / Linux)</h3>
             <p style="color: var(--color-text-muted); margin-bottom: 2rem;">
-              ClipSync runs as a lightweight native desktop client with an integrated system tray daemon. When you open the window, you have two primary views:
+              ClipSync runs as a native lightweight desktop client with an integrated system tray daemon. When you open the window, you have two core operational views:
             </p>
 
             <div class="screenshots-grid">
@@ -134,7 +149,7 @@
                 </div>
                 <div class="screenshot-caption">
                   <h5>1. Discovered Peers View</h5>
-                  <p>Shows all actively discovered machines on your local network. A glowing green indicator confirms bidirectional heartbeats.</p>
+                  <p>Lists all actively discovered machines on your local network. A glowing green indicator confirms bidirectional heartbeats.</p>
                   <span class="asset-tag">assets/screenshots/devices.png</span>
                 </div>
               </div>
@@ -154,19 +169,19 @@
                   <img src="assets/screenshots/clipboard.png" alt="Desktop Clipboard History" onerror="this.src='assets/screenshots/android-clipboard.svg'">
                 </div>
                 <div class="screenshot-caption">
-                  <h5>2. Live Clipboard Cards & Pinning</h5>
-                  <p>Every copied snippet appears here in real-time. Pinned snippets are highlighted in warm bronze glow and persist across app restarts.</p>
+                  <h5>2. Live Clipboard Cards &amp; Pinning</h5>
+                  <p>Every copied snippet appears here in real time. Pinned snippets are highlighted in warm amber and persist across app restarts.</p>
                   <span class="asset-tag">assets/screenshots/clipboard.png</span>
                 </div>
               </div>
             </div>
 
-            <div style="background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 1.5rem; margin-top: 1.5rem;">
-              <h4 style="color: var(--color-text); margin-bottom: 0.5rem;">💡 Pro-Tips for Desktop:</h4>
-              <ul style="list-style: disc; margin-left: 1.5rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+            <div style="background: var(--color-bg-alt); border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: 1.75rem; margin-top: 2rem;">
+              <h4 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--color-text); margin-bottom: 0.75rem;">💡 Desktop Pro-Tips:</h4>
+              <ul style="list-style: disc; margin-left: 1.5rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem;">
                 <li>Closing the desktop window minimizes ClipSync to your <strong>System Tray / Menu Bar</strong>, keeping sync active in the background.</li>
-                <li>Right-click the tray icon to quickly reopen the window or select <strong>Quit</strong> to exit.</li>
-                <li>On Linux, ensure <code>wl-clipboard</code> (for Wayland) or <code>xclip</code> (for X11) is installed so clipboard changes are monitored correctly.</li>
+                <li>Right-click the tray icon to quickly bring the window back to front or select <strong>Quit</strong> to exit.</li>
+                <li>On Linux, ensure <code>wl-clipboard</code> (Wayland) or <code>xclip</code> (X11) is installed so clipboard events trigger reliably.</li>
               </ul>
             </div>
           </div>
@@ -175,9 +190,9 @@
         <!-- 2. Android Guide -->
         <div class="tab-pane" data-pane="guide-android" role="tabpanel">
           <div class="card">
-            <h3 style="color: var(--color-text); margin-bottom: 0.75rem; font-size: 1.35rem;">Android Mobile Pairing & Usage</h3>
+            <h3 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--color-text); margin-bottom: 0.5rem;">Android Mobile Pairing &amp; Tap-to-Copy</h3>
             <p style="color: var(--color-text-muted); margin-bottom: 2rem;">
-              ClipSync Android provides an elegant mobile interface designed for touch operation. Because modern Android (Android 10+) restricts background clipboard modification for privacy, ClipSync provides a seamless <strong>Tap-to-Copy</strong> workflow:
+              ClipSync Android provides an intuitive touch interface. In compliance with Android 10+ privacy protections, ClipSync provides a seamless <strong>Tap-to-Copy</strong> workflow:
             </p>
 
             <div class="screenshots-grid">
@@ -196,8 +211,8 @@
                   <img src="assets/screenshots/android-devices.svg" alt="Android Discovered Devices Radar">
                 </div>
                 <div class="screenshot-caption">
-                  <h5>1. Mobile Radar & Active Peers</h5>
-                  <p>When you open ClipSync on your phone, it browses <code>_clipsync._tcp</code> to automatically list your connected PC workstations.</p>
+                  <h5>1. Mobile Radar &amp; Active Peers</h5>
+                  <p>When you launch ClipSync on Android, it browses <code>_clipsync._tcp</code> to automatically list your connected PC workstations.</p>
                   <span class="asset-tag">assets/screenshots/android-devices.png</span>
                 </div>
               </div>
@@ -218,16 +233,16 @@
                 </div>
                 <div class="screenshot-caption">
                   <h5>2. Tap-to-Copy Cards</h5>
-                  <p>Clips copied on your computer arrive in your phone's history feed. Simply tap <strong>COPY</strong> on any card to paste it anywhere on mobile.</p>
+                  <p>Clips copied on your computer arrive in your phone feed. Simply tap <strong>COPY</strong> on any card to paste it anywhere on mobile.</p>
                   <span class="asset-tag">assets/screenshots/android-clipboard.png</span>
                 </div>
               </div>
             </div>
 
-            <div style="background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 1.5rem; margin-top: 1.5rem;">
-              <h4 style="color: var(--color-text); margin-bottom: 0.5rem;">📱 Battery Optimization Setting on Android:</h4>
-              <p style="color: var(--color-text-muted); font-size: 0.95rem;">
-                To keep ClipSync's incoming UDP listener alive when your phone screen is off, set ClipSync's battery usage to <strong>Unrestricted</strong> in <code>Settings &gt; Apps &gt; ClipSync &gt; Battery</code>.
+            <div style="background: var(--color-bg-alt); border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: 1.75rem; margin-top: 2rem;">
+              <h4 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--color-text); margin-bottom: 0.5rem;">📱 Battery Optimization Setting:</h4>
+              <p style="color: var(--color-text-muted); font-size: 0.95rem; line-height: 1.6;">
+                To keep ClipSync's incoming UDP listener active when your phone screen is off, set ClipSync's battery usage to <strong>Unrestricted</strong> in <code>Settings &gt; Apps &gt; ClipSync &gt; Battery</code>.
               </p>
             </div>
           </div>
@@ -236,16 +251,16 @@
         <!-- 3. Screenshot Assets Guide -->
         <div class="tab-pane" data-pane="guide-assets" role="tabpanel" id="assets">
           <div class="card">
-            <h3 style="color: var(--color-text); margin-bottom: 0.75rem; font-size: 1.35rem;">Website Screenshot Asset Reference</h3>
-            <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">
-              Here is the exact list of image files used across this documentation site. You can drop or replace these PNG files directly in <code>docs/assets/screenshots/</code> and the website will render them immediately:
+            <h3 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--color-text); margin-bottom: 0.5rem;">Website Screenshot Asset Reference</h3>
+            <p style="color: var(--color-text-muted); margin-bottom: 2rem;">
+              This reference catalogs all image files utilized across this documentation website. Dropping replacement PNG images into <code>docs/assets/screenshots/</code> updates the preview frames automatically:
             </p>
 
             <div style="display: flex; flex-direction: column; gap: 1.25rem;">
               <!-- Asset 1 -->
               <div class="card" style="padding: 1.5rem; background: var(--color-bg-alt);">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                  <code style="color: var(--color-accent-dark); font-size: 1.05rem; font-weight: bold;">assets/screenshots/devices.png</code>
+                  <code style="color: var(--color-accent-light); font-size: 1rem; font-weight: bold;">assets/screenshots/devices.png</code>
                   <span class="badge badge-green">Desktop UI</span>
                 </div>
                 <p style="color: var(--color-text-muted); font-size: 0.92rem; margin-top: 0.5rem;">
@@ -259,7 +274,7 @@
               <!-- Asset 2 -->
               <div class="card" style="padding: 1.5rem; background: var(--color-bg-alt);">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                  <code style="color: var(--color-accent-dark); font-size: 1.05rem; font-weight: bold;">assets/screenshots/clipboard.png</code>
+                  <code style="color: var(--color-accent-light); font-size: 1rem; font-weight: bold;">assets/screenshots/clipboard.png</code>
                   <span class="badge badge-green">Desktop UI</span>
                 </div>
                 <p style="color: var(--color-text-muted); font-size: 0.92rem; margin-top: 0.5rem;">
@@ -273,7 +288,7 @@
               <!-- Asset 3 -->
               <div class="card" style="padding: 1.5rem; background: var(--color-bg-alt);">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                  <code style="color: var(--color-accent-dark); font-size: 1.05rem; font-weight: bold;">assets/screenshots/android-devices.png</code>
+                  <code style="color: var(--color-accent-light); font-size: 1rem; font-weight: bold;">assets/screenshots/android-devices.png</code>
                   <span class="badge badge-amber">Android Mobile UI</span>
                 </div>
                 <p style="color: var(--color-text-muted); font-size: 0.92rem; margin-top: 0.5rem;">
@@ -287,7 +302,7 @@
               <!-- Asset 4 -->
               <div class="card" style="padding: 1.5rem; background: var(--color-bg-alt);">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                  <code style="color: var(--color-accent-dark); font-size: 1.05rem; font-weight: bold;">assets/screenshots/android-clipboard.png</code>
+                  <code style="color: var(--color-accent-light); font-size: 1rem; font-weight: bold;">assets/screenshots/android-clipboard.png</code>
                   <span class="badge badge-amber">Android Mobile UI</span>
                 </div>
                 <p style="color: var(--color-text-muted); font-size: 0.92rem; margin-top: 0.5rem;">
@@ -295,20 +310,6 @@
                 </p>
                 <div style="font-size: 0.82rem; color: var(--color-text-dim); margin-top: 0.25rem;">
                   Recommended resolution: ~320 x 580 px PNG.
-                </div>
-              </div>
-
-              <!-- Asset 5 -->
-              <div class="card" style="padding: 1.5rem; background: var(--color-bg-alt);">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                  <code style="color: var(--color-accent-dark); font-size: 1.05rem; font-weight: bold;">assets/screenshots/firewall-settings.png</code>
-                  <span class="badge badge-amber">Network / Firewall</span>
-                </div>
-                <p style="color: var(--color-text-muted); font-size: 0.92rem; margin-top: 0.5rem;">
-                  <strong>Description:</strong> Terminal or firewall setting screenshot showing allowed UDP ports 9999 and 5353.
-                </p>
-                <div style="font-size: 0.82rem; color: var(--color-text-dim); margin-top: 0.25rem;">
-                  Recommended resolution: ~540 x 320 px PNG.
                 </div>
               </div>
             </div>
@@ -324,8 +325,8 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <h4>ClipSync</h4>
-          <p>The free, fast, zero-cloud clipboard synchronization tool for desktops and mobile devices.</p>
+          <h4><span>Clip</span>Sync</h4>
+          <p>Free, fast, zero-cloud clipboard synchronization tool for desktops and mobile devices across local Wi-Fi.</p>
         </div>
         <div class="footer-col">
           <h5>Quick Links</h5>
@@ -338,20 +339,23 @@
         <div class="footer-col">
           <h5>GitHub</h5>
           <ul>
-            <li><a href="https://github.com/DiamondOsas/ClipSync" target="_blank">Repository</a></li>
-            <li><a href="https://github.com/DiamondOsas/ClipSync/releases" target="_blank">Releases</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync" target="_blank" rel="noopener noreferrer">Repository</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/releases" target="_blank" rel="noopener noreferrer">Releases</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h5>License</h5>
           <ul>
-            <li><a href="https://github.com/DiamondOsas/ClipSync/blob/main/LICENCE" target="_blank">MIT License</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/blob/main/LICENCE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
         <div>© 2026 ClipSync. Open-source software under the MIT License.</div>
-        <div style="color: var(--color-accent);">Built with Go & Gio UI</div>
+        <div class="footer-status-pill">
+          <span class="footer-status-dot"></span>
+          <span>Zero-Cloud Local P2P Ready</span>
+        </div>
       </div>
     </div>
   </footer>

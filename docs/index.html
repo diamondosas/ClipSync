@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ClipSync — Free, Fast, Zero-Cloud Local Clipboard Synchronizer</title>
-  <meta name="description" content="Open-source clipboard synchronization for Windows, macOS, Linux, and Android. Sync instantly over your local Wi-Fi with end-to-end AES encryption. No accounts, no cloud, no tracking.">
+  <title>ClipSync — Fast, Private, Zero-Cloud Local Clipboard Sync</title>
+  <meta name="description" content="Open-source clipboard synchronization for Windows, macOS, Linux, and Android. Sync instantly over local Wi-Fi with AES encryption. No accounts, no cloud, no latency.">
   <meta name="keywords" content="clipboard sync, clipsync, local clipboard sync, lan clipboard, p2p clipboard, cross platform clipboard, open source clipboard manager">
 
   <!-- OpenGraph / Social Sharing -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="ClipSync — Zero-Cloud Local Clipboard Sync">
-  <meta property="og:description" content="Copy on your Desktop. Paste on your Android. No account. No friction. Fast, private, open-source clipboard synchronization.">
+  <meta property="og:description" content="Copy on your Desktop. Paste on your Android. No accounts. No friction. Fast, private, open-source clipboard synchronization.">
   <meta property="og:image" content="assets/icon.png">
   <meta property="og:url" content="https://diamondosas.github.io/clipsync/">
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="assets/icon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icon.png">
+
+  <!-- Google Fonts: Outfit (Headings), Plus Jakarta Sans (Body), JetBrains Mono (Code) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <!-- Modular Stylesheets -->
   <link rel="stylesheet" href="styles/variables.css">
@@ -27,15 +32,18 @@
 </head>
 <body>
 
+  <!-- Accessibility Skip Link -->
+  <a href="#hero" class="skip-link">Skip to main content</a>
+
   <!-- Navigation Bar -->
   <header class="navbar">
     <div class="container">
-      <a href="index.html" class="nav-brand">
+      <a href="index.html" class="nav-brand" aria-label="ClipSync Homepage">
         <img src="assets/icon.png" alt="ClipSync Logo" width="32" height="32">
-        <span>ClipSync
+        <span>Clip</span>Sync
       </a>
 
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="Main Navigation">
         <a href="index.html" class="nav-link active">Home</a>
         <a href="download.html" class="nav-link">Download</a>
         <a href="guide.html" class="nav-link">Connection Guide</a>
@@ -49,7 +57,7 @@
           <span class="star-count">...</span>
         </a>
 
-        <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+        <button class="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
           <span></span>
           <span></span>
           <span></span>
@@ -59,171 +67,323 @@
   </header>
 
   <!-- Mobile Drawer Menu -->
-  <div class="mobile-drawer">
-    <a href="index.html" class="nav-link">Home</a>
+  <div class="mobile-drawer" role="dialog" aria-label="Mobile Navigation Menu">
+    <a href="index.html" class="nav-link active">Home</a>
     <a href="download.html" class="nav-link">Download</a>
     <a href="guide.html" class="nav-link">Connection Guide</a>
     <a href="troubleshoot.html" class="nav-link">Troubleshooting</a>
-    <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" class="btn btn-secondary">
+    <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
       GitHub Repository (★ <span class="star-count">...</span>)
     </a>
   </div>
 
-  <!-- Hero Section -->
-  <section class="hero" id="hero">
-    <div class="hero-glow-bg"></div>
-    <div class="container">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="hero-badge-dot"></span>
-          <span>100% Free & Open Source • Zero Cloud • Local LAN Only</span>
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+      <div class="hero-glow-bg"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            <span>100% Free & Open Source • Zero Cloud • Local LAN Only</span>
+          </div>
+
+          <h1 class="hero-title">
+            Copy on your <span class="gradient-text">Desktop</span>.<br>
+            Paste on your <span class="gradient-text">Android</span>.
+          </h1>
+
+          <p class="hero-desc">
+            ClipSync synchronizes your clipboard across Windows, macOS, Linux, and Android over your local Wi-Fi. Sub-10ms speed with end-to-end AES encryption. No accounts, no external servers, no subscriptions.
+          </p>
+
+          <!-- Primary CTAs -->
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="download.html" class="btn btn-primary btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download ClipSync</span>
+            </a>
+            <a href="guide.html" class="btn btn-secondary btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>How to Connect</span>
+            </a>
+          </div>
+
+          <!-- Interactive Live LAN Sync Playground -->
+          <div class="playground-container" aria-label="Interactive Live LAN Sync Simulator">
+            <div class="playground-topbar">
+              <div class="playground-title-group">
+                <span class="playground-badge">Interactive Simulator</span>
+                <span style="font-size: 0.92rem; font-weight: 700; color: var(--color-text);">Test Realtime LAN Clipboard Sync</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--color-text-dim);">
+                Type below or pick a preset chip to simulate instant peer transfer:
+              </div>
+            </div>
+
+            <div class="playground-grid">
+              <!-- Left: Desktop Node Simulator -->
+              <div class="device-card">
+                <div class="device-card-header">
+                  <div class="device-name">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    <span>(PC / Mac)</span>
+                  </div>
+                  <div class="device-status">
+                    <span class="device-status-dot"></span>
+                    <span>Broadcasting</span>
+                  </div>
+                </div>
+
+                <div class="clipboard-input-box">
+                  <textarea id="playground-input" class="clipboard-textarea" placeholder="Type or paste any text snippet here to test..." rows="3">https://github.com/DiamondOsas/ClipSync</textarea>
+                </div>
+
+                <div class="sample-chips">
+                  <span class="sample-chip-label">Presets:</span>
+                  <button class="sample-chip" data-sample="Wi-Fi Password: clipsync-secure-2026">Wi-Fi Pass</button>
+                  <button class="sample-chip" data-sample="2FA Token: 492-180">2FA Code</button>
+                </div>
+              </div>
+
+              <!-- Center: UDP Transmission Channel -->
+              <div class="sync-bridge">
+                <div class="sync-speed-badge" id="playground-speed">Synced in 3.4ms</div>
+                <div class="sync-arrow-track">
+                  <div class="sync-arrow-packet"></div>
+                </div>
+                <div class="sync-port-label">KCP UDP :9999</div>
+              </div>
+
+              <!-- Right: Android Mobile Node Simulator -->
+              <div class="device-card">
+                <div class="device-card-header">
+                  <div class="device-name">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                    <span>Android Phone</span>
+                  </div>
+                  <div class="device-status">
+                    <span class="device-status-dot"></span>
+                    <span>Paired</span>
+                  </div>
+                </div>
+
+                <div class="mobile-preview-box">
+                  <div class="mobile-clip-text" id="playground-mobile-text">https://github.com/DiamondOsas/ClipSync</div>
+                  <div class="mobile-clip-footer">
+                    <span class="mobile-clip-time">Just received via LAN</span>
+                    <button class="mobile-copy-btn" id="playground-mobile-copy" title="Copy to clipboard">TAP TO COPY</button>
+                  </div>
+                </div>
+
+                <div style="font-size: 0.78rem; color: var(--color-text-dim); text-align: left;">
+                  ✓ End-to-end encrypted packet stream logged directly to your mobile history.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Bento Features Grid Section -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Core Capabilities</div>
+          <h2 class="section-title">Built for Speed, Privacy, and Zero Friction</h2>
+          <p class="section-subtitle">ClipSync eliminates accounts, cloud relays, and telemetry. Everything travels directly over your local subnet.</p>
         </div>
 
-        <h1 class="hero-title">
-          Copy on your <span class="gradient-text">Desktop</span>.<br>
-          Paste on your <span class="gradient-text">Android</span>.
-        </h1>
+        <div class="bento-grid">
+          <!-- Bento 1: Hero 2-Column Card -->
+          <div class="bento-card bento-col-2 bento-card-hero">
+            <div>
+              <div class="bento-header">
+                <div class="card-icon">⚡</div>
+                <span class="badge badge-green">Sub-10ms Speed</span>
+              </div>
+              <h3 class="card-title">Instant Local LAN Synchronization</h3>
+              <p class="card-desc">
+                High-performance transport powered by KCP over raw UDP sockets delivers instantaneous clipboard handoff across devices on the same Wi-Fi router.
+              </p>
+            </div>
+            <div class="bento-visual">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.85rem;">
+                <span style="color: var(--color-text-dim);">Protocol: <strong>KCP / UDP</strong></span>
+                <span style="color: var(--color-accent-light);">Payload: <strong>AES-128 Encrypted</strong></span>
+                <span style="color: var(--color-green-light);">Latency: <strong>&lt; 5ms average</strong></span>
+              </div>
+            </div>
+          </div>
 
-        <p class="hero-desc">
-          ClipSync instantly synchronizes your clipboard across Windows, macOS, Linux, and Android over your local Wi-Fi. No accounts, no external servers, no subscriptions.
-        </p>
+          <!-- Bento 2: Automatic Discovery -->
+          <div class="bento-card">
+            <div>
+              <div class="bento-header">
+                <div class="card-icon">📡</div>
+                <span class="badge badge-amber">Zero Config</span>
+              </div>
+              <h3 class="card-title">mDNS Auto-Discovery</h3>
+              <p class="card-desc">
+                No IP typing or pairing codes. ClipSync broadcasts presence over <code>_clipsync._tcp</code> and automatically links active machines.
+              </p>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-text-dim); background: var(--color-bg-alt); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border-subtle);">
+              UDP Multicast: 224.0.0.251:5353
+            </div>
+          </div>
 
-        <!-- Quick CTAs -->
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <!-- Bento 3: Zero Cloud & Encrypted -->
+          <div class="bento-card">
+            <div>
+              <div class="bento-header">
+                <div class="card-icon">🔒</div>
+                <span class="badge badge-green">100% Private</span>
+              </div>
+              <h3 class="card-title">Zero Cloud, Zero Logins</h3>
+              <p class="card-desc">
+                Your passwords, tokens, and private clips never leave your local Wi-Fi. No databases, third-party analytics, or remote telemetry.
+              </p>
+            </div>
+            <div style="font-size: 0.84rem; color: var(--color-text-muted);">
+              ✓ Direct socket-to-socket transmission only
+            </div>
+          </div>
+
+          <!-- Bento 4: History & Pinning -->
+          <div class="bento-card">
+            <div>
+              <div class="bento-header">
+                <div class="card-icon">📌</div>
+                <span class="badge badge-amber">Storage</span>
+              </div>
+              <h3 class="card-title">History & Snippet Pinning</h3>
+              <p class="card-desc">
+                Search recent copied text, pin crucial credentials or templates to the top in warm bronze, and clear unpinned clips in one click.
+              </p>
+            </div>
+            <div style="font-size: 0.84rem; color: var(--color-text-muted);">
+              ✓ Persistent local storage across restarts
+            </div>
+          </div>
+
+          <!-- Bento 5: Ultra Low Footprint -->
+          <div class="bento-card">
+            <div>
+              <div class="bento-header">
+                <div class="card-icon">🪶</div>
+                <span class="badge badge-blue">Native Go</span>
+              </div>
+              <h3 class="card-title">~15 MB RAM Footprint</h3>
+              <p class="card-desc">
+                Written natively in Go with Gio UI bindings. Operates silent in your system tray using under 0.1% CPU in the background.
+              </p>
+            </div>
+            <div style="font-size: 0.84rem; color: var(--color-text-muted);">
+              ✓ No heavy Electron or web runtime wrappers
+            </div>
+          </div>
+
+          <!-- Bento 6: Universal Parity -->
+          <div class="bento-card bento-col-3" style="background: linear-gradient(135deg, #28170E 0%, #1E120A 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+              <div>
+                <div class="bento-header">
+                  <div class="card-icon">💻</div>
+                  <span class="badge badge-amber">Multiplatform</span>
+                </div>
+                <h3 class="card-title">Seamless Across All Operating Systems</h3>
+                <p class="card-desc" style="max-width: 680px;">
+                  Native support for Windows 10/11, macOS (Apple Silicon & Intel), Linux (both Wayland and X11 display servers), and Android mobile.
+                </p>
+              </div>
+              <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                <span class="badge badge-amber">Windows</span>
+                <span class="badge badge-amber">macOS</span>
+                <span class="badge badge-amber">Linux</span>
+                <span class="badge badge-amber">Android</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture & Protocol Section -->
+    <section class="section section-alt" id="architecture">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">How It Works</div>
+          <h2 class="section-title">Encrypted Peer-to-Peer Protocol</h2>
+          <p class="section-subtitle">Direct, socket-level communication without intermediary servers or external routing.</p>
+        </div>
+
+        <div class="protocol-banner">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="assets/images/p2p-architecture.svg" alt="ClipSync P2P Architecture" style="max-width: 100%; border-radius: var(--radius-sm); border: 1.5px solid var(--color-border); box-shadow: var(--shadow-md);" />
+          </div>
+
+          <div class="protocol-grid">
+            <div class="protocol-spec-item">
+              <span class="protocol-spec-label">Transport Layer</span>
+              <span class="protocol-spec-value">KCP / UDP</span>
+              <span class="protocol-spec-desc">Low-latency reliable packet streaming with minimal overhead</span>
+            </div>
+            <div class="protocol-spec-item">
+              <span class="protocol-spec-label">Data Port</span>
+              <span class="protocol-spec-value">UDP 9999</span>
+              <span class="protocol-spec-desc">Encrypted clipboard payload stream and bidirectional heartbeat</span>
+            </div>
+            <div class="protocol-spec-item">
+              <span class="protocol-spec-label">Service Discovery</span>
+              <span class="protocol-spec-value">mDNS / UDP 5353</span>
+              <span class="protocol-spec-desc">Automatic multicast Zeroconf peer detection on local subnet</span>
+            </div>
+            <div class="protocol-spec-item">
+              <span class="protocol-spec-label">Payload Security</span>
+              <span class="protocol-spec-value">AES Block Cipher</span>
+              <span class="protocol-spec-desc">End-to-end encrypted packet stream for all clipboard data</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Links to Documentation Hubs -->
+        <div style="display: flex; gap: 1.25rem; justify-content: center; margin-top: 3.5rem; flex-wrap: wrap;">
           <a href="download.html" class="btn btn-primary btn-lg">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <span>Download ClipSync</span>
+            <span>Go to Downloads Hub</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </a>
           <a href="guide.html" class="btn btn-secondary btn-lg">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="16" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-            <span>How to Connect</span>
+            <span>View Connection Tutorial</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <a href="troubleshoot.html" class="btn btn-ghost btn-lg">
+            <span>Firewall & Port Troubleshooting</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </a>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Quick Feature Overview -->
-  <section class="section" id="features">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Core Features</div>
-        <h2 class="section-title">Why Developers & Users Choose ClipSync</h2>
-        <p class="section-subtitle">A native, lightning-fast clipboard companion built without cloud compromises.</p>
-      </div>
-
-      <div class="features-grid">
-        <div class="card card-feature">
-          <div class="card-icon">⚡</div>
-          <h3 class="card-title">Instant LAN Sync</h3>
-          <p class="card-desc">Sub-10ms clipboard synchronization using high-performance KCP over UDP sockets.</p>
-        </div>
-
-        <div class="card card-feature">
-          <div class="card-icon">🔒</div>
-          <h3 class="card-title">Zero Cloud & 100% Private</h3>
-          <p class="card-desc">No accounts, no telemetry, no relays. Your clipboard data never leaves your local Wi-Fi.</p>
-        </div>
-
-        <div class="card card-feature">
-          <div class="card-icon">📡</div>
-          <h3 class="card-title">Automatic Discovery</h3>
-          <p class="card-desc">Zero manual setup. ClipSync announces presence on <code>_clipsync._tcp</code> and auto-pairs active peers.</p>
-        </div>
-
-        <div class="card card-feature">
-          <div class="card-icon">📌</div>
-          <h3 class="card-title">Clipboard History & Pinning</h3>
-          <p class="card-desc">Search previous clips, pin essential snippets to top, and clear unpinned text in one tap.</p>
-        </div>
-
-        <div class="card card-feature">
-          <div class="card-icon">🪶</div>
-          <h3 class="card-title">Ultra Low Footprint</h3>
-          <p class="card-desc">Written in Go with native GUI bindings. Requires only ~15 MB RAM and ~0.1% background CPU.</p>
-        </div>
-
-        <div class="card card-feature">
-          <div class="card-icon">💻</div>
-          <h3 class="card-title">Cross Platform</h3>
-          <p class="card-desc">Seamlessly share clipboard text between Windows, macOS, Linux (X11 & Wayland), and Android.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- P2P Architecture Overview -->
-  <section class="section section-alt">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">How It Works</div>
-        <h2 class="section-title">Encrypted Peer-to-Peer Protocol</h2>
-        <p class="section-subtitle">ClipSync communicates directly between devices on your local network using AES-128 encryption.</p>
-      </div>
-
-      <div class="protocol-banner">
-        <div style="text-align: center; margin-bottom: 2rem;">
-          <img src="assets/images/p2p-architecture.svg" alt="ClipSync P2P Architecture" style="max-width: 100%; border-radius: var(--radius-sm); border: 1.5px solid var(--color-border);" />
-        </div>
-
-        <div class="protocol-grid">
-          <div class="protocol-spec-item">
-            <span class="protocol-spec-label">Transport</span>
-            <span class="protocol-spec-value">KCP / UDP</span>
-            <span class="protocol-spec-desc">Low-latency reliable packet streaming</span>
-          </div>
-          <div class="protocol-spec-item">
-            <span class="protocol-spec-label">Default Port</span>
-            <span class="protocol-spec-value">UDP 9999</span>
-            <span class="protocol-spec-desc">Encrypted clipboard data & heartbeat</span>
-          </div>
-          <div class="protocol-spec-item">
-            <span class="protocol-spec-label">Discovery</span>
-            <span class="protocol-spec-value">mDNS / UDP 5353</span>
-            <span class="protocol-spec-desc">Zeroconf auto device detection</span>
-          </div>
-          <div class="protocol-spec-item">
-            <span class="protocol-spec-label">Security</span>
-            <span class="protocol-spec-value">AES Block Cipher</span>
-            <span class="protocol-spec-desc">End-to-end encrypted packet stream</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Links to subpages -->
-      <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 3rem; flex-wrap: wrap;">
-        <a href="download.html" class="btn btn-primary">
-          <span>Go to Downloads Page</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </a>
-        <a href="guide.html" class="btn btn-secondary">
-          <span>View Connection Tutorial</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </a>
-        <a href="troubleshoot.html" class="btn btn-ghost">
-          <span>Common Problems & Fixes</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </a>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <h4>ClipSync</h4>
-          <p>The free, fast, zero-cloud clipboard synchronization tool for desktops and mobile devices.</p>
-          <div style="margin-top: 1.25rem;">
+          <h4><span>Clip</span>Sync</h4>
+          <p>Free, fast, zero-cloud clipboard synchronization tool for desktops and mobile devices across local Wi-Fi.</p>
+          <div style="margin-top: 1.5rem;">
             <a href="https://github.com/DiamondOsas/ClipSync" target="_blank" rel="noopener noreferrer" class="btn-github">
               <span class="star-icon">★</span>
               <span>Star on GitHub</span>
@@ -233,7 +393,7 @@
         </div>
 
         <div class="footer-col">
-          <h5>Download</h5>
+          <h5>Downloads</h5>
           <ul>
             <li><a href="download.html">Windows (.exe / .zip)</a></li>
             <li><a href="download.html">Linux (.deb / .tar.gz)</a></li>
@@ -245,27 +405,30 @@
         <div class="footer-col">
           <h5>Documentation</h5>
           <ul>
-            <li><a href="guide.html">Connection Guide</a></li>
-            <li><a href="troubleshoot.html">Troubleshooting & Ports</a></li>
-            <li><a href="troubleshoot.html">Wayland vs X11 Fixes</a></li>
+            <li><a href="guide.html">Connection Roadmap</a></li>
+            <li><a href="troubleshoot.html">Firewall Ports & UFW</a></li>
+            <li><a href="troubleshoot.html">Wayland vs X11 Setup</a></li>
             <li><a href="guide.html#assets">Screenshot Asset Map</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h5>Project</h5>
+          <h5>Open Source</h5>
           <ul>
-            <li><a href="https://github.com/DiamondOsas/ClipSync" target="_blank">GitHub Repository</a></li>
-            <li><a href="https://github.com/DiamondOsas/ClipSync/releases" target="_blank">Releases & Builds</a></li>
-            <li><a href="https://github.com/DiamondOsas/ClipSync/issues" target="_blank">Report an Issue</a></li>
-            <li><a href="https://github.com/DiamondOsas/ClipSync/blob/main/LICENCE" target="_blank">MIT License</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/releases" target="_blank" rel="noopener noreferrer">Release Builds</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/issues" target="_blank" rel="noopener noreferrer">Issue Tracker</a></li>
+            <li><a href="https://github.com/DiamondOsas/ClipSync/blob/main/LICENCE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
           </ul>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 ClipSync. Open-source software under the MIT License.</div>
-        <div style="color: var(--color-accent);">Built with Go & Gio UI</div>
+        <div>© 2026 ClipSync. Released under the MIT License. Built with Go &amp; Gio UI.</div>
+        <div class="footer-status-pill">
+          <span class="footer-status-dot"></span>
+          <span>Zero-Cloud Local P2P Ready</span>
+        </div>
       </div>
     </div>
   </footer>

@@ -21,35 +21,35 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK & NDK
+      - name: Set up Android SDK
         run: |
-          echo "Setting up Android SDK and NDK..."
+          echo "Setting up Android SDK environment..."
           ANDROID_SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
           echo "ANDROID_HOME=${ANDROID_SDK}" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=${ANDROID_SDK}" >> $GITHUB_ENV
-          export ANDROID_HOME="${ANDROID_SDK}"
-          export ANDROID_SDK_ROOT="${ANDROID_SDK}"
+          echo "${ANDROID_SDK}/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "${ANDROID_SDK}/platform-tools" >> $GITHUB_PATH
 
-          # Accept SDK licenses and install platform tools, platforms, build tools, and NDK
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
-
-          # Determine installed NDK path
-          if [ -d "${ANDROID_SDK}/ndk/26.1.10909125" ]; then
-            NDK_DIR="${ANDROID_SDK}/ndk/26.1.10909125"
+          # Accept licenses and install platform tools and SDK 34
+          if [ -f "${ANDROID_SDK}/cmdline-tools/latest/bin/sdkmanager" ]; then
+            SDKMANAGER="${ANDROID_SDK}/cmdline-tools/latest/bin/sdkmanager"
           else
-            NDK_DIR=$(ls -d ${ANDROID_SDK}/ndk/* 2>/dev/null | tail -n 1)
+            SDKMANAGER="sdkmanager"
           fi
 
-          echo "ANDROID_NDK_HOME=${NDK_DIR}" >> $GITHUB_ENV
-          echo "ANDROID_NDK_ROOT=${NDK_DIR}" >> $GITHUB_ENV
-          echo "Using Android SDK: ${ANDROID_SDK}"
-          echo "Using Android NDK: ${NDK_DIR}"
+          yes | $SDKMANAGER --licenses || true
+          $SDKMANAGER "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
+
+      - name: Set up Android NDK
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r26b
+          link-to-sdk: true
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: android/go.mod
+          go-version: '>=1.22'
           cache: true
           cache-dependency-path: android/go.sum
 
@@ -62,7 +62,7 @@ jobs:
         run: |
           mkdir -p build
           cd android
-          echo "Building Android APK for ClipSync..."
+          echo "Building Android APK for ClipSync with gogio..."
           gogio -target android -appid com.diamond.clipsync -manifest AndroidManifest.xml -o ../build/ClipSync.apk .
           cp ../build/ClipSync.apk ../build/clipsync-android.apk
           cd ..

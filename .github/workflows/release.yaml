@@ -90,12 +90,19 @@ jobs:
           ls -la dist/
 
       - name: Publish or Attach to GitHub Release
-        uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ needs.get-version.outputs.tag }}
-          name: ClipSync ${{ needs.get-version.outputs.tag }}
-          generate_release_notes: true
-          make_latest: true
-          files: dist/*
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs.get-version.outputs.tag }}"
+          echo "Target tag: ${TAG}"
+
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            echo "Release ${TAG} already exists. Uploading all assets without modifying release notes..."
+            gh release upload "${TAG}" dist/* --clobber
+          else
+            echo "Creating initial release for ${TAG}..."
+            gh release create "${TAG}" dist/* \
+              --title "ClipSync ${TAG}" \
+              --generate-notes \
+              --latest
+          fi
