@@ -23,7 +23,7 @@ cd android
 
 # Step 1: Build the Gio Core AAR library
 mkdir -p app/libs
-gogio -target android -buildmode archive -arch arm64 -ldflags="-s -w" -o app/libs/clipsync.aar .
+gogio -target android -buildmode archive -arch arm -ldflags="-s -w" -o app/libs/clipsync.aar .
 
 # Step 2: Assemble the final APK with Accessibility Service
 ./gradlew assembleRelease
