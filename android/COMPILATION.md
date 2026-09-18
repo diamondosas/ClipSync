@@ -18,12 +18,19 @@ Ensure you have the following installed:
 
 ## 2. Compile the APK
 
-From the `android/` directory, build the Android APK specifying the target and manifest:
-
 ```bash
 cd android
-gogio -target android -appid com.diamond.clipsync -icon ../assets/icon.png -o clipsync.apk .
+
+# Step 1: Build the Gio Core AAR library
+mkdir -p app/libs
+gogio -target android -buildmode archive -o app/libs/clipsync.aar .
+
+# Step 2: Assemble the final APK with Accessibility Service
+./gradlew assembleRelease
 ```
+
+The compiled APK will be generated at:
+`android/app/build/outputs/apk/release/app-release.apk`
 
 ---
 
