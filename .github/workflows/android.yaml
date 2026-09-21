@@ -72,15 +72,15 @@ jobs:
           # Remove main_app.go so only the minimal base main.go is compiled in package main
           rm -f main_app.go
           mkdir -p app/libs
-          gogio -target android -buildmode archive -appid com.gio.clipsync -arch arm,arm64 -tags="android" -ldflags="-s -w" -minsdk 24 -o app/libs/clipsync.aar .
+          gogio -target android -buildmode archive -appid com.example.gioapp -arch arm,arm64 -tags="android" -ldflags="-s -w" -minsdk 21 -o app/libs/gioapp.aar .
           ls -lh app/libs/
 
       - name: Build Final Android APK with Gradle
         run: |
           cd android
           chmod +x gradlew
-          echo "Assembling Android APK with Accessibility Service..."
-          ./gradlew assembleRelease --stacktrace
+          echo "Assembling Android APK..."
+          ./gradlew assembleDebug assembleRelease --stacktrace
 
           mkdir -p ../build
           if [ -f app/build/outputs/apk/release/app-release.apk ]; then

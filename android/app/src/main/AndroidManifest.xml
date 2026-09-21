@@ -1,59 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- OpenGL ES Requirement for Gio immediate-mode GUI -->
-    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <uses-feature android:glEsVersion="0x00030000" android:required="true"/>
 
-    <!-- Network & Wi-Fi Permissions -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    
-    <!-- Background Service & Notification Permissions -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <!-- Application Definition -->
     <application
-        android:name="com.diamond.clipsync.ClipSyncApp"
-        android:label="ClipSync"
-        android:icon="@mipmap/ic_launcher"
-        android:allowBackup="true"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.GioApp"
-        tools:ignore="MissingApplicationIcon">
+        android:label="JavaApp"
+        android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
-        <!-- Gio Main UI Activity -->
-        <activity
-            android:name="org.gioui.GioActivity"
-            android:label="ClipSync"
-            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|smallestScreenSize"
-            android:theme="@style/Theme.GioApp"
-            android:windowSoftInputMode="adjustResize"
+        <activity 
+            android:name=".MainActivity" 
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <!-- Android Background Clipboard Accessibility Service -->
-        <service
-            android:name="com.clipsync.ClipSyncAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:label="ClipSync Automatic Clipboard Sync"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
-        </service>
-
+        <activity
+            android:name="org.gioui.GioActivity"
+            android:exported="false"
+            android:theme="@style/Theme.GioApp"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
-
 </manifest>
