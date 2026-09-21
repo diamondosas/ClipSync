@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_devices"
+        android:icon="@drawable/ic_devices"
+        android:title="@string/title_devices" />
+    <item
+        android:id="@+id/nav_clipboard"
+        android:icon="@drawable/ic_clipboard"
+        android:title="@string/title_clipboard" />
+</menu>

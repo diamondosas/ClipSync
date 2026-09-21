@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ClipSync</string>
-    <string name="accessibility_service_description">Enables automatic background clipboard synchronization with your other ClipSync devices.</string>
+    <string name="title_devices">Devices</string>
+    <string name="title_clipboard">Clipboard</string>
+    <string name="accessibility_service_name">ClipSync Automatic Clipboard Sync</string>
+    <string name="accessibility_service_description">Monitors system clipboard across all apps to automatically synchronize copied text with your connected desktop and mobile devices.</string>
+
+    <string name="searching_devices">Searching for local devices…</string>
+    <string name="devices_connected_format">%d connected</string>
+    <string name="no_devices_found">No devices found yet</string>
+    <string name="no_devices_hint">Ensure ClipSync is running on your PC or other phones on the same Wi-Fi network.</string>
+    <string name="connect_manually">Connect Manually by IP</string>
+
+    <string name="search_clips_hint">Search copied clips…</string>
+    <string name="clips_count_format">%d clips</string>
+    <string name="clips_filter_format">%d of %d clips</string>
+    <string name="no_clips_empty">Clipboard history is empty.\nCopy text or receive clips from connected devices.</string>
+    <string name="no_clips_matched">No clips matching \"%s\"</string>
+    <string name="sync_phone_clip">Sync Phone Clip</string>
+    <string name="clear_all">Clear All</string>
+    <string name="pinned_badge">PINNED</string>
+    <string name="pin_action">📌 Pin</string>
+    <string name="pinned_action">📌 Pinned</string>
+    <string name="delete_action">✕</string>
+    <string name="show_more">Show More</string>
+    <string name="show_less">Show Less</string>
+
+    <string name="accessibility_warning_title">Background Sync Inactive</string>
+    <string name="accessibility_warning_msg">Tap to enable ClipSync Accessibility Service so copying text in any app syncs automatically.</string>
+    <string name="action_enable">Enable</string>
+
+    <string name="dialog_connect_title">Connect Manually</string>
+    <string name="dialog_connect_hint">IP Address (e.g. 192.168.1.100)</string>
+    <string name="dialog_connect_btn">Connect</string>
+    <string name="dialog_cancel_btn">Cancel</string>
+
+    <string name="dialog_help_title">ClipSync Guide</string>
+    <string name="dialog_help_content">ClipSync synchronizes your clipboard securely across all your devices on your local Wi-Fi network.\n\n• Automatic Discovery: ClipSync uses mDNS to detect PCs and phones automatically.\n• Background Sync: Enable the Accessibility Service so copying text in any app syncs seamlessly.\n• Firewall: If connecting to a PC, ensure UDP port 9999 is open on your PC\'s firewall.</string>
+    <string name="dialog_close_btn">Close</string>
+
+    <string name="notification_channel_name">ClipSync Service</string>
+    <string name="notification_channel_desc">Shows background synchronization status.</string>
+    <string name="notification_title">ClipSync is active</string>
+    <string name="notification_content">Monitoring clipboard and listening for connected devices.</string>
+    <string name="notification_active_peers">Connected to %d peer(s)</string>
+
+    <string name="toast_copied">Copied to clipboard</string>
+    <string name="toast_synced">Phone clip synced to devices</string>
+    <string name="toast_received">Received new clip from %s</string>
 </resources>

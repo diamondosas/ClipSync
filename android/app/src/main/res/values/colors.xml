@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#1E1E1E</color>
+    <color name="surface_dark">#2A2A2A</color>
+    <color name="surface_card">#2A2A2A</color>
+    <color name="surface_pinned">#352F28</color>
+    <color name="accent_brown">#A07D5A</color>
+    <color name="accent_brown_light">#B89370</color>
+    <color name="accent_brown_dark">#836343</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_muted">#9E9E9E</color>
+    <color name="status_green">#4CAF50</color>
+    <color name="status_red">#E53935</color>
+    <color name="divider">#383838</color>
+    <color name="search_bg">#2D2D2D</color>
+    <color name="nav_active">#A07D5A</color>
+    <color name="nav_inactive">#7C7C7C</color>
+    <color name="banner_warning_bg">#3D2F1B</color>
+    <color name="banner_warning_border">#E6A23C</color>
+</resources>

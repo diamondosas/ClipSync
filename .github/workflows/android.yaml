@@ -27,55 +27,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
       - name: Set up Android SDK
-        run: |
-          echo "Setting up Android SDK environment..."
-          ANDROID_SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
-          echo "ANDROID_HOME=${ANDROID_SDK}" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=${ANDROID_SDK}" >> $GITHUB_ENV
-          echo "${ANDROID_SDK}/cmdline-tools/latest/bin" >> $GITHUB_PATH
-          echo "${ANDROID_SDK}/platform-tools" >> $GITHUB_PATH
+        uses: android-actions/setup-android@v3
 
-          # Accept licenses and install platform tools and SDK 34
-          if [ -f "${ANDROID_SDK}/cmdline-tools/latest/bin/sdkmanager" ]; then
-            SDKMANAGER="${ANDROID_SDK}/cmdline-tools/latest/bin/sdkmanager"
-          else
-            SDKMANAGER="sdkmanager"
-          fi
-
-          yes | $SDKMANAGER --licenses || true
-          $SDKMANAGER "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
-
-      - name: Set up Android NDK
-        uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r26b
-          link-to-sdk: true
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '>=1.22'
-          cache: true
-          cache-dependency-path: android/go.sum
-
-      - name: Install Gio Packaging Tool (gogio)
-        run: |
-          go install gioui.org/cmd/gogio@latest
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-
-      - name: Build Gio Android Library (.aar)
-        run: |
-          cd android
-          echo "Compiling Gio core into AAR archive..."
-          # Remove main_app.go so only the minimal base main.go is compiled in package main
-          rm -f main_app.go
-          mkdir -p app/libs
-          gogio -target android -buildmode archive -appid com.example.gioapp -arch arm,arm64 -tags="android" -ldflags="-s -w" -minsdk 21 -o app/libs/gioapp.aar .
-          ls -lh app/libs/
-
-      - name: Build Final Android APK with Gradle
+      - name: Build Android APK with Gradle
         run: |
           cd android
           chmod +x gradlew
