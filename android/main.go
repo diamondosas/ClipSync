@@ -1,36 +1,61 @@
 package main
 
 import (
-	"clipsync-android/gui"
-	"clipsync-android/internal/events"
-	"clipsync-android/internal/service"
-	"context"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
+	"strconv"
+
+	"gioui.org/app"
+	"gioui.org/font/gofont"
+	"gioui.org/layout"
+	"gioui.org/op"
+	"gioui.org/text"
+	"gioui.org/unit"
+	"gioui.org/widget"
+	"gioui.org/widget/material"
 )
 
 func main() {
-	// Setup context for graceful shutdown
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer cancel()
-
-	// Initialize decoupled event bus and service engine
-	bus := events.NewEventBus()
-	svc := service.NewClipSyncService(bus, service.Config{})
-
-	// Run background networking service
 	go func() {
-		log.Println("[Main] Starting ClipSync background network service...")
-		if err := svc.Start(ctx); err != nil && err != context.Canceled {
-			log.Printf("[Main] ClipSync service error: %v", err)
-		} else {
-			log.Println("[Main] ClipSync service stopped cleanly")
+		// No os.Exit here: it would kill the whole Java app when the
+		// Gio screen closes. Looping lets the screen be opened again.
+		for {
+			w := new(app.Window)
+			if err := run(w); err != nil {
+				log.Println("gio window closed:", err)
+			}
 		}
 	}()
-
-	// Launch Gio Mobile GUI
-	log.Println("[Main] Starting ClipSync Gio UI...")
-	gui.StartGUI(svc)
+	app.Main()
 }
+
+func run(w *app.Window) error {
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
+
+	var (
+		ops   op.Ops
+		btn   widget.Clickable
+		count int
+	)
+
+	for {
+		switch e := w.Event().(type) {
+		case app.DestroyEvent:
+			return e.Err
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
+			if btn.Clicked(gtx) {
+				count++
+			}
+			layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Vertical, Alignment: layout.Middle}.Layout(gtx,
+					layout.Rigid(material.H4(th, "Hello from Gio").Layout),
+					layout.Rigid(layout.Spacer{Height: unit.Dp(16)}.Layout),
+					layout.Rigid(material.Button(th, &btn, "Clicked "+strconv.Itoa(count)).Layout),
+				)
+			})
+			e.Frame(gtx.Ops)
+		}
+	}
+}
+

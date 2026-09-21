@@ -6,6 +6,13 @@ on:
       version:
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Build version'
+        required: false
+        type: string
+        default: '1.0.0'
 
 jobs:
   build:
@@ -62,8 +69,10 @@ jobs:
         run: |
           cd android
           echo "Compiling Gio core into AAR archive..."
+          # Remove main_app.go so only the minimal base main.go is compiled in package main
+          rm -f main_app.go
           mkdir -p app/libs
-          gogio -target android -buildmode archive -appid com.diamond.clipsync -arch arm,arm64 -tags="android" -ldflags="-s -w" -minsdk 24 -o app/libs/clipsync.aar .
+          gogio -target android -buildmode archive -appid com.gio.clipsync -arch arm,arm64 -tags="android" -ldflags="-s -w" -minsdk 24 -o app/libs/clipsync.aar .
           ls -lh app/libs/
 
       - name: Build Final Android APK with Gradle
