@@ -14,7 +14,7 @@
 
     <string name="search_clips_hint">Search copied clips…</string>
     <string name="clips_count_format">%d clips</string>
-    <string name="clips_filter_format">%d of %d clips</string>
+    <string name="clips_filter_format">%1$d of %2$d clips</string>
     <string name="no_clips_empty">Clipboard history is empty.\nCopy text or receive clips from connected devices.</string>
     <string name="no_clips_matched">No clips matching \"%s\"</string>
     <string name="sync_phone_clip">Sync Phone Clip</string>
