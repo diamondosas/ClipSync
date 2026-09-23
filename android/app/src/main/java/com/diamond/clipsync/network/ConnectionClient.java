@@ -42,8 +42,8 @@ public class ConnectionClient {
 
     public void pingAllPeers() {
         if (peerManager == null) return;
-        List<Device> activePeers = peerManager.getActivePeers();
-        for (Device peer : activePeers) {
+        List<Device> allPeers = peerManager.getAllPeers();
+        for (Device peer : allPeers) {
             sendPing(peer.getIp(), peer.getPort());
         }
     }
@@ -69,16 +69,8 @@ public class ConnectionClient {
             socket.setSoTimeout(3000);
             InetAddress targetAddr = InetAddress.getByName(ip);
 
-            // Send standard raw packet
             DatagramPacket outPacket = new DatagramPacket(data, data.length, targetAddr, port);
             socket.send(outPacket);
-
-            // Also send AES CFB encrypted variant if payload is clipboard or handshake for compatibility
-            try {
-                byte[] enc = CryptoUtils.encryptCFB(data, Protocol.SECRET_KEY);
-                DatagramPacket encPacket = new DatagramPacket(enc, enc.length, targetAddr, port);
-                socket.send(encPacket);
-            } catch (Exception ignored) {}
 
             Log.d(TAG, "Sent packet (" + data.length + " bytes) to " + ip + ":" + port);
         } catch (Exception e) {

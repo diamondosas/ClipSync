@@ -7,7 +7,7 @@ public class Protocol {
     public static final String SERVICE_TYPE = "_clipsync._tcp";
     public static final String SERVICE_DOMAIN = "local.";
     public static final long PING_INTERVAL_MS = 2000L;
-    public static final long PEER_TIMEOUT_MS = 5000L;
+    public static final long PEER_TIMEOUT_MS = 10000L;
 
     // Default shared secret key (16 bytes) matching desktop and android
     public static final byte[] SECRET_KEY = "clipboardsyncapp".getBytes(StandardCharsets.UTF_8);

@@ -16,11 +16,14 @@ func AddNewDevice(device internal.Device) {
 		if internal.ConnDevices[i].Ip == device.Ip {
 			internal.ConnDevices[i].Alive = true
 			internal.ConnDevices[i].LastSeen = time.Now()
+			if device.Name != "" {
+				internal.ConnDevices[i].Name = device.Name
+			}
 			exists = true
 			break
 		}
 	}
-	if exists == false{
+	if !exists {
 		internal.ConnDevices = append(internal.ConnDevices, device)
 	}
 	internal.ConnDevicesMu.Unlock()

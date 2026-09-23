@@ -117,9 +117,12 @@ func entry(results <-chan *zeroconf.ServiceEntry) {
 	for entry := range results {
 		if entry.Instance != internal.Hostname && len(entry.AddrIPv4) > 0 {
 			newIP := entry.AddrIPv4[0].String()
-			newDevice := internal.Device{Name: entry.HostName, Ip: newIP, Alive: true, LastSeen: time.Now()}
+			name := entry.Instance
+			if name == "" {
+				name = entry.HostName
+			}
+			newDevice := internal.Device{Name: name, Ip: newIP, Alive: true, LastSeen: time.Now()}
 
-			
 			view.AddNewDevice(newDevice)
 			Connect(newIP)
 

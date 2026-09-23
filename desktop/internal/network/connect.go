@@ -5,121 +5,108 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"sync"
-
-	"github.com/xtaci/kcp-go/v5"
 )
 
-var(
-	peers = make(map[string]*kcp.UDPSession)
-	peersMu sync.Mutex
-
-	BlockCrypt kcp.BlockCrypt
+var (
+	serverConn   *net.UDPConn
+	serverConnMu sync.RWMutex
 )
 
-func Connect(ip string) {
-	sess, err := createPeer(ip)
-	if err != nil{
-		log.Println("Could not connect to ip:", ip)
-		return
+// SendPacket sends a UDP packet to the given IP on the default port.
+func SendPacket(ip string, data []byte) error {
+	targetAddr, err := net.ResolveUDPAddr("udp", net.JoinHostPort(ip, internal.PORT))
+	if err != nil {
+		return err
 	}
 
+	serverConnMu.RLock()
+	conn := serverConn
+	serverConnMu.RUnlock()
+
+	if conn != nil {
+		_, err = conn.WriteToUDP(data, targetAddr)
+		return err
+	}
+
+	// Fallback to a temporary UDP socket if listener is not ready
+	c, err := net.DialUDP("udp", nil, targetAddr)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+	_, err = c.Write(data)
+	return err
+}
+
+func Connect(ip string) {
 	if internal.Hostname == "" {
 		internal.Hostname, _ = os.Hostname()
 	}
 	msg := append([]byte{MsgTypeHandshake}, []byte(internal.Hostname)...)
 
-	_, err = sess.Write(msg)
-	log.Println("Sent HandShake")
+	err := SendPacket(ip, msg)
 	if err != nil {
 		log.Println("Connect Write error:", err)
+		return
 	}
+	log.Printf("[Network] Sent Handshake to %s", ip)
 }
 
 func Listen(ctx context.Context) error {
-	block := prepareCrypt()
-	listener, err := kcp.ListenWithOptions("0.0.0.0:" + internal.PORT, block, 10, 3)
-	if err != nil{
-		log.Println("Could not Bind on Port ", internal.PORT)
-		log.Fatal(err)
+	addr, err := net.ResolveUDPAddr("udp", "0.0.0.0:"+internal.PORT)
+	if err != nil {
+		log.Println("Could not resolve UDP address for Port", internal.PORT)
+		return err
+	}
+
+	listener, err := net.ListenUDP("udp", addr)
+	if err != nil {
+		log.Println("Could not Bind on Port", internal.PORT)
+		return err
 	}
 	defer listener.Close()
 
-	fmt.Println("Udp server listeining on port: ", internal.PORT)
+	serverConnMu.Lock()
+	serverConn = listener
+	serverConnMu.Unlock()
 
+	fmt.Println("UDP server listening on port:", internal.PORT)
 
-	go func(){
-		for{
-			sess, err := listener.AcceptKCP()
-			if err != nil{
-				select{
+	go func() {
+		buf := make([]byte, 65535)
+		for {
+			n, remoteAddr, err := listener.ReadFromUDP(buf)
+			if err != nil {
+				select {
 				case <-ctx.Done():
-					return 
-				
+					return
 				default:
-					log.Println("Could not Accept connection")
+					log.Println("Could not read from UDP:", err)
 					continue
 				}
 			}
-			sess.SetNoDelay(1, 10, 2, 1)
+			if n <= 0 {
+				continue
+			}
 
-			go HandleIncomingData(sess)		
+			packet := make([]byte, n)
+			copy(packet, buf[:n])
+
+			go HandleIncomingPacket(packet, remoteAddr)
 		}
 	}()
 
-
 	<-ctx.Done()
-	if listener != nil{
-		listener.Close()
+
+	serverConnMu.Lock()
+	if serverConn != nil {
+		serverConn.Close()
+		serverConn = nil
 	}
-	
+	serverConnMu.Unlock()
+
 	return nil
-}
-
-func prepareCrypt() kcp.BlockCrypt {
-	block, err := kcp.NewAESBlockCrypt(internal.SecretKey)
-	if err != nil{
-		log.Println("Could not create block")
-	}
-	if BlockCrypt == nil{
-		BlockCrypt = block
-	}
-	return block
-}
-
-func createPeer(ip string) (*kcp.UDPSession, error){
-	peersMu.Lock()
-	sess, exists := peers[ip]
-	peersMu.Unlock()
-
-	if exists && sess != nil{
-		return sess, nil
-	}
-
-	block := prepareCrypt()
-
-	sess, err := kcp.DialWithOptions(ip + ":" + internal.PORT, block, 10, 3)
-	if err != nil{
-		log.Println("Could not Connect to ", ip)
-		return nil, fmt.Errorf("Could not conect to %s", ip) 
-	}
-	peersMu.Lock()
-	peers[ip] = sess
-	peersMu.Unlock()
-	
-	sess.SetNoDelay(1, 10, 2, 1)
-
-	return sess, nil
-}
-
-func removePeer(ip string){
-	peersMu.Lock()
-	defer peersMu.Unlock()
-	if sess, exists := peers[ip]; exists {
-		if sess != nil{
-			sess.Close()
-		}
-		delete(peers, ip)
-	}
 }

@@ -52,19 +52,27 @@ public class PeerManager {
         if (dev != null) {
             dev.touch();
             notifyListeners();
+        } else {
+            addOrUpdatePeer(ip, ip, Protocol.DEFAULT_PORT);
         }
     }
 
     public void pruneDeadPeers(long timeoutMs) {
         long now = System.currentTimeMillis();
         boolean changed = false;
+        long removeTimeoutMs = timeoutMs * 6;
         for (Map.Entry<String, Device> entry : peers.entrySet()) {
             Device dev = entry.getValue();
-            if (now - dev.getLastSeen() > timeoutMs) {
+            long elapsed = now - dev.getLastSeen();
+            if (elapsed > timeoutMs) {
                 if (dev.isAlive()) {
                     dev.setAlive(false);
                     changed = true;
                 }
+            }
+            if (elapsed > removeTimeoutMs) {
+                peers.remove(entry.getKey());
+                changed = true;
             }
         }
         if (changed) {

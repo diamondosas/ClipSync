@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -31,6 +32,8 @@ public class ClipSyncForegroundService extends Service {
     private ServiceCoordinator coordinator;
     private ScheduledExecutorService scheduler;
     private NotificationManager notificationManager;
+    private WifiManager.MulticastLock multicastLock;
+    private WifiManager.WifiLock wifiLock;
 
     public static void startService(Context context) {
         Intent intent = new Intent(context, ClipSyncForegroundService.class);
@@ -54,6 +57,20 @@ public class ClipSyncForegroundService extends Service {
 
         createNotificationChannel();
         startForeground(NOTIFICATION_ID, buildNotification(0));
+
+        try {
+            WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (wm != null) {
+                multicastLock = wm.createMulticastLock("ClipSyncSvcMulticastLock");
+                multicastLock.setReferenceCounted(true);
+                multicastLock.acquire();
+
+                wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "ClipSyncSvcWifiLock");
+                wifiLock.acquire();
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed acquiring Wi-Fi locks: " + e.getMessage());
+        }
 
         coordinator.startNetworkEngine();
 
@@ -143,6 +160,18 @@ public class ClipSyncForegroundService extends Service {
         }
         if (coordinator != null) {
             coordinator.stopNetworkEngine();
+        }
+        if (multicastLock != null && multicastLock.isHeld()) {
+            try {
+                multicastLock.release();
+            } catch (Exception ignored) {}
+            multicastLock = null;
+        }
+        if (wifiLock != null && wifiLock.isHeld()) {
+            try {
+                wifiLock.release();
+            } catch (Exception ignored) {}
+            wifiLock = null;
         }
         Log.i(TAG, "ClipSync Foreground Service destroyed");
     }

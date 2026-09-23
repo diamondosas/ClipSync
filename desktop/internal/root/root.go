@@ -1,6 +1,7 @@
 package root
 
 import (
+	"bytes"
 	"context"
 	"log"
 	"time"
@@ -27,7 +28,7 @@ func StartClipSync(ctx context.Context) error {
 		return network.Listen(ctx)
 	})
 
-	// 4. Watch local clipboard for changes
+	// 3. Watch local clipboard for changes
 	eg.Go(func() error {
 		clip := clipboard.WatchClipboard(ctx)
 		for {
@@ -41,25 +42,40 @@ func StartClipSync(ctx context.Context) error {
 				if len(data) == 0 {
 					continue
 				}
+
 				// Avoid loops: don't send if it's the same as what we just received
+				internal.LastRecvClipMu.Lock()
+				isEcho := bytes.Equal(data, internal.LastRecvClip)
+				internal.LastRecvClipMu.Unlock()
+				if isEcho {
+					continue
+				}
+
 				internal.ConnDevicesMu.Lock()
-				for i := range internal.ConnDevices{
-					log.Println("[Sync] Local change detected, sending to Device: ", internal.ConnDevices[i].Ip)
+				for i := range internal.ConnDevices {
+					if internal.ConnDevices[i].Alive {
+						log.Println("[Sync] Local change detected, sending to Device: ", internal.ConnDevices[i].Ip)
+					}
 				}
 				internal.ConnDevicesMu.Unlock()
+
 				network.SendClipboard([]byte(data))
 				view.UpdateClipboard(string(data))
 			}
 		}
 	})
 
-	// 5. Receive Clipboard data from each peers on the network (it reieves from session independently)
+	// 4. Receive Clipboard data from peers
 	eg.Go(func() error {
+		clips := network.ReceiveClipboard(ctx)
 		for {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
-			case clip := <- network.ReceiveClipboard(ctx):
+			case clip, ok := <-clips:
+				if !ok {
+					return nil
+				}
 				if len(clip) > 0 {
 					data := string(clip)
 					log.Printf("[Sync] Received new clipboard data (%d bytes)", len(clip))
@@ -70,7 +86,7 @@ func StartClipSync(ctx context.Context) error {
 		}
 	})
 
-	// 6. Periodically ping devices to tell them I am still alive
+	// 5. Periodically ping devices to tell them I am still alive
 	eg.Go(func() error {
 		for {
 			select {
@@ -79,12 +95,9 @@ func StartClipSync(ctx context.Context) error {
 			case <-time.After(2 * time.Second):
 				internal.ConnDevicesMu.Lock()
 				var ipsToPing []string
-				if internal.ConnDevices != nil{
-					for i:= range internal.ConnDevices{
-						ipsToPing = append(ipsToPing, internal.ConnDevices[i].Ip)
-					}
+				for i := range internal.ConnDevices {
+					ipsToPing = append(ipsToPing, internal.ConnDevices[i].Ip)
 				}
-
 				internal.ConnDevicesMu.Unlock()
 
 				if len(ipsToPing) > 0 {
@@ -94,22 +107,23 @@ func StartClipSync(ctx context.Context) error {
 		}
 	})
 
-	// Perodically Check whether devices in the []ConnDevice list has sent that they are alive
-	eg.Go(func() error{
-		for{
-			select{
+	// 6. Periodically check whether devices in the ConnDevices list are still alive
+	eg.Go(func() error {
+		for {
+			select {
 			case <-ctx.Done():
 				return ctx.Err()
 			case <-time.After(1 * time.Second):
 				internal.ConnDevicesMu.Lock()
-				if internal.ConnDevices != nil{
-					internal.ConnDevicesMu.Unlock()
-					log.Println("Checking for Dead Connection")
+				hasDevices := len(internal.ConnDevices) > 0
+				internal.ConnDevicesMu.Unlock()
+
+				if hasDevices {
 					network.CheckForPing()
 				}
 			}
 		}
-	} )
+	})
 
 	return eg.Wait()
 }

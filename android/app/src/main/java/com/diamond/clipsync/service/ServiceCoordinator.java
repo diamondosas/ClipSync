@@ -148,8 +148,8 @@ public class ServiceCoordinator implements ConnectionServer.PacketListener {
     public void onHandshakeReceived(String hostname, String ip) {
         Log.i(TAG, "Handshake received from: " + hostname + " (" + ip + ")");
         peerManager.addOrUpdatePeer(hostname, ip, Protocol.DEFAULT_PORT);
-        // Reply with handshake if needed
-        connectionClient.sendPing(ip, Protocol.DEFAULT_PORT);
+        // Reply with handshake so peer has our hostname too
+        connectionClient.sendHandshake(ip, Protocol.DEFAULT_PORT);
     }
 
     @Override
@@ -160,6 +160,8 @@ public class ServiceCoordinator implements ConnectionServer.PacketListener {
     @Override
     public void onClipboardReceived(String content, String ip) {
         if (content == null || content.isEmpty()) return;
+
+        peerManager.touchPeer(ip);
 
         String hash = CryptoUtils.sha256(content);
         lastReceivedRemoteHash = hash;
