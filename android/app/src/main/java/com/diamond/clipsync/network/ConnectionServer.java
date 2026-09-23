@@ -5,6 +5,10 @@ import android.util.Log;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 
 public class ConnectionServer {
@@ -73,7 +77,12 @@ public class ConnectionServer {
                 && data[0] != Protocol.MSG_TYPE_PING
                 && data[0] != Protocol.MSG_TYPE_CLIPBOARD) {
             try {
-                payload = CryptoUtils.decryptCFB(data, Protocol.SECRET_KEY);
+                byte[] dec = CryptoUtils.decryptCFB(data, Protocol.SECRET_KEY);
+                if (dec != null && dec.length > 0 && (dec[0] == Protocol.MSG_TYPE_HANDSHAKE
+                        || dec[0] == Protocol.MSG_TYPE_PING
+                        || dec[0] == Protocol.MSG_TYPE_CLIPBOARD)) {
+                    payload = dec;
+                }
             } catch (Exception ignored) {
                 // If CFB decryption fails, keep raw payload
             }
@@ -86,7 +95,10 @@ public class ConnectionServer {
             case Protocol.MSG_TYPE_HANDSHAKE:
                 String hostname = "";
                 if (payload.length > 1) {
-                    hostname = new String(payload, 1, payload.length - 1, StandardCharsets.UTF_8);
+                    hostname = decodeUtf8Safe(payload, 1, payload.length - 1);
+                    if (hostname == null) {
+                        hostname = new String(payload, 1, payload.length - 1, StandardCharsets.UTF_8);
+                    }
                 }
                 if (listener != null) {
                     listener.onHandshakeReceived(hostname, senderIp);
@@ -101,7 +113,11 @@ public class ConnectionServer {
 
             case Protocol.MSG_TYPE_CLIPBOARD:
                 if (payload.length > 1) {
-                    String content = new String(payload, 1, payload.length - 1, StandardCharsets.UTF_8);
+                    String content = decodeUtf8Safe(payload, 1, payload.length - 1);
+                    if (content == null || !isCleanText(content)) {
+                        Log.w(TAG, "Discarded binary/scrambled clipboard payload from " + senderIp + " (" + (payload.length - 1) + " bytes)");
+                        break;
+                    }
                     if (listener != null) {
                         listener.onClipboardReceived(content, senderIp);
                     }
@@ -112,6 +128,33 @@ public class ConnectionServer {
                 Log.w(TAG, "Unknown message type 0x" + Integer.toHexString(msgType & 0xFF) + " from " + senderIp);
                 break;
         }
+    }
+
+    private static String decodeUtf8Safe(byte[] data, int offset, int length) {
+        try {
+            CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
+            decoder.onMalformedInput(CodingErrorAction.REPORT);
+            decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+            ByteBuffer buf = ByteBuffer.wrap(data, offset, length);
+            CharBuffer charBuf = decoder.decode(buf);
+            return charBuf.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static boolean isCleanText(String s) {
+        if (s == null || s.isEmpty()) return false;
+        int controlCount = 0;
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            char c = s.charAt(i);
+            if (c == '\n' || c == '\r' || c == '\t') continue;
+            if (c == '\uFFFD' || c < 0x20 || (c >= 0x7f && c <= 0x9f)) {
+                controlCount++;
+            }
+        }
+        return controlCount == 0 || (length > 10 && ((double) controlCount / length) < 0.05);
     }
 
     public synchronized void stop() {

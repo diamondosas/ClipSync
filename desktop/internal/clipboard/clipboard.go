@@ -41,10 +41,11 @@ func WatchClipboard(ctx context.Context) <-chan []byte {
 			select {
 			case data := <-text:
 				internal.LastRecvClipMu.Lock()
-				if !slices.Equal(data.Bytes, internal.LastRecvClip) {
-					internal.LastRecvClipMu.Unlock()
+				isEqual := slices.Equal(data, internal.LastRecvClip)
+				internal.LastRecvClipMu.Unlock()
+				if !isEqual {
 					select {
-					case out <- data.Bytes:
+					case out <- data:
 					case <-ctx.Done():
 						return
 					}

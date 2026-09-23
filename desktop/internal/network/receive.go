@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"time"
+	"unicode/utf8"
 )
 
 var (
@@ -38,6 +39,26 @@ func decryptCFB(data []byte, key []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
+// isCleanText checks whether the byte slice represents readable text rather than binary data
+func isCleanText(b []byte) bool {
+	if len(b) == 0 || !utf8.Valid(b) {
+		return false
+	}
+	controlCount := 0
+	totalCount := 0
+	s := string(b)
+	for _, r := range s {
+		totalCount++
+		if r == '\n' || r == '\r' || r == '\t' {
+			continue
+		}
+		if r == utf8.RuneError || r < 0x20 || (r >= 0x7f && r <= 0x9f) {
+			controlCount++
+		}
+	}
+	return controlCount == 0 || (totalCount > 10 && float64(controlCount)/float64(totalCount) < 0.05)
+}
+
 // HandleIncomingPacket processes a datagram received on the UDP listener
 func HandleIncomingPacket(data []byte, remoteAddr *net.UDPAddr) {
 	if remoteAddr == nil || len(data) == 0 {
@@ -50,7 +71,7 @@ func HandleIncomingPacket(data []byte, remoteAddr *net.UDPAddr) {
 	// If packet is encrypted (> 16 bytes and header not a raw message type), try decrypting
 	if len(data) > 16 && data[0] != MsgTypeHandshake && data[0] != MsgTypePing && data[0] != MsgTypeClipboard {
 		dec, err := decryptCFB(data, internal.SecretKey)
-		if err == nil && len(dec) > 0 {
+		if err == nil && len(dec) > 0 && (dec[0] == MsgTypeHandshake || dec[0] == MsgTypePing || dec[0] == MsgTypeClipboard) {
 			payload = dec
 		}
 	}
@@ -103,6 +124,13 @@ func HandleIncomingPacket(data []byte, remoteAddr *net.UDPAddr) {
 
 	case MsgTypeClipboard:
 		content := payload[1:]
+
+		// Validate that the clipboard content is clean readable UTF-8 text and not binary garbage
+		if !isCleanText(content) {
+			log.Printf("[Network] Discarded binary/scrambled clipboard payload from %s (%d bytes)", ip, len(content))
+			return
+		}
+
 		internal.ConnDevicesMu.Lock()
 		for i := range internal.ConnDevices {
 			if ip == internal.ConnDevices[i].Ip {
@@ -119,7 +147,7 @@ func HandleIncomingPacket(data []byte, remoteAddr *net.UDPAddr) {
 		// Push payload for the Clipboard goroutine to handle
 		IncomingClips <- content
 
-		log.Printf("[Network] Received clipboard (%d bytes) from %s", len(content), ip)
+		log.Printf("[Network] Received clipboard (%d bytes) from %s: %q", len(content), ip, string(content))
 
 	default:
 		log.Printf("[Network] Unknown message type 0x%x from %s", msgType, ip)

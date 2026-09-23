@@ -27,7 +27,7 @@
     <string name="show_less">Show Less</string>
 
     <string name="accessibility_warning_title">Background Sync Inactive</string>
-    <string name="accessibility_warning_msg">Tap to enable ClipSync Accessibility Service so copying text in any app syncs automatically.</string>
+    <string name="accessibility_warning_msg">Tap to enable ClipSync in Accessibility. (Tip: You do not need to enable the floating shortcut button.)</string>
     <string name="action_enable">Enable</string>
 
     <string name="dialog_connect_title">Connect Manually</string>
@@ -36,7 +36,7 @@
     <string name="dialog_cancel_btn">Cancel</string>
 
     <string name="dialog_help_title">ClipSync Guide</string>
-    <string name="dialog_help_content">ClipSync synchronizes your clipboard securely across all your devices on your local Wi-Fi network.\n\n• Automatic Discovery: ClipSync uses mDNS to detect PCs and phones automatically.\n• Background Sync: Enable the Accessibility Service so copying text in any app syncs seamlessly.\n• Firewall: If connecting to a PC, ensure UDP port 9999 is open on your PC\'s firewall.</string>
+    <string name="dialog_help_content">ClipSync synchronizes your clipboard securely across all your devices on your local Wi-Fi network.\n\n• Automatic Discovery: ClipSync uses mDNS to detect PCs and phones automatically.\n• Background Sync: Enable the Accessibility Service so copying text in any app syncs seamlessly.\n• Accessibility Shortcut: In Android Settings, you only need to turn on the main ClipSync service. The \"ClipSync shortcut\" (floating on-screen button or volume key shortcut) is NOT required and can be turned off.\n• Firewall: If connecting to a PC, ensure UDP port 9999 is open on your PC\'s firewall.</string>
     <string name="dialog_close_btn">Close</string>
 
     <string name="notification_channel_name">ClipSync Service</string>
