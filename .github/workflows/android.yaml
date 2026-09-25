@@ -74,6 +74,5 @@ jobs:
         with:
           name: clipsync-android
           path: |
-            build/ClipSync.apk
             build/clipsync-android.apk
           if-no-files-found: error

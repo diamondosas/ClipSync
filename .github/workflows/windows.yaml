@@ -51,15 +51,10 @@ jobs:
               & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DAppVersion=${{ inputs.version }} .github/installer.iss
           }
 
-      - name: Package Portable Zip
-        run: |
-          Compress-Archive -Path build/clipsync.exe -DestinationPath build/clipsync-windows.zip -Force
-
       - name: Upload Windows Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: clipsync-windows
           path: |
-            build/ClipSync-Setup.exe
-            build/clipsync-windows.zip
+            build/clipsync-windows.exe
           if-no-files-found: error
