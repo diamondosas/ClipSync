@@ -19,9 +19,16 @@
 
 <h3 align="center">Screenshots</h3>
 
+<h4 align="center">Desktop</h4>
 <p align="center">
-  <img src="assets/screenshots/devices.png" alt="Devices View" width="250" style="border-radius: 8px; margin: 6px;" />
-  <img src="assets/screenshots/clipboard.png" alt="Clipboard View" width="250" style="border-radius: 8px; margin: 6px;" />
+  <img src="assets/screenshots/pc_devices.png" alt="Desktop Devices" width="240" style="border-radius: 8px; margin: 6px;" />
+  <img src="assets/screenshots/pc_clipboard.png" alt="Desktop Clipboard" width="240" style="border-radius: 8px; margin: 6px;" />
+</p>
+
+<h4 align="center">Android</h4>
+<p align="center">
+  <img src="assets/screenshots/android_devices.jpg" alt="Android Devices" width="190" style="border-radius: 8px; margin: 6px;" />
+  <img src="assets/screenshots/android_clipboard.jpg" alt="Android Clipboard" width="190" style="border-radius: 8px; margin: 6px;" />
 </p>
 
 ---
