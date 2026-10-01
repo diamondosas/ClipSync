@@ -7,12 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
-    <!-- Background Execution & Notification Permissions -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Background Execution Permissions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".ClipSyncApp"
@@ -48,21 +44,10 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- Android Background Foreground Network Service -->
+        <!-- Android Background Network Service -->
         <service
-            android:name=".service.ClipSyncForegroundService"
-            android:foregroundServiceType="connectedDevice"
+            android:name=".service.ClipSyncService"
             android:exported="false" />
-
-        <!-- Boot Receiver for persistent startup -->
-        <receiver
-            android:name=".service.BootReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
     </application>
 

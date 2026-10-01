@@ -1,19 +1,14 @@
 package com.diamond.clipsync.ui;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.diamond.clipsync.R;
-import com.diamond.clipsync.service.ClipSyncForegroundService;
+import com.diamond.clipsync.service.ClipSyncService;
 import com.diamond.clipsync.ui.adapter.MainPagerAdapter;
 import com.diamond.clipsync.ui.dialog.ConnectDialog;
 import com.diamond.clipsync.ui.dialog.HelpDialog;
@@ -39,16 +34,23 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupToolbar();
         setupViewPager();
-        checkPermissions();
 
-        // Start background foreground engine
-        ClipSyncForegroundService.startService(this);
+        // Start background network service (no persistent notification)
+        ClipSyncService.startService(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updateAccessibilityBanner();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isFinishing()) {
+            ClipSyncService.stopService(this);
+        }
     }
 
     private void initViews() {
@@ -112,16 +114,5 @@ public class MainActivity extends AppCompatActivity {
         new ConnectDialog(this, ip -> {
             viewModel.connectManual(ip);
         }).show();
-    }
-
-    private void checkPermissions() {
-        // Request POST_NOTIFICATIONS on Android 13+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
-            }
-        }
     }
 }

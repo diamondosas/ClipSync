@@ -82,13 +82,23 @@ public class ServiceCoordinator implements ConnectionServer.PacketListener {
         this.statusListener = listener;
     }
 
-    public void startNetworkEngine() {
+    private volatile boolean isNetworkRunning = false;
+
+    public boolean isNetworkEngineRunning() {
+        return isNetworkRunning;
+    }
+
+    public synchronized void startNetworkEngine() {
+        if (isNetworkRunning) return;
+        isNetworkRunning = true;
         connectionServer.start();
         nsdHelper.start();
         Log.i(TAG, "Network engine started");
     }
 
-    public void stopNetworkEngine() {
+    public synchronized void stopNetworkEngine() {
+        if (!isNetworkRunning) return;
+        isNetworkRunning = false;
         nsdHelper.stop();
         connectionServer.stop();
         Log.i(TAG, "Network engine stopped");
@@ -114,7 +124,7 @@ public class ServiceCoordinator implements ConnectionServer.PacketListener {
      * Invoked when AccessibilityService or local app copies new text.
      */
     public synchronized void onLocalClipboardCopied(String content) {
-        if (content == null || content.isEmpty()) return;
+        if (!isNetworkRunning || content == null || content.isEmpty()) return;
 
         String hash = CryptoUtils.sha256(content);
         long now = System.currentTimeMillis();
@@ -196,11 +206,15 @@ public class ServiceCoordinator implements ConnectionServer.PacketListener {
     }
 
     public void pingAllPeers() {
-        connectionClient.pingAllPeers();
+        if (isNetworkRunning) {
+            connectionClient.pingAllPeers();
+        }
     }
 
     public void pruneDeadPeers() {
-        peerManager.pruneDeadPeers(Protocol.PEER_TIMEOUT_MS);
+        if (isNetworkRunning) {
+            peerManager.pruneDeadPeers(Protocol.PEER_TIMEOUT_MS);
+        }
     }
 
     private void showToast(final String message) {

@@ -19,31 +19,32 @@
 
 <h3 align="center">Screenshots</h3>
 
-<h4 align="center">Desktop</h4>
+<h4 align="center"><b>Desktop<b></h4>
 <p align="center">
   <img src="assets/screenshots/pc_devices.png" alt="Desktop Devices" width="240" style="border-radius: 8px; margin: 6px;" />
   <img src="assets/screenshots/pc_clipboard.png" alt="Desktop Clipboard" width="240" style="border-radius: 8px; margin: 6px;" />
 </p>
 
-<h4 align="center">Android</h4>
+<h4 align="center" style="margin-top: 24px;"><b>Android</b></h4>
 <p align="center">
-  <img src="assets/screenshots/android_devices.jpg" alt="Android Devices" width="190" style="border-radius: 8px; margin: 6px;" />
-  <img src="assets/screenshots/android_clipboard.jpg" alt="Android Clipboard" width="190" style="border-radius: 8px; margin: 6px;" />
+  <img src="assets/screenshots/android_devices.jpg" alt="Android Devices" width="240" style="border-radius: 8px; margin: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="assets/screenshots/android_clipboard.jpg" alt="Android Clipboard" width="240" style="border-radius: 8px; margin: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
 </p>
 
 ---
 <h2 align="center">
 
 
+<a href="https://github.com/diamondosas/clipsync/releases/latest">
+  <img src="./assets/download-button.svg" alt="Download ClipSync" width="220">
+</a>
 
-**[> Download ClipSync <](https://github.com/diamondosas/clipsync/releases)**
 
 </h2>
 
 
----
 
----
+
 
 ## Features
 
