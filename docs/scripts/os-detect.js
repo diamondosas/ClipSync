@@ -30,10 +30,10 @@ const OSDetector = {
         key: 'macos',
         name: isAppleSilicon ? 'macOS (Apple Silicon)' : 'macOS (Universal)',
         badge: 'macOS 11.0+ (Universal Binary)',
-        primaryExt: '.tar.gz',
-        primaryFile: 'clipsync-macos.tar.gz',
+        primaryExt: '.dmg',
+        primaryFile: 'clipsync-macos.dmg',
         primaryLabel: 'Download for macOS',
-        subtext: 'Universal binary (Apple Silicon & Intel)',
+        subtext: 'Universal disk image (Apple Silicon & Intel)',
         icon: 'apple'
       };
     }

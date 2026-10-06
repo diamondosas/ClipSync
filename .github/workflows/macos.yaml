@@ -50,13 +50,79 @@ jobs:
 
           chmod +x build/clipsync
 
-      - name: Package Tarball
+      - name: Build macOS Application Bundle (.app)
         run: |
-          tar -czf build/clipsync-macos.tar.gz -C build clipsync
+          APP_DIR="build/ClipSync.app"
+          mkdir -p "${APP_DIR}/Contents/MacOS"
+          mkdir -p "${APP_DIR}/Contents/Resources"
+
+          cp build/clipsync "${APP_DIR}/Contents/MacOS/clipsync"
+          chmod +x "${APP_DIR}/Contents/MacOS/clipsync"
+
+          # Generate icon set if icon exists
+          if [ -f "assets/icon.png" ]; then
+            ICONSET_DIR="build/ClipSync.iconset"
+            mkdir -p "${ICONSET_DIR}"
+            sips -z 16 16     assets/icon.png --out "${ICONSET_DIR}/icon_16x16.png" || true
+            sips -z 32 32     assets/icon.png --out "${ICONSET_DIR}/icon_16x16@2x.png" || true
+            sips -z 32 32     assets/icon.png --out "${ICONSET_DIR}/icon_32x32.png" || true
+            sips -z 64 64     assets/icon.png --out "${ICONSET_DIR}/icon_32x32@2x.png" || true
+            sips -z 128 128   assets/icon.png --out "${ICONSET_DIR}/icon_128x128.png" || true
+            sips -z 256 256   assets/icon.png --out "${ICONSET_DIR}/icon_128x128@2x.png" || true
+            sips -z 256 256   assets/icon.png --out "${ICONSET_DIR}/icon_256x256.png" || true
+            sips -z 512 512   assets/icon.png --out "${ICONSET_DIR}/icon_256x256@2x.png" || true
+            sips -z 512 512   assets/icon.png --out "${ICONSET_DIR}/icon_512x512.png" || true
+            sips -z 1024 1024 assets/icon.png --out "${ICONSET_DIR}/icon_512x512@2x.png" || true
+            iconutil -c icns "${ICONSET_DIR}" -o "${APP_DIR}/Contents/Resources/AppIcon.icns" || true
+            rm -rf "${ICONSET_DIR}"
+          fi
+
+          cat << 'EOF' | sed 's/^          //' > "${APP_DIR}/Contents/Info.plist"
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleExecutable</key>
+              <string>clipsync</string>
+              <key>CFBundleIconFile</key>
+              <string>AppIcon</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.diamond.clipsync</string>
+              <key>CFBundleName</key>
+              <string>ClipSync</string>
+              <key>CFBundleDisplayName</key>
+              <string>ClipSync</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>CFBundleShortVersionString</key>
+              <string>${{ inputs.version }}</string>
+              <key>CFBundleVersion</key>
+              <string>${{ inputs.version }}</string>
+              <key>LSMinimumSystemVersion</key>
+              <string>11.0</string>
+              <key>NSHighResolutionCapable</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Build macOS Disk Image (.dmg)
+        run: |
+          DMG_STAGING="build/dmg-staging"
+          mkdir -p "${DMG_STAGING}"
+          cp -R "build/ClipSync.app" "${DMG_STAGING}/"
+          ln -s /Applications "${DMG_STAGING}/Applications"
+
+          hdiutil create -volname "ClipSync" \
+            -srcfolder "${DMG_STAGING}" \
+            -ov -format UDZO \
+            build/clipsync-macos.dmg
+
+          rm -rf "${DMG_STAGING}"
 
       - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: clipsync-macos
-          path: build/clipsync-macos.tar.gz
+          path: build/clipsync-macos.dmg
           if-no-files-found: error

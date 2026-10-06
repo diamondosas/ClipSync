@@ -2,7 +2,6 @@ package view
 
 import (
 	"clipsync/gui"
-	"clipsync/gui/pages"
 	"clipsync/internal"
 	"testing"
 	"time"
